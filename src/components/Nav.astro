@@ -181,8 +181,16 @@ const links = [
 
 <script>
   // Hamburger toggle
+  const menu = document.getElementById('nav-menu');
   document.getElementById('nav-burger')?.addEventListener('click', () => {
-    document.getElementById('nav-menu')?.classList.toggle('open');
+    menu?.classList.toggle('open');
+  });
+
+  // Close mobile menu when resizing past breakpoint
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && menu?.classList.contains('open')) {
+      menu.classList.remove('open');
+    }
   });
 
   // Dark mode toggle
