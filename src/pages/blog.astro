@@ -1,11 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 
-const posts = [
-  { date: 'Oct 15, 2026', title: 'Why I Think Agentic AI Will Replace Most SaaS', tag: 'AI', tagColor: '#3B6CF4', excerpt: 'The shift from "software as a service" to "agents as a service" is closer than most founders think. Here\'s why the current SaaS model is ripe for disruption.' },
-  { date: 'Sep 22, 2026', title: 'A Monte Carlo Approach to Portfolio Allocation', tag: 'Finance', tagColor: '#111827', excerpt: 'Using Monte Carlo simulations to optimize portfolio allocation across asset classes, with a focus on risk-adjusted returns and drawdown constraints.' },
-  { date: 'Aug 10, 2026', title: 'Building Physics-Informed Neural Nets from Scratch', tag: 'Research', tagColor: '#6B7280', excerpt: 'A walkthrough of implementing PINNs in JAX — encoding PDEs as loss functions, training tricks, and why they matter for scientific computing.' },
-];
+const posts = (await getCollection('blog'))
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <BaseLayout title="Blog — Aymane Elamrani" activePage="Blog">
@@ -17,15 +16,15 @@ const posts = [
 
   <section class="container posts">
     {posts.map(post => (
-      <article class="post-card">
+      <a href={`/blog/${post.slug}`} class="post-card">
         <div class="post-card__meta">
-          <span class="post-card__date">{post.date}</span>
-          <span class="post-card__tag" style={`background: ${post.tagColor}`}>{post.tag}</span>
+          <span class="post-card__date">{post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+          <span class="post-card__tag" style={`background: ${post.data.tagColor}`}>{post.data.tag}</span>
         </div>
-        <h2 class="post-card__title">{post.title}</h2>
-        <p class="post-card__excerpt">{post.excerpt}</p>
+        <h2 class="post-card__title">{post.data.title}</h2>
+        <p class="post-card__excerpt">{post.data.excerpt}</p>
         <span class="post-card__link">Read more →</span>
-      </article>
+      </a>
     ))}
   </section>
 </BaseLayout>
@@ -70,6 +69,12 @@ const posts = [
     display: flex;
     flex-direction: column;
     gap: 12px;
+    color: var(--text);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   }
   .post-card__meta { display: flex; align-items: center; gap: 12px; }
   .post-card__date { font-size: 13px; color: var(--text-muted); font-weight: 500; }

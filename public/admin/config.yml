@@ -1,0 +1,24 @@
+backend:
+  name: github
+  repo: elaymaneX/Aymane-portofolio
+  branch: main
+
+media_folder: public/images
+public_folder: /images
+
+collections:
+  - name: blog
+    label: Blog Posts
+    folder: src/content/blog
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Tag", name: "tag", widget: "string", hint: "e.g. AI, Finance, Research" }
+      - { label: "Tag Color", name: "tagColor", widget: "color", default: "#3B6CF4" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }

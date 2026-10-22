@@ -26,9 +26,9 @@ const featuredProjects = [
 ];
 
 const latestPosts = [
-  { date: 'Oct 2026', title: 'Why I Think Agentic AI Will Replace Most SaaS', tag: 'AI', tagColor: '#3B6CF4' },
-  { date: 'Sep 2026', title: 'A Monte Carlo Approach to Portfolio Allocation', tag: 'Finance', tagColor: '#111827' },
-  { date: 'Aug 2026', title: 'Building Physics-Informed Neural Nets from Scratch', tag: 'Research', tagColor: '#6B7280' },
+  { date: 'Oct 2026', title: 'Why I Think Agentic AI Will Replace Most SaaS', tag: 'AI', tagColor: '#3B6CF4', slug: 'agentic-ai-replace-saas' },
+  { date: 'Sep 2026', title: 'A Monte Carlo Approach to Portfolio Allocation', tag: 'Finance', tagColor: '#111827', slug: 'monte-carlo-portfolio-allocation' },
+  { date: 'Aug 2026', title: 'Building Physics-Informed Neural Nets from Scratch', tag: 'Research', tagColor: '#6B7280', slug: 'physics-informed-neural-nets' },
 ];
 ---
 
@@ -96,7 +96,7 @@ const latestPosts = [
       </div>
       <div class="posts-list">
         {latestPosts.map(post => (
-          <a href="/blog" class="post-row">
+          <a href={`/blog/${post.slug}`} class="post-row">
             <span class="post-row__date">{post.date}</span>
             <span class="post-row__title">{post.title}</span>
             <span class="post-row__tag" style={`background: ${post.tagColor}`}>{post.tag}</span>
@@ -354,8 +354,9 @@ const latestPosts = [
       background: none;
       border-radius: 0;
       padding: 0;
+      box-shadow: none;
     }
-    .hero__img { width: 180px; height: 180px; }
+    .hero__img { width: 200px; height: 200px; box-shadow: 0 8px 32px rgba(59,108,244,0.15); }
     .hero__text { text-align: center; }
     .hero__actions { justify-content: center; }
     .hero__title { font-size: 40px; }

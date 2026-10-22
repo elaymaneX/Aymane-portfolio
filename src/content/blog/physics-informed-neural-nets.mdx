@@ -1,0 +1,85 @@
+---
+title: "Building Physics-Informed Neural Nets from Scratch"
+date: 2026-08-10
+tag: "Research"
+tagColor: "#6B7280"
+excerpt: "A walkthrough of implementing PINNs in JAX — encoding PDEs as loss functions, training tricks, and why they matter for scientific computing."
+---
+
+Physics-Informed Neural Networks (PINNs) are one of the most elegant ideas in scientific machine learning. They combine the flexibility of neural networks with the rigor of physical laws. In this post, I'll walk through building one from scratch in JAX.
+
+## What Are PINNs?
+
+Traditional neural networks learn patterns from data alone. PINNs add a twist: they also learn to satisfy the governing physics — typically expressed as partial differential equations (PDEs).
+
+The key idea is beautifully simple: **add a physics loss term that penalizes violations of the PDE**. The network learns to fit the data *and* obey the laws of physics simultaneously.
+
+## Why JAX?
+
+I chose JAX for a few reasons:
+
+- **Automatic differentiation** — Computing PDE residuals requires derivatives of the network output with respect to inputs. JAX's `grad` makes this trivial.
+- **JIT compilation** — Training PINNs involves many forward passes for the physics loss. JIT compilation makes this fast.
+- **Functional style** — Pure functions make it easy to reason about the computation.
+
+## A Concrete Example: The Heat Equation
+
+Let's solve the 1D heat equation:
+
+`∂u/∂t = α · ∂²u/∂x²`
+
+Where `u(x,t)` is the temperature at position `x` and time `t`, and `α` is the thermal diffusivity.
+
+### Step 1: Define the Network
+
+A simple MLP that takes `(x, t)` as input and outputs `u`. Nothing fancy — 4 hidden layers, 64 neurons each, with tanh activation (smooth activations work better for PDE derivatives).
+
+### Step 2: The Physics Loss
+
+Here's where the magic happens. We compute:
+
+- The network's prediction: `u_pred = net(x, t)`
+- Its partial derivatives: `du/dt`, `d²u/dx²`
+- The PDE residual: `r = du/dt - α * d²u/dx²`
+
+The physics loss is simply `mean(r²)`. When this is zero, the network exactly satisfies the heat equation.
+
+### Step 3: Boundary and Initial Conditions
+
+We also need:
+
+- **Initial condition loss**: `u(x, 0)` should match the initial temperature distribution
+- **Boundary condition loss**: `u(0, t)` and `u(L, t)` should match the boundary values
+
+### Step 4: Training
+
+The total loss is a weighted sum:
+
+```
+L = w_data * L_data + w_physics * L_physics + w_bc * L_bc + w_ic * L_ic
+```
+
+Getting the weights right is an art. I use a technique called "learning rate annealing" where the weights adapt during training based on gradient magnitudes.
+
+## The Training Tricks That Matter
+
+After building many PINNs, here's what I've learned:
+
+1. **Collocation point sampling** — Don't use a fixed grid. Sample random points in the domain for the physics loss, and resample every few epochs.
+2. **Input normalization** — Scale `x` and `t` to `[-1, 1]`. PINNs are extremely sensitive to input scaling.
+3. **Activation functions** — Tanh > ReLU for PDE problems. The derivatives of ReLU are piecewise constant, which causes issues.
+4. **Curriculum training** — Start with the initial/boundary conditions, then gradually increase the weight on the physics loss.
+
+## Why This Matters
+
+PINNs are particularly powerful when:
+
+- You have sparse data but know the governing equations
+- The forward simulation is too expensive (my OCT reconstruction work falls here)
+- You need to solve inverse problems (inferring parameters from observations)
+
+In my research at CVBLabs, I'm using PINNs for optical coherence tomography reconstruction — combining FDTD electromagnetic simulations with neural networks to reconstruct 3D tissue structures from interferometric measurements.
+
+## What's Next
+
+In the next post, I'll dive into the specific challenges of PINNs for inverse problems and share the full JAX implementation with benchmarks.
