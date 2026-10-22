@@ -4,8 +4,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const featuredProjects = [
   {
     title: 'OCT Reconstruction ML',
-    description: 'Master thesis project: built a physics-informed neural network to reconstruct optical coherence tomography images. Combined FDTD and Mie scattering forward models with a multi-head U-Net in JAX, achieving R²=0.93 on inverse scattering recovery.',
-    tags: [{ label: 'JAX', accent: true }, { label: 'Physics-ML' }, { label: 'Research' }],
+    description: 'Master thesis: physics-informed deep learning for quantitative OCT reconstruction. Trained a multi-head U-Net in JAX on 5 000 synthetic retinal B-scans with a differentiable Beer-Lambert forward model. Supervised stage recovered tissue attenuation and reflectivity at R²≈0.97; PINN fine-tuning then cut reconstruction error 3.7× (log-MSE 0.89→0.24) while keeping label accuracy. Also built and validated an FDTD simulator against Mie scattering theory.',
+    tags: [{ label: 'JAX', accent: true }, { label: 'Physics-ML' }, { label: 'PINN' }, { label: 'Research' }],
     icon: 'research',
     color: '#3B6CF4',
   },
