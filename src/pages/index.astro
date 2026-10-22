@@ -35,6 +35,14 @@ const latestPosts = [
 <BaseLayout title="Aymane Elamrani — ML Engineer & Maker">
   <!-- HERO -->
   <section class="hero container">
+    <div class="hero__greek" aria-hidden="true">
+      <span class="greek greek--1">Σ</span>
+      <span class="greek greek--2">Δ</span>
+      <span class="greek greek--3">Ψ</span>
+      <span class="greek greek--4">∂</span>
+      <span class="greek greek--5">λ</span>
+      <span class="greek greek--6">π</span>
+    </div>
     <div class="hero__photo">
       <img src="/images/headshot.jpeg" alt="Aymane Elamrani" class="hero__img" />
     </div>
@@ -42,11 +50,11 @@ const latestPosts = [
       <p class="hero__greeting">Hey there</p>
       <h1 class="hero__title">
         I'm <span class="highlight-blue">Aymane</span>,<br/>
-        I build things<br/>
-        with <span class="highlight-gold">AI</span>.
+        physics meets<br/>
+        <span class="highlight-gold">machine learning</span>.
       </h1>
       <p class="hero__subtitle">
-        ML engineer, quantum physics enthusiast, and maker. I write about agentic AI, finance, and the intersection of science and technology.
+        ML engineer with a quantum physics background. I write about quantitative finance, AI, and the science behind the models.
       </p>
       <div class="hero__actions">
         <a href="/projects" class="btn btn--primary">View projects <span>→</span></a>
@@ -129,8 +137,27 @@ const latestPosts = [
     gap: clamp(24px, 5vw, 80px);
     flex-wrap: wrap;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
   }
-  .hero__text { flex: 1 1 320px; min-width: 0; }
+
+  /* Greek letter decorations */
+  .hero__greek { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+  .greek {
+    position: absolute;
+    font-family: 'Fraunces', serif;
+    color: var(--accent);
+    opacity: 0.06;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .greek--1 { font-size: 180px; top: -20px; right: 5%; }
+  .greek--2 { font-size: 120px; bottom: 10%; left: 2%; }
+  .greek--3 { font-size: 140px; top: 15%; left: 15%; }
+  .greek--4 { font-size: 100px; bottom: 5%; right: 20%; }
+  .greek--5 { font-size: 160px; top: 40%; right: -2%; }
+  .greek--6 { font-size: 90px; top: 5%; left: 40%; }
+  .hero__text { flex: 1 1 320px; min-width: 0; position: relative; z-index: 1; }
   .hero__greeting {
     font-size: 16px;
     font-weight: 500;
@@ -165,6 +192,7 @@ const latestPosts = [
     align-items: center;
     justify-content: center;
     position: relative;
+    z-index: 1;
   }
   .hero__img {
     width: clamp(180px, 22vw, 300px);
