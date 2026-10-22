@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const projects = [
+  {
+    title: 'Multi-Agent Research Pipeline',
+    description: 'An orchestrated system of AI agents that collaboratively research, analyze, and synthesize information from multiple sources. Built with LangGraph for agent coordination and tool calling.',
+    tags: [{ label: 'LangGraph', accent: true }, { label: 'Python' }, { label: 'GPT-4' }],
+    icon: 'agents',
+    color: '#3B6CF4',
+  },
+  {
+    title: 'Automated Job Tracker',
+    description: 'n8n workflow that classifies job-application emails from Gmail, extracts key info with AI, and logs everything to a Google Sheet automatically. Tracks status, deadlines, and follow-ups.',
+    tags: [{ label: 'n8n' }, { label: 'Automation' }, { label: 'Gmail API' }],
+    icon: 'automation',
+    color: '#F5C563',
+  },
+  {
+    title: 'OCT Reconstruction ML',
+    description: 'Physics-informed neural networks for optical coherence tomography reconstruction, combining FDTD simulations with deep learning for medical imaging applications.',
+    tags: [{ label: 'JAX' }, { label: 'Research' }, { label: 'Medical Imaging' }],
+    icon: 'research',
+    color: '#111827',
+  },
+  {
+    title: 'Portfolio & Blog',
+    description: 'This very website — built with Astro and MDX, deployed on Vercel. Features dark mode, responsive design, and a markdown-powered blog.',
+    tags: [{ label: 'Astro' }, { label: 'MDX' }, { label: 'Vercel' }],
+    icon: 'web',
+    color: '#3B6CF4',
+  },
+];
+---
+
+<BaseLayout title="Projects — Aymane Elamrani" activePage="Projects">
+  <section class="container page-header">
+    <p class="page-header__label">Projects</p>
+    <h1 class="page-header__title">Things I've <span class="highlight-blue">built</span></h1>
+    <p class="page-header__desc">A mix of AI tools, automations, and research projects. Some are open-source, some are experiments, all taught me something.</p>
+  </section>
+
+  <section class="container projects-grid">
+    {projects.map(project => (
+      <div class="project-card">
+        <div class="project-card__icon" style={`background: ${project.color}`}>
+          {project.icon === 'agents' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          )}
+          {project.icon === 'automation' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
+          )}
+          {project.icon === 'research' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          )}
+          {project.icon === 'web' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          )}
+        </div>
+        <h2 class="project-card__title">{project.title}</h2>
+        <p class="project-card__desc">{project.description}</p>
+        <div class="project-card__tags">
+          {project.tags.map(tag => (
+            <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: 80px;
+    padding-bottom: 60px;
+  }
+  .page-header__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
+  }
+  .page-header__title {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 500;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+  .page-header__desc {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 560px;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    padding-bottom: 80px;
+  }
+  .project-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .project-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .project-card__title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .project-card__desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .project-card__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-size: 12px;
+    padding: 4px 12px;
+    background: var(--bg);
+    border-radius: 9999px;
+    color: var(--text-muted);
+  }
+  .tag--accent { background: var(--accent); color: #fff; font-weight: 600; }
+
+  @media (max-width: 768px) {
+    .page-header { padding-top: 40px; }
+    .page-header__title { font-size: 36px; }
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+</style>

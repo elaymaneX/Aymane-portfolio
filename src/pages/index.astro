@@ -1,0 +1,368 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const featuredProjects = [
+  {
+    title: 'Multi-Agent Research Pipeline',
+    description: 'An orchestrated system of AI agents that collaboratively research, analyze, and synthesize information from multiple sources.',
+    tags: [{ label: 'LangGraph', accent: true }, { label: 'Python' }],
+    icon: 'agents',
+    color: '#3B6CF4',
+  },
+  {
+    title: 'Automated Job Tracker',
+    description: 'n8n workflow that classifies job-application emails from Gmail, extracts key info, and logs everything to a Google Sheet automatically.',
+    tags: [{ label: 'n8n' }, { label: 'Automation' }],
+    icon: 'automation',
+    color: '#F5C563',
+  },
+  {
+    title: 'OCT Reconstruction ML',
+    description: 'Physics-informed neural networks for optical coherence tomography reconstruction, combining FDTD simulations with deep learning.',
+    tags: [{ label: 'JAX' }, { label: 'Research' }],
+    icon: 'research',
+    color: '#111827',
+  },
+];
+
+const latestPosts = [
+  { date: 'Oct 2026', title: 'Why I Think Agentic AI Will Replace Most SaaS', tag: 'AI', tagColor: '#3B6CF4' },
+  { date: 'Sep 2026', title: 'A Monte Carlo Approach to Portfolio Allocation', tag: 'Finance', tagColor: '#111827' },
+  { date: 'Aug 2026', title: 'Building Physics-Informed Neural Nets from Scratch', tag: 'Research', tagColor: '#6B7280' },
+];
+---
+
+<BaseLayout title="Aymane Elamrani — ML Engineer & Maker">
+  <!-- HERO -->
+  <section class="hero container">
+    <div class="hero__photo">
+      <img src="/images/headshot.jpg" alt="Aymane Elamrani" class="hero__img" />
+    </div>
+    <div class="hero__text">
+      <p class="hero__greeting">Hey there</p>
+      <h1 class="hero__title">
+        I'm <span class="highlight-blue">Aymane</span>,<br/>
+        I build things<br/>
+        with <span class="highlight-gold">AI</span>.
+      </h1>
+      <p class="hero__subtitle">
+        ML engineer, quantum physics enthusiast, and maker. I write about agentic AI, finance, and the intersection of science and technology.
+      </p>
+      <div class="hero__actions">
+        <a href="/projects" class="btn btn--primary">View projects <span>→</span></a>
+        <a href="/blog" class="btn btn--outline">Read the blog</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PROJECTS -->
+  <section class="section container">
+    <div class="section__header">
+      <h2 class="section__title"><span class="highlight-blue">Featured</span> Projects</h2>
+      <a href="/projects" class="section__link">View all →</a>
+    </div>
+    <div class="projects-grid">
+      {featuredProjects.map(project => (
+        <div class="project-card">
+          <div class="project-card__icon" style={`background: ${project.color}`}>
+            {project.icon === 'agents' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            )}
+            {project.icon === 'automation' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={project.color === '#F5C563' ? '#111827' : '#fff'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
+            )}
+            {project.icon === 'research' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            )}
+          </div>
+          <h3 class="project-card__title">{project.title}</h3>
+          <p class="project-card__desc">{project.description}</p>
+          <div class="project-card__tags">
+            {project.tags.map(tag => (
+              <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- LATEST POSTS -->
+  <section class="posts-section">
+    <div class="container">
+      <div class="section__header">
+        <h2 class="section__title">Latest from the <span class="highlight-gold">Blog</span></h2>
+        <a href="/blog" class="section__link">All articles →</a>
+      </div>
+      <div class="posts-list">
+        {latestPosts.map(post => (
+          <a href="/blog" class="post-row">
+            <span class="post-row__date">{post.date}</span>
+            <span class="post-row__title">{post.title}</span>
+            <span class="post-row__tag" style={`background: ${post.tagColor}`}>{post.tag}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER CTA -->
+  <section class="container" style="padding-top: 80px; padding-bottom: 80px;">
+    <div class="cta-box">
+      <h2 class="cta-box__title">Stay in the loop</h2>
+      <p class="cta-box__desc">I share new projects, analysis write-ups, and thoughts on AI and finance. No spam, unsubscribe anytime.</p>
+      <div class="cta-box__form">
+        <input type="email" placeholder="your@email.com" class="cta-box__input" />
+        <button class="btn btn--accent">Subscribe</button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* HERO */
+  .hero {
+    padding-top: 80px;
+    padding-bottom: 60px;
+    display: flex;
+    align-items: center;
+    gap: 80px;
+    flex-wrap: wrap;
+  }
+  .hero__text { flex: 1 1 480px; min-width: 0; }
+  .hero__greeting {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .hero__title {
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 24px;
+  }
+  .hero__subtitle {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin-bottom: 32px;
+  }
+  .hero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .hero__photo {
+    flex: 0 0 420px;
+    height: 480px;
+    background: var(--card-bg-gradient);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero__img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 15%;
+    border: 5px solid var(--white);
+    box-shadow: 0 12px 40px rgba(59,108,244,0.2);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn--primary { background: var(--text); color: var(--bg); }
+  .btn--outline { border: 1.5px solid var(--border); color: var(--text); }
+  .btn--accent { background: var(--accent); color: #fff; }
+
+  /* Section headers */
+  .section { padding-top: 80px; padding-bottom: 80px; position: relative; }
+  .section__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .section__title {
+    font-family: 'Fraunces', serif;
+    font-size: 44px;
+    font-weight: 500;
+    letter-spacing: -1px;
+  }
+  .section__link {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* Project cards */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .project-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .project-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .project-card__title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+  }
+  .project-card__desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .project-card__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-size: 12px;
+    padding: 4px 12px;
+    background: var(--bg);
+    border-radius: 9999px;
+    color: var(--text-muted);
+  }
+  .tag--accent { background: var(--accent); color: #fff; font-weight: 600; }
+
+  /* Posts */
+  .posts-section {
+    background: var(--card-bg);
+    padding: 80px 0;
+  }
+  .posts-list { display: flex; flex-direction: column; }
+  .post-row {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 28px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    flex-wrap: wrap;
+  }
+  .post-row:last-child { border-bottom: 1px solid var(--border); }
+  .post-row:hover .post-row__title { color: var(--accent); }
+  .post-row__date { font-size: 13px; color: var(--text-muted); font-weight: 500; min-width: 100px; }
+  .post-row__title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    flex: 1;
+    min-width: 280px;
+    transition: color 0.2s;
+  }
+  .post-row__tag {
+    font-size: 13px;
+    padding: 4px 14px;
+    color: #fff;
+    border-radius: 9999px;
+    font-weight: 600;
+  }
+
+  /* CTA box */
+  .cta-box {
+    background: var(--text);
+    border-radius: 24px;
+    padding: 64px;
+    text-align: center;
+    color: var(--bg);
+  }
+  .cta-box__title {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+  .cta-box__desc {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+  .cta-box__form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    max-width: 440px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .cta-box__input {
+    flex: 1;
+    min-width: 200px;
+    padding: 14px 20px;
+    border-radius: 9999px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--bg);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .hero {
+      flex-direction: column;
+      gap: 24px;
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+    .hero__photo {
+      order: -1;
+      flex: 1 1 100%;
+      height: auto;
+      background: none;
+      border-radius: 0;
+      padding: 0;
+    }
+    .hero__img { width: 180px; height: 180px; }
+    .hero__text { text-align: center; }
+    .hero__actions { justify-content: center; }
+    .hero__title { font-size: 40px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .section__title { font-size: 30px; }
+    .post-row__title { font-size: 18px; min-width: 0; }
+    .cta-box { padding: 40px 24px; }
+    .cta-box__title { font-size: 28px; }
+  }
+</style>

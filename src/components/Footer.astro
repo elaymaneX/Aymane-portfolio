@@ -1,0 +1,59 @@
+---
+const year = new Date().getFullYear();
+const socials = [
+  { label: 'GitHub', href: 'https://github.com/aelamra' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/aymane-elamrani' },
+  { label: 'Email', href: 'mailto:aelamra25@gmail.com' },
+];
+---
+
+<footer class="footer">
+  <div class="footer__inner container">
+    <div class="footer__left">
+      <span class="footer__logo">Aymane<span class="footer__dot">.</span></span>
+      <p class="footer__copy">&copy; {year} Aymane Elamrani. All rights reserved.</p>
+    </div>
+    <div class="footer__links">
+      {socials.map(s => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border-light);
+    margin-top: 80px;
+  }
+  .footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .footer__logo {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .footer__dot { color: var(--accent); }
+  .footer__copy {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  .footer__links {
+    display: flex;
+    gap: 24px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .footer__links a { color: var(--text-muted); }
+  .footer__links a:hover { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .footer__inner { flex-direction: column; text-align: center; }
+  }
+</style>
