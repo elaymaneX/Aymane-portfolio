@@ -31,8 +31,8 @@ const posts = (await getCollection('blog'))
 
 <style>
   .page-header {
-    padding-top: 80px;
-    padding-bottom: 60px;
+    padding-top: clamp(40px, 6vw, 80px);
+    padding-bottom: clamp(40px, 5vw, 60px);
   }
   .page-header__label {
     font-size: 14px;
@@ -44,13 +44,13 @@ const posts = (await getCollection('blog'))
   }
   .page-header__title {
     font-family: 'Fraunces', serif;
-    font-size: 56px;
+    font-size: clamp(36px, 5vw, 56px);
     font-weight: 500;
     letter-spacing: -1.5px;
     margin-bottom: 20px;
   }
   .page-header__desc {
-    font-size: 18px;
+    font-size: clamp(16px, 1.5vw, 18px);
     line-height: 1.7;
     color: var(--text-muted);
     max-width: 560px;
@@ -60,12 +60,12 @@ const posts = (await getCollection('blog'))
     display: flex;
     flex-direction: column;
     gap: 24px;
-    padding-bottom: 80px;
+    padding-bottom: clamp(40px, 6vw, 80px);
   }
   .post-card {
     background: var(--card-bg);
     border-radius: 16px;
-    padding: 40px;
+    padding: clamp(24px, 3.5vw, 40px);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -87,7 +87,7 @@ const posts = (await getCollection('blog'))
   }
   .post-card__title {
     font-family: 'Fraunces', serif;
-    font-size: 28px;
+    font-size: clamp(20px, 2.5vw, 28px);
     font-weight: 500;
     letter-spacing: -0.5px;
   }
@@ -102,12 +102,5 @@ const posts = (await getCollection('blog'))
     font-weight: 600;
     color: var(--accent);
     margin-top: 4px;
-  }
-
-  @media (max-width: 768px) {
-    .page-header { padding-top: 40px; }
-    .page-header__title { font-size: 36px; }
-    .post-card { padding: 28px; }
-    .post-card__title { font-size: 22px; }
   }
 </style>

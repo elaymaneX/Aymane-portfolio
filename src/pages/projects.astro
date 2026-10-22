@@ -71,8 +71,8 @@ const projects = [
 
 <style>
   .page-header {
-    padding-top: 80px;
-    padding-bottom: 60px;
+    padding-top: clamp(40px, 6vw, 80px);
+    padding-bottom: clamp(40px, 5vw, 60px);
   }
   .page-header__label {
     font-size: 14px;
@@ -84,13 +84,13 @@ const projects = [
   }
   .page-header__title {
     font-family: 'Fraunces', serif;
-    font-size: 56px;
+    font-size: clamp(36px, 5vw, 56px);
     font-weight: 500;
     letter-spacing: -1.5px;
     margin-bottom: 20px;
   }
   .page-header__desc {
-    font-size: 18px;
+    font-size: clamp(16px, 1.5vw, 18px);
     line-height: 1.7;
     color: var(--text-muted);
     max-width: 560px;
@@ -98,14 +98,14 @@ const projects = [
 
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 24px;
-    padding-bottom: 80px;
+    padding-bottom: clamp(40px, 6vw, 80px);
   }
   .project-card {
     background: var(--card-bg);
     border-radius: 16px;
-    padding: 36px;
+    padding: clamp(24px, 3vw, 36px);
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -120,7 +120,7 @@ const projects = [
   }
   .project-card__title {
     font-family: 'Fraunces', serif;
-    font-size: 24px;
+    font-size: clamp(20px, 2vw, 24px);
     font-weight: 500;
   }
   .project-card__desc {
@@ -138,10 +138,4 @@ const projects = [
     color: var(--text-muted);
   }
   .tag--accent { background: var(--accent); color: #fff; font-weight: 600; }
-
-  @media (max-width: 768px) {
-    .page-header { padding-top: 40px; }
-    .page-header__title { font-size: 36px; }
-    .projects-grid { grid-template-columns: 1fr; }
-  }
 </style>

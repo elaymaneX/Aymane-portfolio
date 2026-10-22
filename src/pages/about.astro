@@ -83,14 +83,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <style>
   .about-hero {
-    padding-top: 80px;
-    padding-bottom: 60px;
+    padding-top: clamp(40px, 6vw, 80px);
+    padding-bottom: clamp(40px, 5vw, 60px);
     display: flex;
-    gap: 64px;
+    gap: clamp(32px, 5vw, 64px);
     align-items: flex-start;
     flex-wrap: wrap;
+    justify-content: center;
   }
-  .about-photo-col { flex: 0 0 360px; }
+  .about-photo-col { flex: 0 0 clamp(220px, 28vw, 360px); }
   .about-photo-frame {
     border-radius: 20px;
     overflow: hidden;
@@ -101,7 +102,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     height: 100%;
     object-fit: cover;
   }
-  .about-text-col { flex: 1 1 400px; min-width: 0; }
+  .about-text-col { flex: 1 1 320px; min-width: 0; }
   .about-label {
     font-size: 14px;
     font-weight: 600;
@@ -112,7 +113,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
   .about-title {
     font-family: 'Fraunces', serif;
-    font-size: 48px;
+    font-size: clamp(32px, 4vw, 48px);
     font-weight: 500;
     letter-spacing: -1px;
     margin-bottom: 24px;
@@ -124,11 +125,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: 16px;
   }
 
-  .about-details { padding-bottom: 80px; }
-  .detail-block { margin-bottom: 56px; }
+  .about-details { padding-bottom: clamp(40px, 6vw, 80px); }
+  .detail-block { margin-bottom: clamp(32px, 4vw, 56px); }
   .detail-title {
     font-family: 'Fraunces', serif;
-    font-size: 32px;
+    font-size: clamp(24px, 3vw, 32px);
     font-weight: 500;
     margin-bottom: 24px;
   }
@@ -145,7 +146,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .interests-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
   }
   .interest {
@@ -154,7 +155,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     align-items: flex-start;
     background: var(--card-bg);
     border-radius: 16px;
-    padding: 28px;
+    padding: clamp(20px, 2.5vw, 28px);
   }
   .interest-icon { font-size: 28px; flex-shrink: 0; }
   .interest strong {
@@ -169,17 +170,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: var(--text-muted);
   }
 
-  .cta-section { padding-bottom: 80px; }
+  .cta-section { padding-bottom: clamp(40px, 6vw, 80px); }
   .cta-box {
     background: var(--text);
     border-radius: 24px;
-    padding: 64px;
+    padding: clamp(32px, 5vw, 64px);
     text-align: center;
     color: var(--bg);
   }
   .cta-box__title {
     font-family: 'Fraunces', serif;
-    font-size: 40px;
+    font-size: clamp(28px, 3.5vw, 40px);
     font-weight: 500;
     margin-bottom: 16px;
   }
@@ -208,14 +209,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   @media (max-width: 768px) {
     .about-hero {
       flex-direction: column;
-      gap: 32px;
-      padding-top: 40px;
     }
-    .about-photo-col { flex: 1 1 100%; max-width: 280px; margin: 0 auto; }
+    .about-photo-col { max-width: 280px; margin: 0 auto; }
     .about-text-col { text-align: center; }
-    .about-title { font-size: 36px; }
-    .interests-grid { grid-template-columns: 1fr; }
-    .cta-box { padding: 40px 24px; }
-    .cta-box__title { font-size: 28px; }
   }
 </style>

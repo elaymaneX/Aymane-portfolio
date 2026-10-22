@@ -198,18 +198,18 @@ const latestPosts = [
   .btn--accent { background: var(--accent); color: #fff; }
 
   /* Section headers */
-  .section { padding-top: 80px; padding-bottom: 80px; position: relative; }
+  .section { padding-top: clamp(40px, 6vw, 80px); padding-bottom: clamp(40px, 6vw, 80px); position: relative; }
   .section__header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 48px;
+    margin-bottom: clamp(24px, 4vw, 48px);
     flex-wrap: wrap;
     gap: 16px;
   }
   .section__title {
     font-family: 'Fraunces', serif;
-    font-size: 44px;
+    font-size: clamp(28px, 4vw, 44px);
     font-weight: 500;
     letter-spacing: -1px;
   }
@@ -222,13 +222,13 @@ const latestPosts = [
   /* Project cards */
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
   }
   .project-card {
     background: var(--card-bg);
     border-radius: 16px;
-    padding: 32px;
+    padding: clamp(24px, 3vw, 32px);
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -265,7 +265,7 @@ const latestPosts = [
   /* Posts */
   .posts-section {
     background: var(--card-bg);
-    padding: 80px 0;
+    padding: clamp(40px, 6vw, 80px) 0;
   }
   .posts-list { display: flex; flex-direction: column; }
   .post-row {
@@ -282,10 +282,10 @@ const latestPosts = [
   .post-row__date { font-size: 13px; color: var(--text-muted); font-weight: 500; min-width: 100px; }
   .post-row__title {
     font-family: 'Fraunces', serif;
-    font-size: 22px;
+    font-size: clamp(18px, 2vw, 22px);
     font-weight: 500;
     flex: 1;
-    min-width: 280px;
+    min-width: 200px;
     transition: color 0.2s;
   }
   .post-row__tag {
@@ -300,13 +300,13 @@ const latestPosts = [
   .cta-box {
     background: var(--text);
     border-radius: 24px;
-    padding: 64px;
+    padding: clamp(32px, 5vw, 64px);
     text-align: center;
     color: var(--bg);
   }
   .cta-box__title {
     font-family: 'Fraunces', serif;
-    font-size: 40px;
+    font-size: clamp(28px, 3.5vw, 40px);
     font-weight: 500;
     letter-spacing: -0.5px;
     margin-bottom: 16px;
@@ -350,10 +350,6 @@ const latestPosts = [
     }
     .hero__text { text-align: center; }
     .hero__actions { justify-content: center; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .section__title { font-size: 30px; }
-    .post-row__title { font-size: 18px; min-width: 0; }
-    .cta-box { padding: 40px 24px; }
-    .cta-box__title { font-size: 28px; }
+    .post-row__title { min-width: 0; }
   }
 </style>
