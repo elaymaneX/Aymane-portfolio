@@ -3,32 +3,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const projects = [
   {
-    title: 'Multi-Agent Research Pipeline',
-    description: 'An orchestrated system of AI agents that collaboratively research, analyze, and synthesize information from multiple sources. Built with LangGraph for agent coordination and tool calling.',
-    tags: [{ label: 'LangGraph', accent: true }, { label: 'Python' }, { label: 'GPT-4' }],
-    icon: 'agents',
-    color: '#3B6CF4',
-  },
-  {
-    title: 'Automated Job Tracker',
-    description: 'n8n workflow that classifies job-application emails from Gmail, extracts key info with AI, and logs everything to a Google Sheet automatically. Tracks status, deadlines, and follow-ups.',
-    tags: [{ label: 'n8n' }, { label: 'Automation' }, { label: 'Gmail API' }],
-    icon: 'automation',
-    color: '#F5C563',
-  },
-  {
     title: 'OCT Reconstruction ML',
-    description: 'Physics-informed neural networks for optical coherence tomography reconstruction, combining FDTD simulations with deep learning for medical imaging applications.',
-    tags: [{ label: 'JAX' }, { label: 'Research' }, { label: 'Medical Imaging' }],
+    description: 'Master thesis project: built a physics-informed neural network to reconstruct optical coherence tomography images. Combined FDTD and Mie scattering forward models with a multi-head U-Net in JAX, achieving R²=0.93 on inverse scattering recovery.',
+    tags: [{ label: 'JAX', accent: true }, { label: 'Physics-ML' }, { label: 'Research' }],
     icon: 'research',
-    color: '#111827',
+    color: '#3B6CF4',
   },
   {
     title: 'Portfolio & Blog',
-    description: 'This very website — built with Astro and MDX, deployed on Vercel. Features dark mode, responsive design, and a markdown-powered blog.',
-    tags: [{ label: 'Astro' }, { label: 'MDX' }, { label: 'Vercel' }],
+    description: 'This website you are looking at. Designed with Claude Design and built with Claude Code, Astro and MDX. Features dark mode, fluid responsive typography, a markdown-powered blog, and auto-deploys on Vercel.',
+    tags: [{ label: 'Astro' }, { label: 'Claude' }, { label: 'Vercel' }],
     icon: 'web',
-    color: '#3B6CF4',
+    color: '#F5C563',
+  },
+  {
+    title: 'Control de Horas',
+    description: 'Work-hours tracking app built for my father\'s masonry business. Employees log hours via a simple interface, and the system sends automated weekly summary emails to the manager with Resend. Backend powered by Supabase.',
+    tags: [{ label: 'Supabase' }, { label: 'Resend' }, { label: 'TypeScript' }],
+    icon: 'automation',
+    color: '#111827',
   },
 ];
 ---

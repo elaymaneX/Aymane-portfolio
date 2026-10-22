@@ -3,24 +3,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const featuredProjects = [
   {
-    title: 'Multi-Agent Research Pipeline',
-    description: 'An orchestrated system of AI agents that collaboratively research, analyze, and synthesize information from multiple sources.',
-    tags: [{ label: 'LangGraph', accent: true }, { label: 'Python' }],
-    icon: 'agents',
+    title: 'OCT Reconstruction ML',
+    description: 'Master thesis project: built a physics-informed neural network to reconstruct optical coherence tomography images. Combined FDTD and Mie scattering forward models with a multi-head U-Net in JAX, achieving R²=0.93 on inverse scattering recovery.',
+    tags: [{ label: 'JAX', accent: true }, { label: 'Physics-ML' }, { label: 'Research' }],
+    icon: 'research',
     color: '#3B6CF4',
   },
   {
-    title: 'Automated Job Tracker',
-    description: 'n8n workflow that classifies job-application emails from Gmail, extracts key info, and logs everything to a Google Sheet automatically.',
-    tags: [{ label: 'n8n' }, { label: 'Automation' }],
-    icon: 'automation',
+    title: 'Portfolio & Blog',
+    description: 'This website you are looking at. Designed with Claude Design and built with Claude Code, Astro and MDX. Features dark mode, fluid responsive typography, a markdown-powered blog, and auto-deploys on Vercel.',
+    tags: [{ label: 'Astro' }, { label: 'Claude' }, { label: 'Vercel' }],
+    icon: 'web',
     color: '#F5C563',
   },
   {
-    title: 'OCT Reconstruction ML',
-    description: 'Physics-informed neural networks for optical coherence tomography reconstruction, combining FDTD simulations with deep learning.',
-    tags: [{ label: 'JAX' }, { label: 'Research' }],
-    icon: 'research',
+    title: 'Control de Horas',
+    description: 'Work-hours tracking app built for my father\'s masonry business. Employees log hours via a simple interface, and the system sends automated weekly summary emails to the manager with Resend.',
+    tags: [{ label: 'Supabase' }, { label: 'Resend' }, { label: 'TypeScript' }],
+    icon: 'automation',
     color: '#111827',
   },
 ];
@@ -44,7 +44,7 @@ const latestPosts = [
       <span class="greek greek--6">π</span>
     </div>
     <div class="hero__photo">
-      <img src="/images/headshot.png" alt="Aymane Elamrani" class="hero__img" />
+      <img src="/images/headshot.jpeg" alt="Aymane Elamrani" class="hero__img" />
     </div>
     <div class="hero__text">
       <p class="hero__greeting">Hey there,</p>
@@ -55,7 +55,7 @@ const latestPosts = [
         <span class="highlight-gold">internet</span>.
       </h1>
       <p class="hero__subtitle">
-        ML engineer with a quantum physics background. I went from studying how photons behave to building forecasting systems at Amazon — and now I'm carving my way into quantitative finance and AI agents. I like hard problems, messy data, and first-principles thinking. <a href="mailto:aelamra25@gmail.com" class="hero__help">How can I help you?</a>
+        ML engineer with a quantum physics background. I went from studying how photons behave to building forecasting systems at Amazon, and now I'm carving my way into quantitative finance and AI agents. I like hard problems, messy data, and first-principles thinking. <a href="mailto:aelamra25@gmail.com" class="hero__help">How can I help you?</a>
       </p>
       <div class="hero__actions">
         <a href="/projects" class="btn btn--primary">View projects <span>→</span></a>
@@ -82,6 +82,9 @@ const latestPosts = [
             )}
             {project.icon === 'research' && (
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            )}
+            {project.icon === 'web' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={project.color === '#F5C563' ? '#111827' : '#fff'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
             )}
           </div>
           <h3 class="project-card__title">{project.title}</h3>
@@ -222,9 +225,6 @@ const latestPosts = [
     50% { transform: scale(1.08) translate(5px, -5px); opacity: 1; }
     100% { transform: scale(1.02) translate(-3px, 3px); opacity: 0.8; }
   }
-  :root[data-theme="dark"] .hero__img {
-    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7));
-  }
   :root[data-theme="dark"] .hero__photo::before {
     background: radial-gradient(circle, rgba(140, 100, 255, 0.4) 0%, rgba(107, 143, 248, 0.25) 40%, transparent 70%);
     filter: blur(50px);
@@ -235,9 +235,8 @@ const latestPosts = [
     border-radius: 50%;
     object-fit: cover;
     object-position: center 15%;
-    border: none;
-    box-shadow: none;
-    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.6));
+    border: 5px solid var(--bg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     position: relative;
     z-index: 1;
   }
