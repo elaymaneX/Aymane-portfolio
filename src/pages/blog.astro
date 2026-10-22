@@ -7,7 +7,7 @@ const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<BaseLayout title="Blog — Aymane Elamrani" activePage="Blog">
+<BaseLayout title="Blog | Aymane Elamrani" activePage="Blog">
   <section class="container page-header">
     <p class="page-header__label">Blog</p>
     <h1 class="page-header__title">Thoughts & <span class="highlight-gold">write-ups</span></h1>
