@@ -2,7 +2,7 @@ backend:
   name: github
   repo: elaymaneX/Aymane-portofolio
   branch: main
-  base_url: https://aymane-portofolio.vercel.app
+  base_url: https://aymane-portofolio-eta.vercel.app
   auth_endpoint: /api/auth
 
 media_folder: public/images
