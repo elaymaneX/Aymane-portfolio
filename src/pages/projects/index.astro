@@ -14,7 +14,13 @@ const sections = [
   { title: 'Apps & websites', desc: 'Live products and sites built for clients and for myself.', items: regular.filter(isApp) },
 ].filter(s => s.items.length);
 
-const linkAttrs = (p) => isApp(p) ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+// Cards without a destination (an app that isn't live yet) render as plain, non-clickable cards
+const cardTag = (p) => projectHref(p) ? 'a' : 'div';
+const linkAttrs = (p) => {
+  const href = projectHref(p);
+  if (!href) return {};
+  return isApp(p) ? { href, target: '_blank', rel: 'noopener noreferrer' } : { href };
+};
 const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
 ---
 
@@ -26,8 +32,10 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
   </section>
 
   <!-- Featured Projects -->
-  {featured.map(project => (
-    <a href={projectHref(project)} {...linkAttrs(project)} class="container featured-card">
+  {featured.map(project => {
+    const Card = cardTag(project);
+    return (
+    <Card {...linkAttrs(project)} class="container featured-card">
       <div class="featured-card__header">
         <div class="featured-card__icon" style={`background: ${project.data.iconBg}`}>
           {project.data.icon === 'signal' && (
@@ -53,17 +61,20 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
         </div>
       </div>
       <p class="featured-card__desc">{project.data.excerpt}</p>
-      <span class="featured-card__link">{isApp(project) ? 'Visit site ↗' : 'Read more →'}</span>
-    </a>
-  ))}
+      {projectHref(project) && <span class="featured-card__link">{isApp(project) ? 'Visit site ↗' : 'Read more →'}</span>}
+    </Card>
+    );
+  })}
 
   {sections.map(section => (
     <section class="container projects-section">
       <h2 class="projects-section__title">{section.title}</h2>
       <p class="projects-section__desc">{section.desc}</p>
       <div class="projects-grid">
-        {section.items.map(project => (
-          <a href={projectHref(project)} {...linkAttrs(project)} class="project-card">
+        {section.items.map(project => {
+          const Card = cardTag(project);
+          return (
+          <Card {...linkAttrs(project)} class="project-card">
             <div class="project-card__icon" style={`background: ${project.data.iconBg}`}>
               {project.data.icon === 'signal' && (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -85,9 +96,10 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
                 <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
               ))}
             </div>
-            <span class="project-card__link">{isApp(project) ? 'Visit site ↗' : 'Read more →'}</span>
-          </a>
-        ))}
+            {projectHref(project) && <span class="project-card__link">{isApp(project) ? 'Visit site ↗' : 'Read more →'}</span>}
+          </Card>
+          );
+        })}
       </div>
     </section>
   ))}
@@ -130,7 +142,7 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
     color: var(--text);
     transition: transform 0.2s, box-shadow 0.2s;
   }
-  .featured-card:hover {
+  a.featured-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   }
@@ -203,7 +215,7 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
     color: var(--text);
     transition: transform 0.2s, box-shadow 0.2s;
   }
-  .project-card:hover {
+  a.project-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   }

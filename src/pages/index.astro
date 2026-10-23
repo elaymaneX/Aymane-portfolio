@@ -60,8 +60,11 @@ const latestPosts = (await getCollection('blog', p => !p.data.draft))
       {featuredProjects.map(entry => {
         const project = entry.data;
         const stroke = project.iconBg === '#F5C563' ? '#111827' : '#fff';
+        const href = projectHref(entry);
+        // An app that isn't live yet has no destination, so its card isn't a link
+        const Card = href ? 'a' : 'div';
         return (
-        <a href={projectHref(entry)} target={isApp(entry) ? '_blank' : undefined} rel={isApp(entry) ? 'noopener noreferrer' : undefined} class="project-card">
+        <Card href={href} target={href && isApp(entry) ? '_blank' : undefined} rel={href && isApp(entry) ? 'noopener noreferrer' : undefined} class="project-card">
           <div class="project-card__icon" style={`background: ${project.iconBg}`}>
             {project.icon === 'automation' && (
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
@@ -83,7 +86,7 @@ const latestPosts = (await getCollection('blog', p => !p.data.draft))
               <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
             ))}
           </div>
-        </a>
+        </Card>
         );
       })}
     </div>
@@ -272,7 +275,7 @@ const latestPosts = (await getCollection('blog', p => !p.data.draft))
     color: var(--text);
     transition: transform 0.2s;
   }
-  .project-card:hover { transform: translateY(-2px); color: var(--text); }
+  a.project-card:hover { transform: translateY(-2px); color: var(--text); }
   .project-card__icon {
     width: 48px;
     height: 48px;

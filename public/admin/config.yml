@@ -54,7 +54,7 @@ collections:
       - { label: "Excerpt", name: "excerpt", widget: "text", hint: "Shown on the project card" }
       - { label: "Icon", name: "icon", widget: "select", options: ["signal", "web", "automation", "code"], default: "code" }
       - { label: "Icon Background", name: "iconBg", widget: "color", default: "#3B6CF4" }
-      - { label: "Live URL", name: "externalUrl", widget: "string", required: false, hint: "Required for App / website projects" }
+      - { label: "Live URL", name: "externalUrl", widget: "string", required: false, hint: "App / website: the card links here. Leave empty if it isn't live yet; the card won't be clickable" }
       - { label: "Colab URL", name: "colabUrl", widget: "string", required: false, hint: "Analysis / tool: shown as an 'Open in Colab' button" }
       - { label: "Code URL", name: "repoUrl", widget: "string", required: false, hint: "Analysis / tool: GitHub repo, shown as a 'View code' button" }
       - label: "Key stats"

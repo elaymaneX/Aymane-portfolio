@@ -37,9 +37,6 @@ const projects = defineCollection({
     })).default([]),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
-  }).refine(p => p.type !== 'app' || p.externalUrl, {
-    message: 'App projects need a Live URL (externalUrl)',
-    path: ['externalUrl'],
   }),
 });
 
