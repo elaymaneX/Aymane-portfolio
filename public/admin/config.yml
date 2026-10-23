@@ -5,6 +5,9 @@ backend:
   base_url: https://aymane-portofolio-eta.vercel.app
   auth_endpoint: /api/auth
 
+# Lets /admin on localhost edit local files when `npx decap-server` is running; ignored in production
+local_backend: true
+
 media_folder: public/images
 public_folder: /images
 
@@ -35,16 +38,42 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - label: "Type"
+        name: "type"
+        widget: "select"
+        default: "analysis"
+        options:
+          - { label: "App / website (card links to the live site)", value: "app" }
+          - { label: "Analysis / tool (card opens its own page)", value: "analysis" }
       - label: "Tags"
         name: "tags"
         widget: "list"
         fields:
           - { label: "Label", name: "label", widget: "string" }
           - { label: "Accent", name: "accent", widget: "boolean", default: false }
-      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Excerpt", name: "excerpt", widget: "text", hint: "Shown on the project card" }
       - { label: "Icon", name: "icon", widget: "select", options: ["signal", "web", "automation", "code"], default: "code" }
       - { label: "Icon Background", name: "iconBg", widget: "color", default: "#3B6CF4" }
-      - { label: "External URL", name: "externalUrl", widget: "string", required: false, hint: "If set, card links to this URL instead of a detail page" }
+      - { label: "Live URL", name: "externalUrl", widget: "string", required: false, hint: "App / website: the card links here. Leave empty if it isn't live yet; the card won't be clickable" }
+      - { label: "Colab URL", name: "colabUrl", widget: "string", required: false, hint: "Analysis / tool: shown as an 'Open in Colab' button" }
+      - { label: "Code URL", name: "repoUrl", widget: "string", required: false, hint: "Analysis / tool: GitHub repo, shown as a 'View code' button" }
+      - label: "Key stats"
+        name: "stats"
+        widget: "list"
+        required: false
+        hint: "Analysis / tool: headline numbers shown at the top of the page"
+        fields:
+          - { label: "Value", name: "value", widget: "string", hint: "e.g. 3.7×" }
+          - { label: "Label", name: "label", widget: "string", hint: "e.g. Error reduction" }
+      - label: "Results gallery"
+        name: "gallery"
+        widget: "list"
+        required: false
+        hint: "Analysis / tool: charts and screenshots shown under Results"
+        fields:
+          - { label: "Image", name: "image", widget: "image" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Caption", name: "caption", widget: "text", required: false }
       - { label: "Featured", name: "featured", widget: "boolean", default: false }
       - { label: "Draft", name: "draft", widget: "boolean", default: false }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "Body", name: "body", widget: "markdown", required: false, hint: "Analysis / tool: the write-up. Use code blocks for snippets. Not shown for App / website projects." }

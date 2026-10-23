@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { isApp, projectHref } from '../../lib/projects';
 
 const projects = (await getCollection('projects'))
   .filter(p => !p.data.draft)
@@ -8,13 +9,19 @@ const projects = (await getCollection('projects'))
 
 const featured = projects.filter(p => p.data.featured);
 const regular = projects.filter(p => !p.data.featured);
+const sections = [
+  { title: 'Analysis & tools', desc: 'Research, quant analysis and agentic tools, with write-ups, results and code.', items: regular.filter(p => !isApp(p)) },
+  { title: 'Apps & websites', desc: 'Live products and sites built for clients and for myself.', items: regular.filter(isApp) },
+].filter(s => s.items.length);
 
-function getProjectHref(project: any) {
-  return project.data.externalUrl || `/projects/${project.slug}`;
-}
-function isExternal(project: any) {
-  return !!project.data.externalUrl;
-}
+// Cards without a destination (an app that isn't live yet) render as plain, non-clickable cards
+const cardTag = (p) => projectHref(p) ? 'a' : 'div';
+const linkAttrs = (p) => {
+  const href = projectHref(p);
+  if (!href) return {};
+  return isApp(p) ? { href, target: '_blank', rel: 'noopener noreferrer' } : { href };
+};
+const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
 ---
 
 <BaseLayout title="Projects | Aymane Elamrani" activePage="Projects">
@@ -24,13 +31,25 @@ function isExternal(project: any) {
     <p class="page-header__desc">A mix of AI tools, automations, and research projects. Some are open-source, some are experiments, all taught me something.</p>
   </section>
 
-  <!-- Featured Projects -->
-  {featured.map(project => (
-    <a href={getProjectHref(project)} target={isExternal(project) ? '_blank' : undefined} rel={isExternal(project) ? 'noopener noreferrer' : undefined} class="container featured-card">
+  <!-- Featured Projects: inside the container so they line up with the grid, as wide as two cards -->
+  <section class="container">
+  {featured.map(project => {
+    const Card = cardTag(project);
+    return (
+    <Card {...linkAttrs(project)} class="featured-card">
       <div class="featured-card__header">
         <div class="featured-card__icon" style={`background: ${project.data.iconBg}`}>
           {project.data.icon === 'signal' && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          )}
+          {project.data.icon === 'web' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          )}
+          {project.data.icon === 'automation' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
+          )}
+          {project.data.icon === 'code' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           )}
         </div>
         <div>
@@ -43,40 +62,49 @@ function isExternal(project: any) {
         </div>
       </div>
       <p class="featured-card__desc">{project.data.excerpt}</p>
-      <span class="featured-card__link">Read more →</span>
-    </a>
-  ))}
-
-  <!-- Regular Projects -->
-  <section class="container projects-grid">
-    {regular.map(project => (
-      <a href={getProjectHref(project)} target={isExternal(project) ? '_blank' : undefined} rel={isExternal(project) ? 'noopener noreferrer' : undefined} class="project-card">
-        <div class="project-card__icon" style={`background: ${project.data.iconBg}`}>
-          {project.data.icon === 'web' && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-          )}
-          {project.data.icon === 'automation' && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
-          )}
-          {project.data.icon === 'code' && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          )}
-        </div>
-        <h2 class="project-card__title">{project.data.title}</h2>
-        <p class="project-card__desc">{project.data.excerpt}</p>
-        <div class="project-card__tags">
-          {project.data.tags.map(tag => (
-            <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
-          ))}
-        </div>
-        {isExternal(project) ? (
-          <span class="project-card__link project-card__link--external">Visit site ↗</span>
-        ) : (
-          <span class="project-card__link">Read more →</span>
-        )}
-      </a>
-    ))}
+      {projectHref(project) && <span class="featured-card__link">{isApp(project) ? 'Visit site ↗' : 'Read more →'}</span>}
+    </Card>
+    );
+  })}
   </section>
+
+  {sections.map(section => (
+    <section class="container projects-section">
+      <h2 class="projects-section__title">{section.title}</h2>
+      <p class="projects-section__desc">{section.desc}</p>
+      <div class="projects-grid">
+        {section.items.map(project => {
+          const Card = cardTag(project);
+          return (
+          <Card {...linkAttrs(project)} class="project-card">
+            <div class="project-card__icon" style={`background: ${project.data.iconBg}`}>
+              {project.data.icon === 'signal' && (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              )}
+              {project.data.icon === 'web' && (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              )}
+              {project.data.icon === 'automation' && (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
+              )}
+              {project.data.icon === 'code' && (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              )}
+            </div>
+            <h3 class="project-card__title">{project.data.title}</h3>
+            <p class="project-card__desc">{project.data.excerpt}</p>
+            <div class="project-card__tags">
+              {project.data.tags.map(tag => (
+                <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
+              ))}
+            </div>
+            {projectHref(project) && <span class="project-card__link">{isApp(project) ? 'Visit site ↗' : 'Read more →'}</span>}
+          </Card>
+          );
+        })}
+      </div>
+    </section>
+  ))}
 </BaseLayout>
 
 <style>
@@ -116,7 +144,7 @@ function isExternal(project: any) {
     color: var(--text);
     transition: transform 0.2s, box-shadow 0.2s;
   }
-  .featured-card:hover {
+  a.featured-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   }
@@ -160,12 +188,24 @@ function isExternal(project: any) {
     color: var(--accent);
   }
 
-  /* Projects Grid */
+  /* Project sections */
+  .projects-section { padding-bottom: clamp(40px, 6vw, 80px); }
+  .projects-section__title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .projects-section__desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
-    padding-bottom: clamp(40px, 6vw, 80px);
   }
   .project-card {
     background: var(--card-bg);
@@ -177,7 +217,7 @@ function isExternal(project: any) {
     color: var(--text);
     transition: transform 0.2s, box-shadow 0.2s;
   }
-  .project-card:hover {
+  a.project-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   }
@@ -216,6 +256,9 @@ function isExternal(project: any) {
   }
   .tag--accent { background: var(--accent); color: #fff; font-weight: 600; }
 
+  @media (max-width: 768px) {
+    .projects-grid { grid-template-columns: 1fr; }
+  }
   @media (max-width: 640px) {
     .featured-card__header { flex-direction: column; }
   }

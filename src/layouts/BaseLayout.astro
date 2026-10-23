@@ -1,7 +1,10 @@
 ---
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import GreekBackground from '../components/GreekBackground.astro';
 import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import headshot from '../assets/headshot.jpeg';
 
 interface Props {
   title: string;
@@ -10,6 +13,8 @@ interface Props {
 }
 
 const { title, description = 'ML engineer, quantum physics enthusiast, and maker.', activePage = '' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL((await getImage({ src: headshot, width: 600, format: 'jpeg' })).src, Astro.site);
 ---
 
 <!DOCTYPE html>
@@ -19,6 +24,15 @@ const { title, description = 'ML engineer, quantum physics enthusiast, and maker
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href={canonical} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <link rel="alternate" type="application/rss+xml" title="Aymane Elamrani" href="/rss.xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&display=swap" rel="stylesheet" />
@@ -37,6 +51,7 @@ const { title, description = 'ML engineer, quantum physics enthusiast, and maker
   </script>
 </head>
 <body>
+  <GreekBackground />
   <Nav activePage={activePage} />
   <main>
     <slot />

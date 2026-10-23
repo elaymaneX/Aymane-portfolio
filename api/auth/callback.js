@@ -25,6 +25,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: data.error_description });
     }
 
+    // Only our own site may receive the token; any other opener would get repo access
+    const siteOrigin = new URL(process.env.SITE_URL || 'https://aymane-portofolio-eta.vercel.app').origin;
+    const message = 'authorization:github:success:' + JSON.stringify({ token: data.access_token, provider: 'github' });
+    // Escape "<" so the values can't close the script tag
+    const js = (value) => JSON.stringify(value).replace(/</g, '\\u003c');
+
     // Send the token back to Decap CMS via postMessage
     const html = `
 <!doctype html>
@@ -33,12 +39,10 @@ export default async function handler(req, res) {
 <body>
 <script>
 (function() {
+  var allowedOrigin = ${js(siteOrigin)};
   function receiveMessage(e) {
-    console.log("receiveMessage %o", e);
-    window.opener.postMessage(
-      'authorization:github:success:${JSON.stringify({ token: data.access_token, provider: "github" }).replace(/'/g, "\\'")}',
-      e.origin
-    );
+    if (e.origin !== allowedOrigin) return;
+    window.opener.postMessage(${js(message)}, allowedOrigin);
     window.close();
   }
   window.addEventListener("message", receiveMessage, false);

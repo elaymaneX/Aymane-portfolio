@@ -36,10 +36,13 @@ const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month:
 </BaseLayout>
 
 <style>
+  /* Solid reading column; the Greek background only shows in the side margins */
   .post {
     padding-top: 60px;
     padding-bottom: 80px;
     max-width: 720px;
+    background: var(--bg);
+    box-shadow: 0 0 48px 24px var(--bg);
   }
 
   .post__back {

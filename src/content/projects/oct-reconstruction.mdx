@@ -1,5 +1,6 @@
 ---
 title: 'OCT Reconstruction ML'
+type: 'analysis'
 date: 2025-06-15
 tags:
   - { label: 'JAX', accent: true }
@@ -10,26 +11,25 @@ excerpt: 'Master thesis: physics-informed deep learning for quantitative OCT rec
 icon: 'signal'
 iconBg: '#3B6CF4'
 featured: true
+stats:
+  - { value: 'R²≈0.97', label: 'Supervised recovery' }
+  - { value: '3.7×', label: 'Reconstruction error reduction' }
+  - { value: '5 000', label: 'Synthetic retinal B-scans' }
+gallery:
+  - image: '/images/oct/scatter-supervised.png'
+    title: 'Supervised R²'
+    caption: 'True vs predicted scatter plots for attenuation (μ) and reflectivity (r) after supervised oracle-deconvolution training. R²≈0.97 for both parameters.'
+  - image: '/images/oct/pinn-comparison.png'
+    title: 'PINN improvement'
+    caption: 'Pre-PINN vs post-PINN test metrics. Reconstruction log-MSE drops 3.7× (0.89→0.24) while attenuation R² improves slightly (0.974→0.978).'
+  - image: '/images/oct/cross-stage.png'
+    title: 'Spatial comparison'
+    caption: 'Cross-stage qualitative panel: observation, pre/post reconstructions, μ maps, and residual comparison showing reduced error after PINN fine-tuning.'
 ---
 
 ## Overview
 
 Built a complete physics-informed neural network pipeline for quantitative OCT image reconstruction. The system jointly recovers tissue attenuation (μ) and reflectivity (r) maps from synthetic confocal B-scans, constrained by a differentiable Beer-Lambert forward model.
-
-<div class="stats-grid">
-  <div class="stat-card">
-    <span class="stat-value">R²≈0.97</span>
-    <span class="stat-label">Supervised recovery</span>
-  </div>
-  <div class="stat-card">
-    <span class="stat-value">3.7×</span>
-    <span class="stat-label">Reconstruction error reduction</span>
-  </div>
-  <div class="stat-card">
-    <span class="stat-value">5 000</span>
-    <span class="stat-label">Synthetic retinal B-scans</span>
-  </div>
-</div>
 
 ## Pipeline
 
@@ -38,31 +38,3 @@ Built a complete physics-informed neural network pipeline for quantitative OCT i
 - **Stage 2 – PINN fine-tuning:** Added a physics-informed reconstruction loss that propagates predicted maps through the forward model. Cut reconstruction log-MSE from 0.89 to 0.24 while maintaining label accuracy
 - **Forward model:** Differentiable Tier-1 Beer-Lambert operator with depth-dependent PSF blur, used inside the training loop
 - **FDTD simulator:** Built and validated a finite-difference time-domain electromagnetic simulator against analytical Mie scattering theory for future Sim2Sim transfer
-
-## Results
-
-<div class="results-gallery">
-  <figure>
-    <img src="/images/oct/scatter-supervised.png" alt="True vs predicted scatter plots for attenuation and reflectivity after supervised training" />
-    <figcaption>
-      <strong>Supervised R²</strong>
-      True vs predicted scatter plots for attenuation (μ) and reflectivity (r) after supervised oracle-deconvolution training. R²≈0.97 for both parameters.
-    </figcaption>
-  </figure>
-
-  <figure>
-    <img src="/images/oct/pinn-comparison.png" alt="Pre-PINN vs post-PINN test metrics comparison" />
-    <figcaption>
-      <strong>PINN improvement</strong>
-      Pre-PINN vs post-PINN test metrics. Reconstruction log-MSE drops 3.7× (0.89→0.24) while attenuation R² improves slightly (0.974→0.978).
-    </figcaption>
-  </figure>
-
-  <figure>
-    <img src="/images/oct/cross-stage.png" alt="Cross-stage qualitative comparison panel" />
-    <figcaption>
-      <strong>Spatial comparison</strong>
-      Cross-stage qualitative panel: observation, pre/post reconstructions, μ maps, and residual comparison showing reduced error after PINN fine-tuning.
-    </figcaption>
-  </figure>
-</div>

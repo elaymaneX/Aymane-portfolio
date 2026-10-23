@@ -5,5 +5,5 @@ export default function handler(req, res) {
 
   const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
 
-  res.redirect(301, authUrl);
+  res.redirect(302, authUrl);
 }
