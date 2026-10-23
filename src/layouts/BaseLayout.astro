@@ -1,6 +1,7 @@
 ---
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import GreekBackground from '../components/GreekBackground.astro';
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
 import headshot from '../assets/headshot.jpeg';
@@ -50,6 +51,7 @@ const ogImage = new URL((await getImage({ src: headshot, width: 600, format: 'jp
   </script>
 </head>
 <body>
+  <GreekBackground />
   <Nav activePage={activePage} />
   <main>
     <slot />
