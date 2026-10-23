@@ -1,35 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import headshot from '../assets/headshot.jpeg';
 
-const featuredProjects = [
-  {
-    title: 'OCT Reconstruction ML',
-    description: 'Master thesis: physics-informed deep learning for quantitative OCT reconstruction. Trained a multi-head U-Net in JAX on 5 000 synthetic retinal B-scans with a differentiable Beer-Lambert forward model. Supervised stage recovered tissue attenuation and reflectivity at R²≈0.97; PINN fine-tuning then cut reconstruction error 3.7× (log-MSE 0.89→0.24) while keeping label accuracy. Also built and validated an FDTD simulator against Mie scattering theory.',
-    tags: [{ label: 'JAX', accent: true }, { label: 'Physics-ML' }, { label: 'PINN' }, { label: 'Research' }],
-    icon: 'research',
-    color: '#3B6CF4',
-  },
-  {
-    title: 'Portfolio & Blog',
-    description: 'This website you are looking at. Designed with Claude Design and built with Claude Code, Astro and MDX. Features dark mode, fluid responsive typography, a markdown-powered blog, and auto-deploys on Vercel.',
-    tags: [{ label: 'Astro' }, { label: 'Claude' }, { label: 'Vercel' }],
-    icon: 'web',
-    color: '#F5C563',
-  },
-  {
-    title: 'Control de Horas',
-    description: 'Work-hours tracking app built for my father\'s masonry business. Employees log hours via a simple interface, and the system sends automated weekly summary emails to the manager with Resend.',
-    tags: [{ label: 'Supabase' }, { label: 'Resend' }, { label: 'TypeScript' }],
-    icon: 'automation',
-    color: '#111827',
-  },
-];
+const byDateDesc = (a, b) => b.data.date.valueOf() - a.data.date.valueOf();
 
-const latestPosts = [
-  { date: 'Oct 2026', title: 'Why I Think Agentic AI Will Replace Most SaaS', tag: 'AI', tagColor: '#3B6CF4', slug: 'agentic-ai-replace-saas' },
-  { date: 'Sep 2026', title: 'A Monte Carlo Approach to Portfolio Allocation', tag: 'Finance', tagColor: '#111827', slug: 'monte-carlo-portfolio-allocation' },
-  { date: 'Aug 2026', title: 'Building Physics-Informed Neural Nets from Scratch', tag: 'Research', tagColor: '#6B7280', slug: 'physics-informed-neural-nets' },
-];
+// Featured projects first, then newest
+const featuredProjects = (await getCollection('projects', p => !p.data.draft))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || byDateDesc(a, b))
+  .slice(0, 3);
+
+const latestPosts = (await getCollection('blog', p => !p.data.draft))
+  .sort(byDateDesc)
+  .slice(0, 3);
 ---
 
 <BaseLayout title="Aymane Elamrani | ML Engineer & Maker">
@@ -44,7 +28,7 @@ const latestPosts = [
       <span class="greek greek--6">π</span>
     </div>
     <div class="hero__photo">
-      <img src="/images/headshot.jpeg" alt="Aymane Elamrani" class="hero__img" />
+      <Image src={headshot} alt="Aymane Elamrani" class="hero__img" widths={[360, 760]} sizes="(max-width: 768px) 180px, 380px" loading="eager" />
     </div>
     <div class="hero__text">
       <p class="hero__greeting">Hey there,</p>
@@ -71,31 +55,34 @@ const latestPosts = [
       <a href="/projects" class="section__link">View all →</a>
     </div>
     <div class="projects-grid">
-      {featuredProjects.map(project => (
-        <div class="project-card">
-          <div class="project-card__icon" style={`background: ${project.color}`}>
-            {project.icon === 'agents' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-            )}
+      {featuredProjects.map(({ slug, data: project }) => {
+        const stroke = project.iconBg === '#F5C563' ? '#111827' : '#fff';
+        return (
+        <a href={project.externalUrl || `/projects/${slug}`} target={project.externalUrl ? '_blank' : undefined} rel={project.externalUrl ? 'noopener noreferrer' : undefined} class="project-card">
+          <div class="project-card__icon" style={`background: ${project.iconBg}`}>
             {project.icon === 'automation' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={project.color === '#F5C563' ? '#111827' : '#fff'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
             )}
-            {project.icon === 'research' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            {project.icon === 'signal' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             )}
             {project.icon === 'web' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={project.color === '#F5C563' ? '#111827' : '#fff'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            )}
+            {project.icon === 'code' && (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
             )}
           </div>
           <h3 class="project-card__title">{project.title}</h3>
-          <p class="project-card__desc">{project.description}</p>
+          <p class="project-card__desc">{project.excerpt}</p>
           <div class="project-card__tags">
             {project.tags.map(tag => (
               <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
             ))}
           </div>
-        </div>
-      ))}
+        </a>
+        );
+      })}
     </div>
   </section>
 
@@ -107,9 +94,9 @@ const latestPosts = [
         <a href="/blog" class="section__link">All articles →</a>
       </div>
       <div class="posts-list">
-        {latestPosts.map(post => (
-          <a href={`/blog/${post.slug}`} class="post-row">
-            <span class="post-row__date">{post.date}</span>
+        {latestPosts.map(({ slug, data: post }) => (
+          <a href={`/blog/${slug}`} class="post-row">
+            <span class="post-row__date">{post.date.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}</span>
             <span class="post-row__title">{post.title}</span>
             <span class="post-row__tag" style={`background: ${post.tagColor}`}>{post.tag}</span>
           </a>
@@ -122,10 +109,10 @@ const latestPosts = [
   <section class="container" style="padding-top: 80px; padding-bottom: 80px;">
     <div class="cta-box">
       <h2 class="cta-box__title">Stay in the loop</h2>
-      <p class="cta-box__desc">I share new projects, analysis write-ups, and thoughts on AI and finance. No spam, unsubscribe anytime.</p>
+      <p class="cta-box__desc">I share new projects, analysis write-ups, and thoughts on AI and finance. Follow along with RSS, or just say hi.</p>
       <div class="cta-box__form">
-        <input type="email" placeholder="your@email.com" class="cta-box__input" />
-        <button class="btn btn--accent">Subscribe</button>
+        <a href="/rss.xml" class="btn btn--accent">Subscribe via RSS</a>
+        <a href="mailto:aelamra25@gmail.com" class="btn btn--light">Email me</a>
       </div>
     </div>
   </section>
@@ -295,7 +282,10 @@ const latestPosts = [
     display: flex;
     flex-direction: column;
     gap: 16px;
+    color: var(--text);
+    transition: transform 0.2s;
   }
+  .project-card:hover { transform: translateY(-2px); color: var(--text); }
   .project-card__icon {
     width: 48px;
     height: 48px;
@@ -389,18 +379,7 @@ const latestPosts = [
     margin: 0 auto;
     flex-wrap: wrap;
   }
-  .cta-box__input {
-    flex: 1;
-    min-width: 200px;
-    padding: 14px 20px;
-    border-radius: 9999px;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--bg);
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
+  .btn--light { background: var(--bg); color: var(--text); }
 
   /* Mobile */
   @media (max-width: 768px) {

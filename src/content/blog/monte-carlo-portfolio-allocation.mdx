@@ -20,25 +20,25 @@ Monte Carlo methods let us simulate thousands of possible futures. Instead of re
 
 The key advantages:
 
-- **Tail risk visibility** — You can see the worst 1% of outcomes, not just the average.
-- **Path dependency** — Sequence of returns matters. A 50% loss followed by a 50% gain leaves you at -25%.
-- **Constraint flexibility** — Maximum drawdown, liquidity requirements, and rebalancing costs can all be modeled.
+- **Tail risk visibility**: You can see the worst 1% of outcomes, not just the average.
+- **Path dependency**: Sequence of returns matters. A 50% loss followed by a 50% gain leaves you at -25%.
+- **Constraint flexibility**: Maximum drawdown, liquidity requirements, and rebalancing costs can all be modeled.
 
 ## The Implementation
 
 I use Python with NumPy for the core simulation. The basic flow:
 
-1. **Define asset classes** — Equities, bonds, commodities, alternatives, cash.
-2. **Estimate parameters** — Expected returns, volatilities, and the correlation matrix. I use a combination of historical data and forward-looking adjustments.
-3. **Generate scenarios** — Sample from a multivariate normal (or t-distribution for fat tails) to generate thousands of return paths.
-4. **Evaluate portfolios** — For each candidate allocation, run it through all scenarios and compute metrics.
-5. **Optimize** — Find the allocation that maximizes the objective function (e.g., Sharpe ratio, or return subject to maximum drawdown).
+1. **Define asset classes**: Equities, bonds, commodities, alternatives, cash.
+2. **Estimate parameters**: Expected returns, volatilities, and the correlation matrix. I use a combination of historical data and forward-looking adjustments.
+3. **Generate scenarios**: Sample from a multivariate normal (or t-distribution for fat tails) to generate thousands of return paths.
+4. **Evaluate portfolios**: For each candidate allocation, run it through all scenarios and compute metrics.
+5. **Optimize**: Find the allocation that maximizes the objective function (e.g., Sharpe ratio, or return subject to maximum drawdown).
 
 ## Key Insight: Drawdown Constraints Change Everything
 
 When you add a maximum drawdown constraint (say, "never lose more than 20% from peak"), the optimal portfolio looks very different from Markowitz's suggestion. It typically holds more cash/bonds and includes more diversifying assets, even if their expected returns are lower.
 
-This matches how real allocators think — nobody gets fired for underperforming the benchmark by 2%, but a 40% drawdown ends careers.
+This matches how real allocators think: nobody gets fired for underperforming the benchmark by 2%, but a 40% drawdown ends careers.
 
 ## Results and Takeaways
 
@@ -48,6 +48,6 @@ Running 10,000 simulations across a 10-year horizon with quarterly rebalancing, 
 - Significantly lower maximum drawdown
 - Better risk-adjusted returns (higher Sortino ratio)
 
-The tradeoff is computational cost and the need to carefully specify your input distributions. Garbage in, garbage out — but at least with Monte Carlo, you can see the garbage more clearly.
+The tradeoff is computational cost and the need to carefully specify your input distributions. Garbage in, garbage out, but at least with Monte Carlo, you can see the garbage more clearly.
 
 Next post in this series: I'll share the actual Python code and walk through a real allocation exercise with current market data.
