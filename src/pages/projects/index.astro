@@ -1,0 +1,222 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const featured = projects.filter(p => p.data.featured);
+const regular = projects.filter(p => !p.data.featured);
+
+function getProjectHref(project: any) {
+  return project.data.externalUrl || `/projects/${project.slug}`;
+}
+function isExternal(project: any) {
+  return !!project.data.externalUrl;
+}
+---
+
+<BaseLayout title="Projects | Aymane Elamrani" activePage="Projects">
+  <section class="container page-header">
+    <p class="page-header__label">Projects</p>
+    <h1 class="page-header__title">Things I've <span class="highlight-blue">built</span></h1>
+    <p class="page-header__desc">A mix of AI tools, automations, and research projects. Some are open-source, some are experiments, all taught me something.</p>
+  </section>
+
+  <!-- Featured Projects -->
+  {featured.map(project => (
+    <a href={getProjectHref(project)} target={isExternal(project) ? '_blank' : undefined} rel={isExternal(project) ? 'noopener noreferrer' : undefined} class="container featured-card">
+      <div class="featured-card__header">
+        <div class="featured-card__icon" style={`background: ${project.data.iconBg}`}>
+          {project.data.icon === 'signal' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          )}
+        </div>
+        <div>
+          <div class="featured-card__tags">
+            {project.data.tags.map(tag => (
+              <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
+            ))}
+          </div>
+          <h2 class="featured-card__title">{project.data.title}</h2>
+        </div>
+      </div>
+      <p class="featured-card__desc">{project.data.excerpt}</p>
+      <span class="featured-card__link">Read more →</span>
+    </a>
+  ))}
+
+  <!-- Regular Projects -->
+  <section class="container projects-grid">
+    {regular.map(project => (
+      <a href={getProjectHref(project)} target={isExternal(project) ? '_blank' : undefined} rel={isExternal(project) ? 'noopener noreferrer' : undefined} class="project-card">
+        <div class="project-card__icon" style={`background: ${project.data.iconBg}`}>
+          {project.data.icon === 'web' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          )}
+          {project.data.icon === 'automation' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
+          )}
+          {project.data.icon === 'code' && (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          )}
+        </div>
+        <h2 class="project-card__title">{project.data.title}</h2>
+        <p class="project-card__desc">{project.data.excerpt}</p>
+        <div class="project-card__tags">
+          {project.data.tags.map(tag => (
+            <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
+          ))}
+        </div>
+        {isExternal(project) ? (
+          <span class="project-card__link project-card__link--external">Visit site ↗</span>
+        ) : (
+          <span class="project-card__link">Read more →</span>
+        )}
+      </a>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding-top: clamp(40px, 6vw, 80px);
+    padding-bottom: clamp(40px, 5vw, 60px);
+  }
+  .page-header__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
+  }
+  .page-header__title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 500;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+  .page-header__desc {
+    font-size: clamp(16px, 1.5vw, 18px);
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 560px;
+  }
+
+  /* Featured Card */
+  .featured-card {
+    display: block;
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: clamp(28px, 4vw, 48px);
+    margin-bottom: 32px;
+    color: var(--text);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .featured-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .featured-card__header {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .featured-card__icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .featured-card__tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .featured-card__title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 500;
+    letter-spacing: -1px;
+  }
+  .featured-card__desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    max-width: 720px;
+  }
+  .featured-card__link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* Projects Grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding-bottom: clamp(40px, 6vw, 80px);
+  }
+  .project-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: clamp(24px, 3vw, 36px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--text);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .project-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .project-card__title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(20px, 2vw, 24px);
+    font-weight: 500;
+  }
+  .project-card__desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .project-card__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .project-card__link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: auto;
+  }
+  .tag {
+    font-size: 12px;
+    padding: 4px 12px;
+    background: var(--bg);
+    border-radius: 9999px;
+    color: var(--text-muted);
+  }
+  .tag--accent { background: var(--accent); color: #fff; font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .featured-card__header { flex-direction: column; }
+  }
+</style>
