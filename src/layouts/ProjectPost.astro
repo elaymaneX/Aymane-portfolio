@@ -6,9 +6,13 @@ interface Props {
   date: Date;
   tags: { label: string; accent?: boolean }[];
   excerpt: string;
+  colabUrl?: string;
+  repoUrl?: string;
+  stats?: { value: string; label: string }[];
+  gallery?: { image: string; title: string; caption?: string }[];
 }
 
-const { title, date, tags, excerpt } = Astro.props;
+const { title, date, tags, excerpt, colabUrl, repoUrl, stats = [], gallery = [] } = Astro.props;
 const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
@@ -26,10 +30,44 @@ const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month:
       </div>
       <h1 class="post__title">{title}</h1>
       <p class="post__excerpt">{excerpt}</p>
+      {(colabUrl || repoUrl) && (
+        <div class="post__links">
+          {colabUrl && <a href={colabUrl} target="_blank" rel="noopener noreferrer" class="post__link post__link--primary">Open in Colab ↗</a>}
+          {repoUrl && <a href={repoUrl} target="_blank" rel="noopener noreferrer" class="post__link">View code ↗</a>}
+        </div>
+      )}
     </header>
 
     <div class="post__content">
+      {stats.length > 0 && (
+        <div class="stats-grid">
+          {stats.map(stat => (
+            <div class="stat-card">
+              <span class="stat-value">{stat.value}</span>
+              <span class="stat-label">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       <slot />
+
+      {gallery.length > 0 && (
+        <>
+          <h2>Results</h2>
+          <div class="results-gallery">
+            {gallery.map(item => (
+              <figure>
+                <img src={item.image} alt={item.caption || item.title} loading="lazy" />
+                <figcaption>
+                  <strong>{item.title}</strong>
+                  {item.caption}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </>
+      )}
     </div>
 
     <footer class="post__footer">
@@ -97,9 +135,28 @@ const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month:
     line-height: 1.7;
     color: var(--text-muted);
     padding-bottom: 32px;
+  }
+  .post__header {
     border-bottom: 1px solid var(--border-light);
     margin-bottom: 40px;
   }
+  .post__links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 32px;
+  }
+  .post__link {
+    padding: 10px 20px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+  .post__link--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .post__link:hover { opacity: 0.85; color: var(--text); }
+  .post__link--primary:hover { color: #fff; }
 
   .post__content {
     font-size: 17px;

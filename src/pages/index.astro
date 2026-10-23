@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import headshot from '../assets/headshot.jpeg';
+import { isApp, projectHref } from '../lib/projects';
 
 const byDateDesc = (a, b) => b.data.date.valueOf() - a.data.date.valueOf();
 
@@ -55,10 +56,11 @@ const latestPosts = (await getCollection('blog', p => !p.data.draft))
       <a href="/projects" class="section__link">View all →</a>
     </div>
     <div class="projects-grid">
-      {featuredProjects.map(({ slug, data: project }) => {
+      {featuredProjects.map(entry => {
+        const project = entry.data;
         const stroke = project.iconBg === '#F5C563' ? '#111827' : '#fff';
         return (
-        <a href={project.externalUrl || `/projects/${slug}`} target={project.externalUrl ? '_blank' : undefined} rel={project.externalUrl ? 'noopener noreferrer' : undefined} class="project-card">
+        <a href={projectHref(entry)} target={isApp(entry) ? '_blank' : undefined} rel={isApp(entry) ? 'noopener noreferrer' : undefined} class="project-card">
           <div class="project-card__icon" style={`background: ${project.iconBg}`}>
             {project.icon === 'automation' && (
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>

@@ -1,10 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
 import ProjectPost from '../../layouts/ProjectPost.astro';
+import { isApp } from '../../lib/projects';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects'))
-    .filter(p => !p.data.externalUrl && !p.data.draft);
+    .filter(p => !isApp(p) && !p.data.draft);
   return projects.map((project) => ({
     params: { slug: project.slug },
     props: project,
