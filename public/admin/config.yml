@@ -24,3 +24,27 @@ collections:
       - { label: "Excerpt", name: "excerpt", widget: "text" }
       - { label: "Draft", name: "draft", widget: "boolean", default: false }
       - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: projects
+    label: Projects
+    folder: src/content/projects
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        fields:
+          - { label: "Label", name: "label", widget: "string" }
+          - { label: "Accent", name: "accent", widget: "boolean", default: false }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: ["signal", "web", "automation", "code"], default: "code" }
+      - { label: "Icon Background", name: "iconBg", widget: "color", default: "#3B6CF4" }
+      - { label: "External URL", name: "externalUrl", widget: "string", required: false, hint: "If set, card links to this URL instead of a detail page" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }
