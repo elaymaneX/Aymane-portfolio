@@ -31,11 +31,12 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
     <p class="page-header__desc">A mix of AI tools, automations, and research projects. Some are open-source, some are experiments, all taught me something.</p>
   </section>
 
-  <!-- Featured Projects -->
+  <!-- Featured Projects: inside the container so they line up with the grid, as wide as two cards -->
+  <section class="container">
   {featured.map(project => {
     const Card = cardTag(project);
     return (
-    <Card {...linkAttrs(project)} class="container featured-card">
+    <Card {...linkAttrs(project)} class="featured-card">
       <div class="featured-card__header">
         <div class="featured-card__icon" style={`background: ${project.data.iconBg}`}>
           {project.data.icon === 'signal' && (
@@ -65,6 +66,7 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
     </Card>
     );
   })}
+  </section>
 
   {sections.map(section => (
     <section class="container projects-section">
@@ -202,7 +204,7 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
   }
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
   }
   .project-card {
@@ -254,6 +256,9 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
   }
   .tag--accent { background: var(--accent); color: #fff; font-weight: 600; }
 
+  @media (max-width: 768px) {
+    .projects-grid { grid-template-columns: 1fr; }
+  }
   @media (max-width: 640px) {
     .featured-card__header { flex-direction: column; }
   }
