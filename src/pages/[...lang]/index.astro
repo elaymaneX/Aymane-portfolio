@@ -1,23 +1,28 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import headshot from '../assets/headshot.jpeg';
-import { isApp, projectHref } from '../lib/projects';
+import headshot from '../../assets/headshot.jpeg';
+import { isApp, projectHref } from '../../lib/projects';
+import { localizedEntries } from '../../lib/content';
+import { formatDate, getLang, langPaths, localePath, t } from '../../i18n';
 
-const byDateDesc = (a, b) => b.data.date.valueOf() - a.data.date.valueOf();
+export const getStaticPaths = langPaths;
+
+const lang = getLang(Astro.params.lang);
+const ui = t(lang).home;
+const byDateDesc = (a, b) => b.entry.data.date.valueOf() - a.entry.data.date.valueOf();
 
 // Featured projects first, then newest
-const featuredProjects = (await getCollection('projects', p => !p.data.draft))
-  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || byDateDesc(a, b))
+const featuredProjects = (await localizedEntries('projects', lang))
+  .sort((a, b) => Number(b.entry.data.featured) - Number(a.entry.data.featured) || byDateDesc(a, b))
   .slice(0, 3);
 
-const latestPosts = (await getCollection('blog', p => !p.data.draft))
+const latestPosts = (await localizedEntries('blog', lang))
   .sort(byDateDesc)
   .slice(0, 3);
 ---
 
-<BaseLayout title="Aymane Elamrani | ML Engineer & Maker">
+<BaseLayout title={t(lang).meta.homeTitle} lang={lang}>
   <script is:inline>
     // Play the hero intro on fresh visits and reloads, not when navigating back from another page of the site; runs before the hero paints
     try {
@@ -33,19 +38,19 @@ const latestPosts = (await getCollection('blog', p => !p.data.draft))
       <Image src={headshot} alt="Aymane Elamrani" class="hero__img" widths={[360, 760]} sizes="(max-width: 768px) 180px, 380px" loading="eager" />
     </div>
     <div class="hero__text">
-      <p class="hero__greeting">Hey there,</p>
+      <p class="hero__greeting">{ui.greeting}</p>
       <h1 class="hero__title">
-        I'm <span class="highlight-blue">Aymane</span>.<br/>
-        Welcome to my<br/>
-        <span class="highlight-blue">corner</span> of the<br/>
-        <span class="highlight-gold">internet</span>.
+        {ui.titleIntro} <span class="highlight-blue">Aymane</span>.<br/>
+        {ui.titleWelcome}<br/>
+        <span class="highlight-blue">{ui.titleCorner}</span> {ui.titleOfThe}<br/>
+        <span class="highlight-gold">{ui.titleInternet}</span>.
       </h1>
       <p class="hero__subtitle">
-        ML engineer with a quantum physics background. I went from studying how photons behave to building forecasting systems at Amazon, and now I'm carving my way into quantitative finance and AI agents. I like hard problems, messy data, and first-principles thinking. <a href="mailto:aelamra25@gmail.com" class="hero__help">How can I help you?</a>
+        {ui.subtitle} <a href="mailto:aelamra25@gmail.com" class="hero__help">{ui.help}</a>
       </p>
       <div class="hero__actions">
-        <a href="/projects" class="btn btn--primary">View projects <span>→</span></a>
-        <a href="/blog" class="btn btn--outline">Read the blog</a>
+        <a href={localePath(lang, '/projects')} class="btn btn--primary">{ui.viewProjects} <span>→</span></a>
+        <a href={localePath(lang, '/blog')} class="btn btn--outline">{ui.readBlog}</a>
       </div>
     </div>
   </section>
@@ -53,14 +58,14 @@ const latestPosts = (await getCollection('blog', p => !p.data.draft))
   <!-- FEATURED PROJECTS -->
   <section class="section container">
     <div class="section__header">
-      <h2 class="section__title"><span class="highlight-blue">Featured</span> Projects</h2>
-      <a href="/projects" class="section__link">View all →</a>
+      <h2 class="section__title"><span class="highlight-blue">{ui.featuredA}</span> {ui.featuredB}</h2>
+      <a href={localePath(lang, '/projects')} class="section__link">{ui.viewAll}</a>
     </div>
     <div class="projects-grid">
-      {featuredProjects.map(entry => {
+      {featuredProjects.map(({ entry }) => {
         const project = entry.data;
         const stroke = project.iconBg === '#F5C563' ? '#111827' : '#fff';
-        const href = projectHref(entry);
+        const href = projectHref(entry, lang);
         // An app that isn't live yet has no destination, so its card isn't a link
         const Card = href ? 'a' : 'div';
         return (
@@ -96,13 +101,13 @@ const latestPosts = (await getCollection('blog', p => !p.data.draft))
   <section class="posts-section">
     <div class="container">
       <div class="section__header">
-        <h2 class="section__title">Latest from the <span class="highlight-gold">Blog</span></h2>
-        <a href="/blog" class="section__link">All articles →</a>
+        <h2 class="section__title">{ui.latestA} <span class="highlight-gold">{ui.latestB}</span></h2>
+        <a href={localePath(lang, '/blog')} class="section__link">{ui.allArticles}</a>
       </div>
       <div class="posts-list">
-        {latestPosts.map(({ slug, data: post }) => (
-          <a href={`/blog/${slug}`} class="post-row">
-            <span class="post-row__date">{post.date.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}</span>
+        {latestPosts.map(({ slug, entry: { data: post } }) => (
+          <a href={localePath(lang, `/blog/${slug}`)} class="post-row">
+            <span class="post-row__date">{formatDate(lang, post.date, { month: 'short', year: 'numeric' })}</span>
             <span class="post-row__title">{post.title}</span>
             <span class="post-row__tag" style={`background: ${post.tagColor}`}>{post.tag}</span>
           </a>
@@ -114,11 +119,11 @@ const latestPosts = (await getCollection('blog', p => !p.data.draft))
   <!-- NEWSLETTER CTA -->
   <section class="container" style="padding-top: 80px; padding-bottom: 80px;">
     <div class="cta-box">
-      <h2 class="cta-box__title">Stay in the loop</h2>
-      <p class="cta-box__desc">I share new projects, analysis write-ups, and thoughts on AI and finance. Follow along with RSS, or just say hi.</p>
+      <h2 class="cta-box__title">{ui.ctaTitle}</h2>
+      <p class="cta-box__desc">{ui.ctaDesc}</p>
       <div class="cta-box__form">
-        <a href="/rss.xml" class="btn btn--accent">Subscribe via RSS</a>
-        <a href="mailto:aelamra25@gmail.com" class="btn btn--light">Email me</a>
+        <a href="/rss.xml" class="btn btn--accent">{ui.ctaRss}</a>
+        <a href="mailto:aelamra25@gmail.com" class="btn btn--light">{ui.ctaEmail}</a>
       </div>
     </div>
   </section>

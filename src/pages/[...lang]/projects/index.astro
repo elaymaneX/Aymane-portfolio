@@ -1,34 +1,39 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-import { isApp, projectHref } from '../../lib/projects';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { isApp, projectHref } from '../../../lib/projects';
+import { localizedEntries } from '../../../lib/content';
+import { getLang, langPaths, t } from '../../../i18n';
 
-const projects = (await getCollection('projects'))
-  .filter(p => !p.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+export const getStaticPaths = langPaths;
+
+const lang = getLang(Astro.params.lang);
+const ui = t(lang).projects;
+const projects = (await localizedEntries('projects', lang))
+  .sort((a, b) => b.entry.data.date.valueOf() - a.entry.data.date.valueOf())
+  .map(p => p.entry);
 
 const featured = projects.filter(p => p.data.featured);
 const regular = projects.filter(p => !p.data.featured);
 const sections = [
-  { title: 'Analysis & tools', desc: 'Research, quant analysis and agentic tools, with write-ups, results and code.', items: regular.filter(p => !isApp(p)) },
-  { title: 'Apps & websites', desc: 'Live products and sites built for clients and for myself.', items: regular.filter(isApp) },
+  { title: ui.analysisTitle, desc: ui.analysisDesc, items: regular.filter(p => !isApp(p)) },
+  { title: ui.appsTitle, desc: ui.appsDesc, items: regular.filter(isApp) },
 ].filter(s => s.items.length);
 
 // Cards without a destination (an app that isn't live yet) render as plain, non-clickable cards
-const cardTag = (p) => projectHref(p) ? 'a' : 'div';
+const cardTag = (p) => projectHref(p, lang) ? 'a' : 'div';
 const linkAttrs = (p) => {
-  const href = projectHref(p);
+  const href = projectHref(p, lang);
   if (!href) return {};
   return isApp(p) ? { href, target: '_blank', rel: 'noopener noreferrer' } : { href };
 };
 const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
 ---
 
-<BaseLayout title="Projects | Aymane Elamrani" activePage="Projects">
+<BaseLayout title={ui.title} activePage="Projects" lang={lang}>
   <section class="container page-header">
-    <p class="page-header__label">Projects</p>
-    <h1 class="page-header__title">Things I've <span class="highlight-blue">built</span></h1>
-    <p class="page-header__desc">A mix of AI tools, automations, and research projects. Some are open-source, some are experiments, all taught me something.</p>
+    <p class="page-header__label">{ui.label}</p>
+    <h1 class="page-header__title">{ui.headingA} <span class="highlight-blue">{ui.headingB}</span></h1>
+    <p class="page-header__desc">{ui.desc}</p>
   </section>
 
   <!-- Featured Projects: inside the container so they line up with the grid, as wide as two cards -->
@@ -62,7 +67,7 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
         </div>
       </div>
       <p class="featured-card__desc">{project.data.excerpt}</p>
-      {projectHref(project) && <span class="featured-card__link">{isApp(project) ? 'Visit site ↗' : 'Read more →'}</span>}
+      {projectHref(project, lang) && <span class="featured-card__link">{isApp(project) ? ui.visitSite : ui.readMore}</span>}
     </Card>
     );
   })}
@@ -98,7 +103,7 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
                 <span class:list={['tag', { 'tag--accent': tag.accent }]}>{tag.label}</span>
               ))}
             </div>
-            {projectHref(project) && <span class="project-card__link">{isApp(project) ? 'Visit site ↗' : 'Read more →'}</span>}
+            {projectHref(project, lang) && <span class="project-card__link">{isApp(project) ? ui.visitSite : ui.readMore}</span>}
           </Card>
           );
         })}

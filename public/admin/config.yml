@@ -8,6 +8,13 @@ backend:
 # Lets /admin on localhost edit local files when `npx decap-server` is running; ignored in production
 local_backend: true
 
+# Translations: each entry is saved as <folder>/<locale>/<slug>.mdx.
+# Only English is required; empty Spanish/French versions fall back to English on the site.
+i18n:
+  structure: multiple_folders
+  locales: [en, es, fr]
+  default_locale: en
+
 media_folder: public/images
 public_folder: /images
 
@@ -19,14 +26,15 @@ collections:
     extension: mdx
     format: frontmatter
     slug: "{{slug}}"
+    i18n: true
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
-      - { label: "Tag", name: "tag", widget: "string", hint: "e.g. AI, Finance, Research" }
-      - { label: "Tag Color", name: "tagColor", widget: "color", default: "#3B6CF4" }
-      - { label: "Excerpt", name: "excerpt", widget: "text" }
-      - { label: "Draft", name: "draft", widget: "boolean", default: false }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "Title", name: "title", widget: "string", i18n: true }
+      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, i18n: duplicate }
+      - { label: "Tag", name: "tag", widget: "string", hint: "e.g. AI, Finance, Research", i18n: true }
+      - { label: "Tag Color", name: "tagColor", widget: "color", default: "#3B6CF4", i18n: duplicate }
+      - { label: "Excerpt", name: "excerpt", widget: "text", i18n: true }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, i18n: duplicate }
+      - { label: "Body", name: "body", widget: "markdown", i18n: true }
 
   - name: projects
     label: Projects
@@ -35,12 +43,14 @@ collections:
     extension: mdx
     format: frontmatter
     slug: "{{slug}}"
+    i18n: true
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Title", name: "title", widget: "string", i18n: true }
+      - { label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, i18n: duplicate }
       - label: "Type"
         name: "type"
         widget: "select"
+        i18n: duplicate
         default: "analysis"
         options:
           - { label: "App / website (card links to the live site)", value: "app" }
@@ -51,15 +61,16 @@ collections:
         fields:
           - { label: "Label", name: "label", widget: "string" }
           - { label: "Accent", name: "accent", widget: "boolean", default: false }
-      - { label: "Excerpt", name: "excerpt", widget: "text", hint: "Shown on the project card" }
-      - { label: "Icon", name: "icon", widget: "select", options: ["signal", "web", "automation", "code"], default: "code" }
-      - { label: "Icon Background", name: "iconBg", widget: "color", default: "#3B6CF4" }
-      - { label: "Live URL", name: "externalUrl", widget: "string", required: false, hint: "App / website: the card links here. Leave empty if it isn't live yet; the card won't be clickable" }
-      - { label: "Colab URL", name: "colabUrl", widget: "string", required: false, hint: "Analysis / tool: shown as an 'Open in Colab' button" }
-      - { label: "Code URL", name: "repoUrl", widget: "string", required: false, hint: "Analysis / tool: GitHub repo, shown as a 'View code' button" }
+      - { label: "Excerpt", name: "excerpt", widget: "text", hint: "Shown on the project card", i18n: true }
+      - { label: "Icon", name: "icon", widget: "select", options: ["signal", "web", "automation", "code"], default: "code", i18n: duplicate }
+      - { label: "Icon Background", name: "iconBg", widget: "color", default: "#3B6CF4", i18n: duplicate }
+      - { label: "Live URL", name: "externalUrl", widget: "string", required: false, hint: "App / website: the card links here. Leave empty if it isn't live yet; the card won't be clickable", i18n: duplicate }
+      - { label: "Colab URL", name: "colabUrl", widget: "string", required: false, hint: "Analysis / tool: shown as an 'Open in Colab' button", i18n: duplicate }
+      - { label: "Code URL", name: "repoUrl", widget: "string", required: false, hint: "Analysis / tool: GitHub repo, shown as a 'View code' button", i18n: duplicate }
       - label: "Key stats"
         name: "stats"
         widget: "list"
+        i18n: true
         required: false
         hint: "Analysis / tool: headline numbers shown at the top of the page"
         fields:
@@ -68,12 +79,13 @@ collections:
       - label: "Results gallery"
         name: "gallery"
         widget: "list"
+        i18n: true
         required: false
         hint: "Analysis / tool: charts and screenshots shown under Results"
         fields:
           - { label: "Image", name: "image", widget: "image" }
           - { label: "Title", name: "title", widget: "string" }
           - { label: "Caption", name: "caption", widget: "text", required: false }
-      - { label: "Featured", name: "featured", widget: "boolean", default: false }
-      - { label: "Draft", name: "draft", widget: "boolean", default: false }
-      - { label: "Body", name: "body", widget: "markdown", required: false, hint: "Analysis / tool: the write-up. Use code blocks for snippets. Not shown for App / website projects." }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, i18n: duplicate }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, i18n: duplicate }
+      - { label: "Body", name: "body", widget: "markdown", required: false, hint: "Analysis / tool: the write-up. Use code blocks for snippets. Not shown for App / website projects.", i18n: true }

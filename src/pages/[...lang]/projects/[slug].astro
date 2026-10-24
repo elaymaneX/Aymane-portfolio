@@ -1,0 +1,25 @@
+---
+import ProjectPost from '../../../layouts/ProjectPost.astro';
+import { localizedEntries } from '../../../lib/content';
+import { isApp } from '../../../lib/projects';
+import { langPaths, type Lang } from '../../../i18n';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const { params } of langPaths()) {
+    const lang = (params.lang ?? 'en') as Lang;
+    for (const { slug, entry, fallback } of await localizedEntries('projects', lang)) {
+      if (isApp(entry)) continue;
+      paths.push({ params: { lang: params.lang, slug }, props: { entry, fallback, lang } });
+    }
+  }
+  return paths;
+}
+
+const { entry, fallback, lang } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<ProjectPost {...entry.data} lang={lang} fallback={fallback}>
+  <Content />
+</ProjectPost>

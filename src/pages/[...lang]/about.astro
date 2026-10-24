@@ -1,114 +1,69 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
-import aboutPhoto from '../assets/about.jpeg';
-import upvLogo from '../assets/logos/upv.png';
-import owLogo from '../assets/logos/oliver-wyman.png';
-import amazonLogo from '../assets/logos/amazon.svg';
-import mahleLogo from '../assets/logos/mahle-white.svg';
+import aboutPhoto from '../../assets/about.jpeg';
+import upvLogo from '../../assets/logos/upv.png';
+import owLogo from '../../assets/logos/oliver-wyman.png';
+import amazonLogo from '../../assets/logos/amazon.svg';
+import mahleLogo from '../../assets/logos/mahle-white.svg';
+import { about } from '../../i18n/about';
+import { getLang, langPaths } from '../../i18n';
 
+export const getStaticPaths = langPaths;
+
+const lang = getLang(Astro.params.lang);
+const copy = about[lang];
+
+// Language-independent parts; text (role, period, bullets...) comes from i18n/about.ts by position
 const experience = [
-  {
-    role: 'Research Intern',
-    company: 'CVBLabs, UPV',
-    period: 'Mar 2026 - Sep 2026',
-    logo: { src: upvLogo, alt: 'UPV' },
-    bullets: [
-      'Designed and validated an optical simulation (FDTD + Mie theory): virtual test bench definition and experimental result interpretation.',
-      'Built a Python pipeline for synthetic data generation and signal acquisition to train inverse models at scale.',
-      'Used Docker to isolate execution environments and test model versions in parallel; Git-based version control in a shared repository.',
-    ],
-  },
-  {
-    role: 'Strategy Consultant / Data Science',
-    company: 'Oliver Wyman, HackatOW',
-    period: 'Feb 2025 - May 2025',
-    logo: { src: owLogo, alt: 'Oliver Wyman' },
-    bullets: [
-      'Built a churn prediction model (XGBoost + logistic regression) achieving 80% precision and recall.',
-      'Designed a data-driven retention strategy (€35k budget, 91.8% ROI).',
-      'Winner of a selective pan-European challenge, first place against teams from top EU universities.',
-    ],
-  },
-  {
-    role: 'Business Intelligence Engineer, Intern',
-    company: 'Amazon',
-    period: 'Aug 2023 - Feb 2024',
-    logo: { src: amazonLogo, alt: 'Amazon', bg: '#ffffff', pad: true },
-    bullets: [
-      'Built end-to-end ETL pipelines (Python, SQL, Amazon Redshift) to integrate and process logistics data at European scale.',
-      'Developed real-time executive dashboards (Amazon QuickSight) to monitor transport KPIs, capacity, and route performance.',
-      'Automated weekly logistics planning with Python scripts, achieving 98% scheduling accuracy and eliminating €500k in annual operational waste.',
-    ],
-  },
-  {
-    role: 'Data Manager',
-    company: 'MAHLE Electronics',
-    period: 'Jul 2022 - Sep 2022',
-    logo: { src: mahleLogo, alt: 'MAHLE', bg: '#1e2a63', pad: true },
-    bullets: [
-      'Managed the migration of legacy ETL processes to SAP, ensuring data integrity across systems.',
-      'Coordinated data flows between departments during the transition period.',
-    ],
-  },
-];
+  { company: 'CVBLabs, UPV', logo: { src: upvLogo, alt: 'UPV' } },
+  { company: 'Oliver Wyman, HackatOW', logo: { src: owLogo, alt: 'Oliver Wyman' } },
+  { company: 'Amazon', logo: { src: amazonLogo, alt: 'Amazon', bg: '#ffffff', pad: true } },
+  { company: 'MAHLE Electronics', logo: { src: mahleLogo, alt: 'MAHLE', bg: '#1e2a63', pad: true } },
+].map((e, i) => ({ ...e, ...copy.experience[i] }));
 
-const education = [
-  {
-    degree: 'MSc in Quantum Information & Photonics',
-    institution: 'Universitat Politècnica de València (UPV)',
-    period: 'Sep 2025 - 2026',
-    grade: '8/10',
-    detail: 'Thesis: Physics-Informed Deep Learning for Quantitative Reconstruction in OCT',
-  },
-  {
-    degree: 'Double BSc in Computer Science & Business Management',
-    institution: 'Universitat Politècnica de València (UPV)',
-    period: 'Sep 2019 - Jul 2025',
-    grade: '9.9/10, Highest Honors',
-    detail: 'Theses: Real-Time Sign Language to Speech Translation; Amazon Elderly data-driven marketing strategy (8.5/10)',
-  },
-];
+const education = copy.education.map(ed => ({ ...ed, institution: 'Universitat Politècnica de València (UPV)' }));
 
 const languages = [
-  { name: 'Arabic', level: 'Native', percent: 100, flag: '🇲🇦' },
-  { name: 'French', level: 'Bilingual', percent: 95, flag: '🇫🇷' },
-  { name: 'Spanish', level: 'Bilingual', percent: 95, flag: '🇪🇸' },
-  { name: 'English', level: 'C1', percent: 85, flag: '🇬🇧' },
-];
+  { percent: 100, flag: '🇲🇦' },
+  { percent: 95, flag: '🇫🇷' },
+  { percent: 95, flag: '🇪🇸' },
+  { percent: 85, flag: '🇬🇧' },
+].map((l, i) => ({ ...l, ...copy.languages[i] }));
 
 const skillGroups = [
-  { label: 'Languages', items: ['Python', 'Java', 'SQL', 'C', 'C++', 'MATLAB'] },
-  { label: 'ML / AI', items: ['PyTorch', 'JAX', 'TensorFlow', 'Scikit-learn', 'XGBoost', 'LangChain', 'Anthropic API'] },
-  { label: 'Backend', items: ['FastAPI', 'Node.js', 'Spring', 'REST APIs'] },
-  { label: 'Frontend', items: ['Astro', 'React', 'TypeScript', 'HTML/CSS'] },
-  { label: 'Data & BI', items: ['Pandas', 'NumPy', 'Redshift', 'Power BI', 'Tableau', 'QuickSight'] },
-  { label: 'DevOps', items: ['Docker', 'Kubernetes', 'GCP', 'AWS', 'CI/CD', 'Git'] },
-];
+  ['Python', 'Java', 'SQL', 'C', 'C++', 'MATLAB'],
+  ['PyTorch', 'JAX', 'TensorFlow', 'Scikit-learn', 'XGBoost', 'LangChain', 'Anthropic API'],
+  ['FastAPI', 'Node.js', 'Spring', 'REST APIs'],
+  ['Astro', 'React', 'TypeScript', 'HTML/CSS'],
+  ['Pandas', 'NumPy', 'Redshift', 'Power BI', 'Tableau', 'QuickSight'],
+  ['Docker', 'Kubernetes', 'GCP', 'AWS', 'CI/CD', 'Git'],
+].map((items, i) => ({ label: copy.skillLabels[i], items }));
+
+const interestIcons = ['🤖', '📊', '🔬', '⚡'];
 ---
 
-<BaseLayout title="About | Aymane Elamrani" activePage="About">
+<BaseLayout title={copy.title} activePage="About" lang={lang}>
   <!-- HERO -->
   <section class="container about-hero">
     <div class="about-photo-col">
       <div class="about-photo-frame">
-        <Image src={aboutPhoto} alt="Aymane in Cadaqués" class="about-photo" widths={[400, 800]} sizes="(max-width: 768px) 100vw, 400px" loading="eager" />
+        <Image src={aboutPhoto} alt={copy.photoAlt} class="about-photo" widths={[400, 800]} sizes="(max-width: 768px) 100vw, 400px" loading="eager" />
       </div>
     </div>
     <div class="about-text-col">
-      <p class="about-label">About me</p>
-      <h1 class="about-title">Hey, I'm <span class="highlight-blue">Aymane</span></h1>
+      <p class="about-label">{copy.label}</p>
+      <h1 class="about-title">{copy.heading} <span class="highlight-blue">Aymane</span></h1>
       <div class="about-bio">
-        <p>Software Engineer with a double degree in Computer Science and Business, plus a master's in Quantum Information & Photonics from UPV Valencia. I've built ETL pipelines and dashboards at Amazon, won a pan-European data science challenge with Oliver Wyman, and done physics-informed ML research in optical imaging.</p>
-        <p>Now I'm carving my way into quantitative finance and agentic AI, applying the same mathematical rigor to markets and autonomous systems. I like hard problems, messy data, and first-principles thinking.</p>
-        <p><a href="mailto:aelamra25@gmail.com" class="help-link">How can I help you?</a></p>
+        {copy.bio.map(par => <p>{par}</p>)}
+        <p><a href="mailto:aelamra25@gmail.com" class="help-link">{copy.help}</a></p>
       </div>
     </div>
   </section>
 
   <!-- EXPERIENCE -->
   <section class="container about-section">
-    <h2 class="section-heading">Experience</h2>
+    <h2 class="section-heading">{copy.experienceHeading}</h2>
     <div class="timeline">
       {experience.map((exp) => (
         <div class="timeline-item">
@@ -134,7 +89,7 @@ const skillGroups = [
 
   <!-- EDUCATION -->
   <section class="container about-section">
-    <h2 class="section-heading">Education</h2>
+    <h2 class="section-heading">{copy.educationHeading}</h2>
     <div class="edu-grid">
       {education.map(ed => (
         <div class="edu-card">
@@ -143,7 +98,7 @@ const skillGroups = [
             <span class="edu-period">{ed.period}</span>
           </div>
           <p class="edu-institution">{ed.institution}</p>
-          <p class="edu-grade">Grade: {ed.grade}</p>
+          <p class="edu-grade">{copy.gradeLabel}: {ed.grade}</p>
           <p class="edu-detail">{ed.detail}</p>
         </div>
       ))}
@@ -152,7 +107,7 @@ const skillGroups = [
 
   <!-- SKILLS -->
   <section class="container about-section">
-    <h2 class="section-heading">Technical Skills</h2>
+    <h2 class="section-heading">{copy.skillsHeading}</h2>
     <div class="skills-grid">
       {skillGroups.map(group => (
         <div class="skill-group">
@@ -169,19 +124,19 @@ const skillGroups = [
 
   <!-- LANGUAGES -->
   <section class="container about-section">
-    <h2 class="section-heading">Languages</h2>
+    <h2 class="section-heading">{copy.languagesHeading}</h2>
     <div class="languages-grid">
-      {languages.map(lang => (
+      {languages.map(spoken => (
         <div class="lang-card">
           <div class="lang-card__head">
-            <span class="lang-flag">{lang.flag}</span>
+            <span class="lang-flag">{spoken.flag}</span>
             <div>
-              <span class="lang-name">{lang.name}</span>
-              <span class="lang-level">{lang.level}</span>
+              <span class="lang-name">{spoken.name}</span>
+              <span class="lang-level">{spoken.level}</span>
             </div>
           </div>
           <div class="lang-bar">
-            <div class="lang-bar__fill" style={`width: ${lang.percent}%`}></div>
+            <div class="lang-bar__fill" style={`width: ${spoken.percent}%`}></div>
           </div>
         </div>
       ))}
@@ -190,45 +145,26 @@ const skillGroups = [
 
   <!-- INTERESTS -->
   <section class="container about-section">
-    <h2 class="section-heading">Interests</h2>
+    <h2 class="section-heading">{copy.interestsHeading}</h2>
     <div class="interests-grid">
-      <div class="interest">
-        <span class="interest-icon">🤖</span>
-        <div>
-          <strong>Agentic AI</strong>
-          <p>Multi-agent systems, tool-calling architectures, and the future of autonomous software.</p>
+      {copy.interests.map((item, i) => (
+        <div class="interest">
+          <span class="interest-icon">{interestIcons[i]}</span>
+          <div>
+            <strong>{item.title}</strong>
+            <p>{item.text}</p>
+          </div>
         </div>
-      </div>
-      <div class="interest">
-        <span class="interest-icon">📊</span>
-        <div>
-          <strong>Quantitative Finance</strong>
-          <p>Portfolio optimization, Monte Carlo methods, and algorithmic approaches to markets.</p>
-        </div>
-      </div>
-      <div class="interest">
-        <span class="interest-icon">🔬</span>
-        <div>
-          <strong>Scientific Computing</strong>
-          <p>Physics-informed neural nets, numerical simulation, and computational methods.</p>
-        </div>
-      </div>
-      <div class="interest">
-        <span class="interest-icon">⚡</span>
-        <div>
-          <strong>Automation</strong>
-          <p>Workflow automation with n8n, scripting repetitive tasks, and building personal infrastructure.</p>
-        </div>
-      </div>
+      ))}
     </div>
   </section>
 
   <!-- CTA -->
   <section class="container cta-section">
     <div class="cta-box">
-      <h2 class="cta-box__title">Let's connect</h2>
-      <p class="cta-box__desc">Want to collaborate on a project, chat about AI, or just say hello? I'm always happy to hear from interesting people.</p>
-      <a href="mailto:aelamra25@gmail.com" class="btn btn--accent">Get in touch →</a>
+      <h2 class="cta-box__title">{copy.ctaTitle}</h2>
+      <p class="cta-box__desc">{copy.ctaDesc}</p>
+      <a href="mailto:aelamra25@gmail.com" class="btn btn--accent">{copy.ctaButton}</a>
     </div>
   </section>
 </BaseLayout>

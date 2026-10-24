@@ -1,0 +1,23 @@
+---
+import BlogPost from '../../../layouts/BlogPost.astro';
+import { localizedEntries } from '../../../lib/content';
+import { langPaths, type Lang } from '../../../i18n';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const { params } of langPaths()) {
+    const lang = (params.lang ?? 'en') as Lang;
+    for (const { slug, entry, fallback } of await localizedEntries('blog', lang)) {
+      paths.push({ params: { lang: params.lang, slug }, props: { entry, fallback, lang } });
+    }
+  }
+  return paths;
+}
+
+const { entry, fallback, lang } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BlogPost {...entry.data} lang={lang} fallback={fallback}>
+  <Content />
+</BlogPost>

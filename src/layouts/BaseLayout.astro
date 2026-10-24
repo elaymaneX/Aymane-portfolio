@@ -5,26 +5,31 @@ import GreekBackground from '../components/GreekBackground.astro';
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
 import headshot from '../assets/headshot.jpeg';
+import { locales, localePath, t, unlocalizedPath, type Lang } from '../i18n';
 
 interface Props {
   title: string;
   description?: string;
   activePage?: string;
+  lang: Lang;
 }
 
-const { title, description = 'ML engineer, quantum physics enthusiast, and maker.', activePage = '' } = Astro.props;
+const { title, lang, description = t(lang).meta.defaultDescription, activePage = '' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const basePath = unlocalizedPath(Astro.url.pathname);
 const ogImage = new URL((await getImage({ src: headshot, width: 600, format: 'jpeg' })).src, Astro.site);
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href={canonical} />
+  {locales.map(l => <link rel="alternate" hreflang={l} href={new URL(localePath(l, basePath), Astro.site)} />)}
+  <link rel="alternate" hreflang="x-default" href={new URL(basePath, Astro.site)} />
   <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="alternate" type="application/rss+xml" title="Aymane Elamrani" href="/rss.xml" />
   <meta property="og:type" content="website" />
@@ -32,6 +37,7 @@ const ogImage = new URL((await getImage({ src: headshot, width: 600, format: 'jp
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
+  <meta property="og:locale" content={{ en: 'en_US', es: 'es_ES', fr: 'fr_FR' }[lang]} />
   <meta name="twitter:card" content="summary" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -49,13 +55,30 @@ const ogImage = new URL((await getImage({ src: headshot, width: 600, format: 'jp
       } catch(e) {}
     })();
   </script>
+  {lang === 'en' && (
+    <script is:inline>
+      // First visit only: send Spanish/French browsers to their language once.
+      // Any choice made with the language switcher is remembered and wins.
+      (function() {
+        try {
+          if (localStorage.getItem('lang')) return;
+          const fromSite = document.referrer && new URL(document.referrer).origin === location.origin;
+          const pref = (navigator.languages || [navigator.language]).map(l => l.slice(0, 2)).find(l => l === 'es' || l === 'fr' || l === 'en');
+          localStorage.setItem('lang', pref || 'en');
+          if (!fromSite && (pref === 'es' || pref === 'fr')) {
+            location.replace('/' + pref + (location.pathname === '/' ? '/' : location.pathname) + location.search + location.hash);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  )}
 </head>
 <body>
   <GreekBackground />
-  <Nav activePage={activePage} />
+  <Nav activePage={activePage} lang={lang} />
   <main>
     <slot />
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </body>
 </html>

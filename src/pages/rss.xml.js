@@ -1,18 +1,19 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
+import { localizedEntries } from '../lib/content';
 
+// English feed
 export async function GET(context) {
-  const posts = (await getCollection('blog', p => !p.data.draft))
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  const posts = (await localizedEntries('blog', 'en'))
+    .sort((a, b) => b.entry.data.date.valueOf() - a.entry.data.date.valueOf());
   return rss({
     title: 'Aymane Elamrani',
     description: 'Writing on AI, quantitative finance, and the things I build.',
     site: context.site,
-    items: posts.map(post => ({
+    items: posts.map(({ slug, entry: post }) => ({
       title: post.data.title,
       pubDate: post.data.date,
       description: post.data.excerpt,
-      link: `/blog/${post.slug}/`,
+      link: `/blog/${slug}/`,
     })),
   });
 }

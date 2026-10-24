@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { formatDate, localePath, t, type Lang } from '../i18n';
 
 interface Props {
   title: string;
@@ -10,16 +11,20 @@ interface Props {
   repoUrl?: string;
   stats?: { value: string; label: string }[];
   gallery?: { image: string; title: string; caption?: string }[];
+  lang: Lang;
+  fallback?: boolean;
 }
 
-const { title, date, tags, excerpt, colabUrl, repoUrl, stats = [], gallery = [] } = Astro.props;
-const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const { title, date, tags, excerpt, colabUrl, repoUrl, stats = [], gallery = [], lang, fallback = false } = Astro.props;
+const ui = t(lang).projects;
+const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<BaseLayout title={`${title} | Aymane Elamrani`} description={excerpt} activePage="Projects">
+<BaseLayout title={`${title} | Aymane Elamrani`} description={excerpt} activePage="Projects" lang={lang}>
   <article class="container post">
+    {fallback && <p class="post__notice">{t(lang).onlyInEnglish}</p>}
     <header class="post__header">
-      <a href="/projects" class="post__back">← Back to projects</a>
+      <a href={localePath(lang, '/projects')} class="post__back">{ui.back}</a>
       <div class="post__meta">
         <time>{formattedDate}</time>
         <div class="post__tags">
@@ -28,17 +33,17 @@ const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month:
           ))}
         </div>
       </div>
-      <h1 class="post__title">{title}</h1>
+      <h1 class="post__title" lang={fallback ? 'en' : undefined}>{title}</h1>
       <p class="post__excerpt">{excerpt}</p>
       {(colabUrl || repoUrl) && (
         <div class="post__links">
-          {colabUrl && <a href={colabUrl} target="_blank" rel="noopener noreferrer" class="post__link post__link--primary">Open in Colab ↗</a>}
-          {repoUrl && <a href={repoUrl} target="_blank" rel="noopener noreferrer" class="post__link">View code ↗</a>}
+          {colabUrl && <a href={colabUrl} target="_blank" rel="noopener noreferrer" class="post__link post__link--primary">{ui.openColab}</a>}
+          {repoUrl && <a href={repoUrl} target="_blank" rel="noopener noreferrer" class="post__link">{ui.viewCode}</a>}
         </div>
       )}
     </header>
 
-    <div class="post__content">
+    <div class="post__content" lang={fallback ? 'en' : undefined}>
       {stats.length > 0 && (
         <div class="stats-grid">
           {stats.map(stat => (
@@ -54,7 +59,7 @@ const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month:
 
       {gallery.length > 0 && (
         <>
-          <h2>Results</h2>
+          <h2>{ui.results}</h2>
           <div class="results-gallery">
             {gallery.map(item => (
               <figure>
@@ -71,12 +76,20 @@ const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month:
     </div>
 
     <footer class="post__footer">
-      <a href="/projects" class="post__back">← Back to all projects</a>
+      <a href={localePath(lang, '/projects')} class="post__back">{ui.backAll}</a>
     </footer>
   </article>
 </BaseLayout>
 
 <style>
+  .post__notice {
+    font-size: 14px;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 24px;
+  }
   /* Solid reading column; the Greek background only shows in the side margins */
   .post {
     padding-top: 60px;
