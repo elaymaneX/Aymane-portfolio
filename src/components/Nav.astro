@@ -1,33 +1,45 @@
 ---
-const { activePage = '' } = Astro.props;
+import { locales, localePath, t, unlocalizedPath, type Lang } from '../i18n';
+
+interface Props { activePage?: string; lang: Lang }
+const { activePage = '', lang } = Astro.props;
+const ui = t(lang).nav;
 const links = [
-  { href: '/projects', label: 'Projects' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/about', label: 'About' },
-];
+  { href: localePath(lang, '/projects'), key: 'Projects' },
+  { href: localePath(lang, '/blog'), key: 'Blog' },
+  { href: localePath(lang, '/about'), key: 'About' },
+] as const;
+const basePath = unlocalizedPath(Astro.url.pathname);
 ---
 
 <nav class="nav">
   <div class="nav__inner container">
-    <a href="/" class="nav__logo">Aymane<span class="nav__dot">.</span></a>
+    <a href={localePath(lang, '/')} class="nav__logo">Aymane<span class="nav__dot">.</span></a>
 
     <div class="nav__links">
       {links.map(link => (
-        <a href={link.href} class:list={[{ active: activePage === link.label }]}>
-          {link.label}
+        <a href={link.href} class:list={[{ active: activePage === link.key }]}>
+          {ui[link.key]}
         </a>
       ))}
-      <a href="mailto:aelamra25@gmail.com" class="nav__cta">Get in touch</a>
+      <a href="mailto:aelamra25@gmail.com" class="nav__cta">{ui.cta}</a>
+    </div>
+
+    <!-- Language switcher -->
+    <div class="lang-switch" role="group" aria-label={ui.language}>
+      {locales.map(l => (
+        <a href={localePath(l, basePath)} hreflang={l} lang={l} data-lang={l} class:list={['lang-switch__link', { active: l === lang }]} aria-current={l === lang ? 'true' : undefined}>{l.toUpperCase()}</a>
+      ))}
     </div>
 
     <!-- Dark mode toggle -->
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+    <button class="theme-toggle" id="theme-toggle" aria-label={ui.toggleTheme}>
       <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
 
     <!-- Hamburger -->
-    <button class="nav__burger" id="nav-burger" aria-label="Menu">
+    <button class="nav__burger" id="nav-burger" aria-label={ui.menu}>
       <span></span>
     </button>
   </div>
@@ -35,11 +47,11 @@ const links = [
   <!-- Mobile menu -->
   <div class="nav__menu" id="nav-menu">
     {links.map(link => (
-      <a href={link.href} class:list={[{ active: activePage === link.label }]}>
-        {link.label}
+      <a href={link.href} class:list={[{ active: activePage === link.key }]}>
+        {ui[link.key]}
       </a>
     ))}
-    <a href="mailto:aelamra25@gmail.com" class="nav__cta">Get in touch</a>
+    <a href="mailto:aelamra25@gmail.com" class="nav__cta">{ui.cta}</a>
   </div>
 </nav>
 
@@ -171,15 +183,40 @@ const links = [
   }
   .nav__menu.open { display: flex; }
 
+  .lang-switch {
+    display: flex;
+    gap: 2px;
+    margin-left: 12px;
+    padding: 3px;
+    border: 1.5px solid var(--border);
+    border-radius: 9999px;
+  }
+  .lang-switch__link {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+  .lang-switch__link.active { background: var(--text); color: var(--bg); }
+  .lang-switch__link:not(.active):hover { color: var(--accent); }
+
   @media (max-width: 768px) {
     .nav__links { display: none; }
     .nav__burger { display: flex; align-items: center; }
-    .theme-toggle { order: 0; margin-left: auto; margin-right: 4px; }
+    .lang-switch { order: 0; margin-left: auto; }
+    .theme-toggle { order: 0; margin-left: 8px; margin-right: 4px; }
     .nav__burger { order: 1; }
   }
 </style>
 
 <script>
+  // Remember an explicit language choice so the first-visit redirect never overrides it
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang]').forEach(a =>
+    a.addEventListener('click', () => { try { localStorage.setItem('lang', a.dataset.lang!); } catch (e) {} })
+  );
+
   // Hamburger toggle
   const menu = document.getElementById('nav-menu');
   document.getElementById('nav-burger')?.addEventListener('click', () => {

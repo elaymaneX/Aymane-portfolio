@@ -1,35 +1,48 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localizedEntries } from '../../lib/content';
+import { formatDate, getLang, langPaths, localePath, t } from '../../i18n';
 
-const posts = (await getCollection('blog'))
-  .filter(post => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+export const getStaticPaths = langPaths;
+
+const lang = getLang(Astro.params.lang);
+const ui = t(lang).blog;
+const posts = (await localizedEntries('blog', lang))
+  .sort((a, b) => b.entry.data.date.valueOf() - a.entry.data.date.valueOf());
 ---
 
-<BaseLayout title="Blog | Aymane Elamrani" activePage="Blog">
+<BaseLayout title={ui.title} activePage="Blog" lang={lang}>
   <section class="container page-header">
-    <p class="page-header__label">Blog</p>
-    <h1 class="page-header__title">Thoughts & <span class="highlight-gold">write-ups</span></h1>
-    <p class="page-header__desc">I write about AI, quantitative finance, and the things I build. Long-form takes, tutorials, and the occasional rant.</p>
+    <p class="page-header__label">{ui.label}</p>
+    <h1 class="page-header__title">{ui.headingA} <span class="highlight-gold">{ui.headingB}</span></h1>
+    <p class="page-header__desc">{ui.desc}</p>
   </section>
 
   <section class="container posts">
-    {posts.map(post => (
-      <a href={`/blog/${post.slug}`} class="post-card">
+    {posts.map(({ slug, entry: { data: post }, fallback }) => (
+      <a href={localePath(lang, `/blog/${slug}`)} class="post-card" lang={fallback ? 'en' : undefined}>
         <div class="post-card__meta">
-          <span class="post-card__date">{post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-          <span class="post-card__tag" style={`background: ${post.data.tagColor}`}>{post.data.tag}</span>
+          <span class="post-card__date">{formatDate(lang, post.date, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+          <span class="post-card__tag" style={`background: ${post.tagColor}`}>{post.tag}</span>
+          {fallback && <span class="post-card__lang" title={t(lang).onlyInEnglish}>EN</span>}
         </div>
-        <h2 class="post-card__title">{post.data.title}</h2>
-        <p class="post-card__excerpt">{post.data.excerpt}</p>
-        <span class="post-card__link">Read more →</span>
+        <h2 class="post-card__title">{post.title}</h2>
+        <p class="post-card__excerpt">{post.excerpt}</p>
+        <span class="post-card__link">{ui.readMore}</span>
       </a>
     ))}
   </section>
 </BaseLayout>
 
 <style>
+  .post-card__lang {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
   .page-header {
     padding-top: clamp(40px, 6vw, 80px);
     padding-bottom: clamp(40px, 5vw, 60px);

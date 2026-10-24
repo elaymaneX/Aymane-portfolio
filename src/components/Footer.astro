@@ -1,4 +1,7 @@
 ---
+import { t, type Lang } from '../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
 const year = new Date().getFullYear();
 const socials = [
   { label: 'GitHub', href: 'https://github.com/elaymaneX' },
@@ -11,7 +14,7 @@ const socials = [
   <div class="footer__inner container">
     <div class="footer__left">
       <span class="footer__logo">Aymane<span class="footer__dot">.</span></span>
-      <p class="footer__copy">&copy; {year} Aymane Elamrani. All rights reserved.</p>
+      <p class="footer__copy">&copy; {year} Aymane Elamrani. {t(lang).footer.rights}</p>
     </div>
     <div class="footer__links">
       {socials.map(s => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}
