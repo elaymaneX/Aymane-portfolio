@@ -430,22 +430,20 @@ const latestPosts = (await localizedEntries('blog', lang))
     border: 1.5px solid var(--border);
   }
 
-  /* CREDIBILITY STRIP */
+  /* CREDIBILITY STRIP: centred logos that float gently, each on its own rhythm */
   .trust {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 28px 48px;
-    padding-top: 28px;
-    padding-bottom: 28px;
+    justify-content: center;
+    padding-top: 36px;
+    padding-bottom: 36px;
     border-top: 1px solid var(--border-light);
     border-bottom: 1px solid var(--border-light);
   }
   .trust__companies {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    align-items: center;
+    gap: 22px;
   }
   .trust__label {
     font-size: 13px;
@@ -458,7 +456,8 @@ const latestPosts = (await localizedEntries('blog', lang))
     list-style: none;
     display: flex;
     flex-wrap: wrap;
-    gap: 12px 24px;
+    justify-content: center;
+    gap: 16px clamp(24px, 5vw, 56px);
   }
   .trust__company {
     display: flex;
@@ -468,16 +467,26 @@ const latestPosts = (await localizedEntries('blog', lang))
     font-size: 15px;
   }
   .trust__logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
     overflow: hidden;
     flex-shrink: 0;
     display: flex;
-    box-shadow: 0 0 0 1px var(--border-light);
+    box-shadow: 0 0 0 1px var(--border-light), 0 8px 20px -10px rgba(59, 108, 244, 0.45);
   }
   .trust__img { width: 100%; height: 100%; object-fit: cover; }
   .trust__img--pad { object-fit: contain; padding: 5px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .trust__company { animation: logoFloat 4.5s ease-in-out infinite alternate; }
+    .trust__company:nth-child(2) { animation-duration: 5.2s; animation-delay: -1.8s; }
+    .trust__company:nth-child(3) { animation-duration: 4.8s; animation-delay: -3.1s; }
+    .trust__company:nth-child(4) { animation-duration: 5.6s; animation-delay: -0.9s; }
+  }
+  @keyframes logoFloat {
+    from { translate: 0 -5px; }
+    to { translate: 0 5px; }
+  }
 
   /* Hero intro: photo drops in from the right, text follows (Greek letters: GreekBackground.astro) */
   @media (prefers-reduced-motion: no-preference) {
