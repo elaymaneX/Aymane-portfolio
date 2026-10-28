@@ -62,6 +62,7 @@ collections:
           - { label: "Label", name: "label", widget: "string" }
           - { label: "Accent", name: "accent", widget: "boolean", default: false }
       - { label: "Excerpt", name: "excerpt", widget: "text", hint: "Shown on the project card", i18n: true }
+      - { label: "Cover image", name: "cover", widget: "image", required: false, hint: "Screenshot or chart shown on the project card; landscape (16:9) works best. Without one, the card shows the icon", i18n: duplicate }
       - { label: "Icon", name: "icon", widget: "select", options: ["signal", "web", "automation", "code"], default: "code", i18n: duplicate }
       - { label: "Icon Background", name: "iconBg", widget: "color", default: "#3B6CF4", i18n: duplicate }
       - { label: "Live URL", name: "externalUrl", widget: "string", required: false, hint: "App / website: the card links here. Leave empty if it isn't live yet; the card won't be clickable", i18n: duplicate }

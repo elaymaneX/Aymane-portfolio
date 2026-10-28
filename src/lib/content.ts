@@ -31,3 +31,9 @@ export async function localizedEntries<C extends 'blog' | 'projects'>(collection
       return { entry: { ...body, data } as CollectionEntry<C>, slug, fallback: false };
     });
 }
+
+// Minutes to read a post at ~220 words a minute, ignoring code fences and MDX/HTML tags
+export const readingMinutes = (body: string) => {
+  const words = body.replace(/```[\s\S]*?```/g, '').replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+};
