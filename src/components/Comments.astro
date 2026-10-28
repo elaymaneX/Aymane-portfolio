@@ -1,0 +1,234 @@
+---
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  slug: string;
+  lang: Lang;
+}
+
+const { slug, lang } = Astro.props;
+const ui = t(lang).comments;
+---
+
+<section class="comments" data-slug={slug} data-lang={lang} data-ui={JSON.stringify(ui)}>
+  <h2 class="comments__heading">{ui.heading} <span class="comments__count"></span></h2>
+
+  <form class="comments__form">
+    <label class="comments__field">
+      <span>{ui.name}</span>
+      <input name="name" type="text" maxlength="60" required autocomplete="name" />
+    </label>
+    <label class="comments__field">
+      <span>{ui.message}</span>
+      <textarea name="message" rows="4" maxlength="2000" required placeholder={ui.placeholder}></textarea>
+    </label>
+    <!-- Honeypot: hidden from people, bots fill it in -->
+    <input class="comments__hp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <div class="comments__actions">
+      <button type="submit" class="comments__submit">{ui.submit}</button>
+      <p class="comments__status" role="status"></p>
+    </div>
+  </form>
+
+  <p class="comments__empty">{ui.loading}</p>
+  <ol class="comments__list"></ol>
+</section>
+
+<script>
+  const dateLocales = { en: 'en-US', es: 'es-ES', fr: 'fr-FR' };
+
+  for (const section of document.querySelectorAll<HTMLElement>('.comments')) {
+    const { slug, lang } = section.dataset;
+    const ui = JSON.parse(section.dataset.ui!);
+    const form = section.querySelector<HTMLFormElement>('.comments__form')!;
+    const submit = section.querySelector<HTMLButtonElement>('.comments__submit')!;
+    const status = section.querySelector<HTMLElement>('.comments__status')!;
+    const empty = section.querySelector<HTMLElement>('.comments__empty')!;
+    const list = section.querySelector<HTMLOListElement>('.comments__list')!;
+    const count = section.querySelector<HTMLElement>('.comments__count')!;
+
+    // textContent only, never innerHTML: comments are user input
+    const renderComment = (comment: { name: string; message: string; date: string }) => {
+      const item = document.createElement('li');
+      item.className = 'comments__item';
+      const header = document.createElement('div');
+      header.className = 'comments__meta';
+      const name = document.createElement('strong');
+      name.textContent = comment.name;
+      const time = document.createElement('time');
+      time.dateTime = comment.date;
+      time.textContent = new Date(comment.date).toLocaleDateString(dateLocales[lang as keyof typeof dateLocales], {
+        year: 'numeric', month: 'long', day: 'numeric',
+      });
+      header.append(name, time);
+      const body = document.createElement('p');
+      body.className = 'comments__body';
+      body.textContent = comment.message;
+      item.append(header, body);
+      return item;
+    };
+
+    const updateCount = () => {
+      const n = list.children.length;
+      count.textContent = n ? `(${n})` : '';
+      empty.textContent = ui.empty;
+      empty.hidden = n > 0;
+    };
+
+    fetch(`/api/comments?slug=${encodeURIComponent(slug!)}`)
+      .then(response => (response.ok ? response.json() : Promise.reject()))
+      .then(({ comments }) => {
+        list.append(...comments.map(renderComment));
+        updateCount();
+      })
+      .catch(() => {
+        empty.textContent = ui.loadError;
+      });
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const data = new FormData(form);
+      submit.disabled = true;
+      submit.textContent = ui.sending;
+      status.textContent = '';
+
+      try {
+        const response = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug, ...Object.fromEntries(data) }),
+        });
+        if (response.status === 429) throw new Error(ui.rateLimited);
+        if (response.status === 503) throw new Error(ui.queueFull);
+        if (!response.ok) throw new Error(ui.error);
+        form.reset();
+        status.classList.add('comments__status--ok');
+        status.textContent = ui.pending;
+      } catch (error) {
+        status.classList.remove('comments__status--ok');
+        status.textContent = error instanceof Error && error.message ? error.message : ui.error;
+      } finally {
+        submit.disabled = false;
+        submit.textContent = ui.submit;
+      }
+    });
+  }
+</script>
+
+<style>
+  .comments {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-light);
+  }
+  .comments__heading {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    margin-bottom: 24px;
+  }
+  .comments__count {
+    color: var(--text-muted);
+    font-size: 20px;
+  }
+
+  .comments__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  .comments__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .comments__field input,
+  .comments__field textarea {
+    font: inherit;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    resize: vertical;
+  }
+  .comments__field input:focus,
+  .comments__field textarea:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+    border-color: transparent;
+  }
+  .comments__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+  }
+  .comments__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .comments__submit {
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 9999px;
+    padding: 10px 22px;
+    cursor: pointer;
+  }
+  .comments__submit:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .comments__status {
+    font-size: 14px;
+    color: #DC2626;
+  }
+  .comments__status--ok {
+    color: #16A34A;
+  }
+
+  .comments__empty {
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+  .comments__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .comments__list :global(.comments__meta) {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .comments__list :global(.comments__meta strong) {
+    font-weight: 600;
+  }
+  .comments__list :global(.comments__meta time) {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .comments__list :global(.comments__body) {
+    font-size: 16px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+</style>
