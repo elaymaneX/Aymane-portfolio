@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Comments from '../components/Comments.astro';
 import ArticleExtras from '../components/ArticleExtras.astro';
+import Signature from '../components/Signature.astro';
 import { formatDate, localePath, t, type Lang } from '../i18n';
 import 'katex/dist/katex.min.css';
 
@@ -15,10 +16,11 @@ interface Props {
   tagColor: string;
   excerpt: string;
   lang: Lang;
+  signed?: boolean;
   fallback?: boolean;
 }
 
-const { slug, minutes, headings, title, date, tag, tagColor, excerpt, lang, fallback = false } = Astro.props;
+const { slug, minutes, headings, title, date, tag, tagColor, excerpt, lang, signed = true, fallback = false } = Astro.props;
 const ui = t(lang).blog;
 const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', day: 'numeric' });
 // A contents list only helps on longer posts
@@ -66,6 +68,8 @@ const jsonLd = {
       <slot />
     </div>
 
+    {signed && <Signature label={ui.writtenBy} />}
+
     <Comments slug={slug} lang={lang} />
 
     <footer class="post__footer">
@@ -87,7 +91,7 @@ const jsonLd = {
   .post {
     padding-top: 60px;
     padding-bottom: 80px;
-    max-width: 720px;
+    max-width: 920px;
     background: var(--bg);
     box-shadow: 0 0 48px 24px var(--bg);
   }
@@ -234,6 +238,26 @@ const jsonLd = {
     margin: 24px 0;
     font-size: 14px;
     line-height: 1.6;
+  }
+  /* Charts are exported on white, so they sit on a white card in both themes */
+  .post__content :global(figure) {
+    margin: 32px 0;
+  }
+  .post__content :global(figure img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    padding: 8px;
+  }
+  .post__content :global(figcaption) {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    font-style: italic;
   }
   .post__content :global(pre code) {
     background: none;

@@ -1,0 +1,58 @@
+---
+// Handwritten sign-off at the end of a post, with a flourish underneath
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div class="signature">
+  <p class="signature__label">{label}</p>
+  <p class="signature__name">Aymane Elamrani</p>
+  <svg class="signature__flourish" viewBox="0 0 320 28" fill="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="signature-ink" x1="0" x2="1">
+        <stop offset="0" stop-color="var(--accent)" />
+        <stop offset="1" stop-color="var(--gold)" />
+      </linearGradient>
+    </defs>
+    <path pathLength="1" d="M4 18 C 60 26, 120 8, 190 14 S 290 22, 316 6" stroke="url(#signature-ink)" stroke-width="2.2" stroke-linecap="round" />
+  </svg>
+</div>
+
+<style>
+  @font-face {
+    font-family: 'Mrs Saint Delafield';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/mrs-saint-delafield-latin-400-normal.woff2) format('woff2');
+  }
+
+  .signature {
+    margin-top: 56px;
+  }
+  .signature__label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .signature__name {
+    font-family: 'Mrs Saint Delafield', 'Fraunces', cursive;
+    font-size: clamp(40px, 7vw, 52px);
+    line-height: 1.3;
+    color: var(--text);
+    padding: 0 12px 0 4px;
+    width: fit-content;
+    margin-bottom: -12px;
+  }
+  .signature__flourish {
+    display: block;
+    width: min(230px, 70%);
+    height: auto;
+    margin-left: 8px;
+  }
+</style>
