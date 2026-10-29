@@ -10,6 +10,8 @@ const blog = defineCollection({
     tag: z.string().default(''),
     tagColor: z.string().default('#3B6CF4'),
     excerpt: z.string().default(''),
+    // Handwritten sign-off at the end; turn off for posts not written by Aymane
+    signed: z.boolean().default(true),
     draft: z.boolean().default(false),
   }),
 });
@@ -27,6 +29,8 @@ const projects = defineCollection({
     })).default([]),
     excerpt: z.string().default(''),
     icon: z.string().default('code'),
+    // Screenshot or chart on the project card, from public/images (set in the CMS)
+    cover: z.string().optional(),
     iconBg: z.string().default('#3B6CF4'),
     externalUrl: z.string().url().optional(),
     colabUrl: z.string().url().optional(),

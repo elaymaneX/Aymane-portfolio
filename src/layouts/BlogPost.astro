@@ -1,40 +1,74 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Comments from '../components/Comments.astro';
+import ArticleExtras from '../components/ArticleExtras.astro';
+import Signature from '../components/Signature.astro';
 import { formatDate, localePath, t, type Lang } from '../i18n';
+import 'katex/dist/katex.min.css';
 
 interface Props {
   slug: string;
+  minutes: number;
+  headings: { depth: number; slug: string; text: string }[];
   title: string;
   date: Date;
   tag: string;
   tagColor: string;
   excerpt: string;
   lang: Lang;
+  signed?: boolean;
   fallback?: boolean;
 }
 
-const { slug, title, date, tag, tagColor, excerpt, lang, fallback = false } = Astro.props;
+const { slug, minutes, headings, title, date, tag, tagColor, excerpt, lang, signed = true, fallback = false } = Astro.props;
 const ui = t(lang).blog;
 const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', day: 'numeric' });
+// A contents list only helps on longer posts
+const toc = headings.filter(h => h.depth <= 3);
+const showToc = toc.filter(h => h.depth === 2).length >= 3;
+const jsonLd = {
+  '@type': 'BlogPosting',
+  headline: title,
+  description: excerpt,
+  datePublished: date.toISOString(),
+  inLanguage: fallback ? 'en' : lang,
+  author: { '@id': new URL('/#person', Astro.site).href },
+  image: new URL(`/og/blog/${slug}.png`, Astro.site).href,
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+};
 ---
 
-<BaseLayout title={`${title} | Aymane Elamrani`} description={excerpt} activePage="Blog" lang={lang}>
+<BaseLayout title={`${title} | Aymane Elamrani`} description={excerpt} activePage="Blog" lang={lang}
+  ogImage={`/og/blog/${slug}.png`} article={{ published: date }} jsonLd={jsonLd}>
+  <ArticleExtras copy={ui.copy} copied={ui.copied} />
   <article class="container post">
     {fallback && <p class="post__notice">{t(lang).onlyInEnglish}</p>}
     <header class="post__header">
       <a href={localePath(lang, '/blog')} class="post__back">{ui.back}</a>
       <div class="post__meta">
-        <time>{formattedDate}</time>
+        <time datetime={date.toISOString()}>{formattedDate}</time>
+        <span class="post__dot" aria-hidden="true">·</span>
+        <span class="post__read">{minutes} {ui.minRead}</span>
         <span class="post__tag" style={`background: ${tagColor}`}>{tag}</span>
       </div>
       <h1 class="post__title" lang={fallback ? 'en' : undefined}>{title}</h1>
       <p class="post__excerpt">{excerpt}</p>
     </header>
 
+    {showToc && (
+      <details class="toc" open>
+        <summary>{ui.contents}</summary>
+        <ol>
+          {toc.map(h => <li class:list={{ 'toc__sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}
+        </ol>
+      </details>
+    )}
+
     <div class="post__content" lang={fallback ? 'en' : undefined}>
       <slot />
     </div>
+
+    {signed && <Signature label={ui.writtenBy} />}
 
     <Comments slug={slug} lang={lang} />
 
@@ -57,7 +91,7 @@ const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', d
   .post {
     padding-top: 60px;
     padding-bottom: 80px;
-    max-width: 720px;
+    max-width: 920px;
     background: var(--bg);
     box-shadow: 0 0 48px 24px var(--bg);
   }
@@ -76,11 +110,39 @@ const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', d
     gap: 12px;
     margin-bottom: 16px;
   }
-  .post__meta time {
+  .post__meta {
+    flex-wrap: wrap;
+  }
+  .post__meta time,
+  .post__read,
+  .post__dot {
     font-size: 14px;
     color: var(--text-muted);
     font-weight: 500;
   }
+  .post__dot { margin: 0 -4px; }
+
+  .toc {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 18px 24px;
+    margin-bottom: 40px;
+    font-size: 15px;
+  }
+  .toc summary {
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .toc ol {
+    list-style: none;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toc a { color: var(--text-muted); }
+  .toc a:hover { color: var(--accent); }
+  .toc__sub { padding-left: 18px; font-size: 14px; }
   .post__tag {
     font-size: 12px;
     padding: 3px 12px;
@@ -111,6 +173,15 @@ const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', d
     font-size: 17px;
     line-height: 1.85;
     color: var(--text);
+  }
+  .post__content :global(h2),
+  .post__content :global(h3) {
+    scroll-margin-top: 96px;
+  }
+  .post__content :global(.katex-display) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 0;
   }
   .post__content :global(h2) {
     font-family: 'Fraunces', serif;
@@ -167,6 +238,26 @@ const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', d
     margin: 24px 0;
     font-size: 14px;
     line-height: 1.6;
+  }
+  /* Charts are exported on white, so they sit on a white card in both themes */
+  .post__content :global(figure) {
+    margin: 32px 0;
+  }
+  .post__content :global(figure img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    padding: 8px;
+  }
+  .post__content :global(figcaption) {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    font-style: italic;
   }
   .post__content :global(pre code) {
     background: none;

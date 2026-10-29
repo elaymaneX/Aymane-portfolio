@@ -1,8 +1,11 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import ArticleExtras from '../components/ArticleExtras.astro';
 import { formatDate, localePath, t, type Lang } from '../i18n';
+import 'katex/dist/katex.min.css';
 
 interface Props {
+  slug: string;
   title: string;
   date: Date;
   tags: { label: string; accent?: boolean }[];
@@ -15,18 +18,30 @@ interface Props {
   fallback?: boolean;
 }
 
-const { title, date, tags, excerpt, colabUrl, repoUrl, stats = [], gallery = [], lang, fallback = false } = Astro.props;
+const { slug, title, date, tags, excerpt, colabUrl, repoUrl, stats = [], gallery = [], lang, fallback = false } = Astro.props;
 const ui = t(lang).projects;
 const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', day: 'numeric' });
+const jsonLd = {
+  '@type': 'CreativeWork',
+  name: title,
+  description: excerpt,
+  dateCreated: date.toISOString(),
+  author: { '@id': new URL('/#person', Astro.site).href },
+  image: new URL(`/og/projects/${slug}.png`, Astro.site).href,
+  keywords: tags.map(tag => tag.label).join(', '),
+  ...(repoUrl && { codeRepository: repoUrl }),
+};
 ---
 
-<BaseLayout title={`${title} | Aymane Elamrani`} description={excerpt} activePage="Projects" lang={lang}>
+<BaseLayout title={`${title} | Aymane Elamrani`} description={excerpt} activePage="Projects" lang={lang}
+  ogImage={`/og/projects/${slug}.png`} article={{ published: date }} jsonLd={jsonLd}>
+  <ArticleExtras copy={t(lang).blog.copy} copied={t(lang).blog.copied} />
   <article class="container post">
     {fallback && <p class="post__notice">{t(lang).onlyInEnglish}</p>}
     <header class="post__header">
       <a href={localePath(lang, '/projects')} class="post__back">{ui.back}</a>
       <div class="post__meta">
-        <time>{formattedDate}</time>
+        <time datetime={date.toISOString()}>{formattedDate}</time>
         <div class="post__tags">
           {tags.map(tag => (
             <span class:list={['post__tag', { 'post__tag--accent': tag.accent }]}>{tag.label}</span>

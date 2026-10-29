@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProjectIcon from '../../../components/ProjectIcon.astro';
 import { isApp, projectHref } from '../../../lib/projects';
 import { localizedEntries } from '../../../lib/content';
 import { getLang, langPaths, t } from '../../../i18n';
@@ -26,7 +27,6 @@ const linkAttrs = (p) => {
   if (!href) return {};
   return isApp(p) ? { href, target: '_blank', rel: 'noopener noreferrer' } : { href };
 };
-const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
 ---
 
 <BaseLayout title={ui.title} activePage="Projects" lang={lang}>
@@ -42,21 +42,9 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
     const Card = cardTag(project);
     return (
     <Card {...linkAttrs(project)} class="featured-card">
+      {project.data.cover && <img class="featured-card__cover" src={project.data.cover} alt="" decoding="async" width="1280" height="720" />}
       <div class="featured-card__header">
-        <div class="featured-card__icon" style={`background: ${project.data.iconBg}`}>
-          {project.data.icon === 'signal' && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          )}
-          {project.data.icon === 'web' && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-          )}
-          {project.data.icon === 'automation' && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
-          )}
-          {project.data.icon === 'code' && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          )}
-        </div>
+        {!project.data.cover && <ProjectIcon icon={project.data.icon} bg={project.data.iconBg} class="featured-card__icon" />}
         <div>
           <div class="featured-card__tags">
             {project.data.tags.map(tag => (
@@ -82,20 +70,9 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
           const Card = cardTag(project);
           return (
           <Card {...linkAttrs(project)} class="project-card">
-            <div class="project-card__icon" style={`background: ${project.data.iconBg}`}>
-              {project.data.icon === 'signal' && (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              )}
-              {project.data.icon === 'web' && (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-              )}
-              {project.data.icon === 'automation' && (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
-              )}
-              {project.data.icon === 'code' && (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconStroke(project)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              )}
-            </div>
+            {project.data.cover
+              ? <img class="project-card__cover" src={project.data.cover} alt="" loading="lazy" decoding="async" width="1280" height="720" />
+              : <ProjectIcon icon={project.data.icon} bg={project.data.iconBg} class="project-card__icon" />}
             <h3 class="project-card__title">{project.data.title}</h3>
             <p class="project-card__desc">{project.data.excerpt}</p>
             <div class="project-card__tags">
@@ -149,6 +126,19 @@ const iconStroke = (p) => p.data.iconBg === '#F5C563' ? '#111827' : '#fff';
     color: var(--text);
     transition: transform 0.2s, box-shadow 0.2s;
   }
+  .featured-card__cover,
+  .project-card__cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 12px;
+    background: var(--bg);
+    box-shadow: 0 0 0 1px var(--border-light);
+  }
+  /* The featured card spans two columns: a wider crop keeps the cover from towering */
+  .featured-card__cover { aspect-ratio: 21 / 9; margin-bottom: 28px; }
   a.featured-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);

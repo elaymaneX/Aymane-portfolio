@@ -36,6 +36,8 @@ const en = {
     ctaDesc: 'I share new projects, analysis write-ups, and thoughts on AI and finance. Follow along with RSS, or just say hi.',
     ctaRss: 'Subscribe via RSS',
     ctaEmail: 'Email me',
+    cv: 'Download CV',
+    trustLabel: 'Experience at',
   },
   blog: {
     title: 'Blog | Aymane Elamrani',
@@ -46,6 +48,11 @@ const en = {
     readMore: 'Read more →',
     back: '← Back to blog',
     backAll: '← Back to all posts',
+    minRead: 'min read',
+    contents: 'On this page',
+    copy: 'Copy',
+    copied: 'Copied',
+    writtenBy: 'Written by',
   },
   comments: {
     heading: 'Comments',
@@ -82,6 +89,15 @@ const en = {
   },
   // Shown when a post or project has no translation yet
   onlyInEnglish: 'This page is only available in English for now.',
+  skipToContent: 'Skip to content',
+  notFound: {
+    title: 'Page not found | Aymane Elamrani',
+    heading: 'Lost in the',
+    headingAccent: 'wave function',
+    text: "This page doesn't exist, or it collapsed into another state. Let's get you back.",
+    home: 'Back to home',
+    blog: 'Read the blog',
+  },
 };
 
 type Dict = typeof en;
@@ -123,6 +139,8 @@ const es: Dict = {
     ctaDesc: 'Comparto nuevos proyectos, análisis y reflexiones sobre IA y finanzas. Sígueme por RSS o simplemente salúdame.',
     ctaRss: 'Suscribirse por RSS',
     ctaEmail: 'Escríbeme',
+    cv: 'Descargar CV',
+    trustLabel: 'Experiencia en',
   },
   blog: {
     title: 'Blog | Aymane Elamrani',
@@ -133,6 +151,11 @@ const es: Dict = {
     readMore: 'Leer más →',
     back: '← Volver al blog',
     backAll: '← Volver a todos los artículos',
+    minRead: 'min de lectura',
+    contents: 'En esta página',
+    copy: 'Copiar',
+    copied: 'Copiado',
+    writtenBy: 'Escrito por',
   },
   comments: {
     heading: 'Comentarios',
@@ -168,6 +191,15 @@ const es: Dict = {
     results: 'Resultados',
   },
   onlyInEnglish: 'Por ahora, esta página solo está disponible en inglés.',
+  skipToContent: 'Saltar al contenido',
+  notFound: {
+    title: 'Página no encontrada | Aymane Elamrani',
+    heading: 'Perdido en la',
+    headingAccent: 'función de onda',
+    text: 'Esta página no existe, o colapsó en otro estado. Volvamos al inicio.',
+    home: 'Volver al inicio',
+    blog: 'Leer el blog',
+  },
 };
 
 const fr: Dict = {
@@ -207,6 +239,8 @@ const fr: Dict = {
     ctaDesc: "Je partage de nouveaux projets, des analyses et mes réflexions sur l'IA et la finance. Suivez-moi par RSS, ou dites simplement bonjour.",
     ctaRss: "S'abonner par RSS",
     ctaEmail: "M'écrire",
+    cv: 'Télécharger le CV',
+    trustLabel: 'Expérience chez',
   },
   blog: {
     title: 'Blog | Aymane Elamrani',
@@ -217,6 +251,11 @@ const fr: Dict = {
     readMore: 'Lire la suite →',
     back: '← Retour au blog',
     backAll: '← Retour à tous les articles',
+    minRead: 'min de lecture',
+    contents: 'Sur cette page',
+    copy: 'Copier',
+    copied: 'Copié',
+    writtenBy: 'Écrit par',
   },
   comments: {
     heading: 'Commentaires',
@@ -252,6 +291,15 @@ const fr: Dict = {
     results: 'Résultats',
   },
   onlyInEnglish: "Pour l'instant, cette page n'est disponible qu'en anglais.",
+  skipToContent: 'Aller au contenu',
+  notFound: {
+    title: 'Page introuvable | Aymane Elamrani',
+    heading: 'Perdu dans la',
+    headingAccent: "fonction d'onde",
+    text: "Cette page n'existe pas, ou elle s'est effondrée dans un autre état. Revenons à l'accueil.",
+    home: "Retour à l'accueil",
+    blog: 'Lire le blog',
+  },
 };
 
 export const ui = { en, es, fr };

@@ -1,6 +1,6 @@
 ---
 import BlogPost from '../../../layouts/BlogPost.astro';
-import { localizedEntries } from '../../../lib/content';
+import { localizedEntries, readingMinutes } from '../../../lib/content';
 import { langPaths, type Lang } from '../../../i18n';
 
 export async function getStaticPaths() {
@@ -16,9 +16,9 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const { entry, fallback, lang } = Astro.props;
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
 ---
 
-<BlogPost {...entry.data} slug={slug} lang={lang} fallback={fallback}>
+<BlogPost {...entry.data} slug={slug} minutes={readingMinutes(entry.body)} headings={headings} lang={lang} fallback={fallback}>
   <Content />
 </BlogPost>

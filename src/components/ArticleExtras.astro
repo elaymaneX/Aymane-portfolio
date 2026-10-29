@@ -1,0 +1,97 @@
+---
+// Reading progress bar along the top, and a copy button on every code block in the article
+interface Props {
+  copy: string;
+  copied: string;
+}
+
+const { copy, copied } = Astro.props;
+---
+
+<div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+<script define:vars={{ copy, copied }}>
+  // Inline (define:vars) scripts run where they are placed, before the article: wait for the page
+  const init = () => {
+    const bar = document.querySelector('.progress__bar');
+    const article = document.querySelector('article');
+    const update = () => {
+      if (!bar || !article) return;
+      const rect = article.getBoundingClientRect();
+      const total = rect.height - innerHeight;
+      const progress = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 1;
+      bar.style.transform = `scaleX(${progress})`;
+    };
+    addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+    update();
+
+    document.querySelectorAll('article pre').forEach(pre => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'copy-code';
+      button.textContent = copy;
+      button.addEventListener('click', async () => {
+        const text = pre.querySelector('code')?.innerText ?? pre.innerText;
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (e) {
+          // Clipboard API blocked (older browsers, embedded views): fall back to a hidden selection
+          const area = Object.assign(document.createElement('textarea'), { value: text });
+          area.style.cssText = 'position:fixed;opacity:0';
+          document.body.append(area);
+          area.select();
+          const ok = document.execCommand('copy');
+          area.remove();
+          if (!ok) return;
+        }
+        button.textContent = copied;
+        setTimeout(() => (button.textContent = copy), 1500);
+      });
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block';
+      pre.replaceWith(wrapper);
+      wrapper.append(pre, button);
+    });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+</script>
+
+<style is:global>
+  .progress {
+    position: fixed;
+    inset: 0 0 auto;
+    height: 3px;
+    z-index: 200;
+    pointer-events: none;
+  }
+  .progress__bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .code-block { position: relative; }
+  .code-block pre { padding-right: 80px; }
+  .copy-code {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .code-block:hover .copy-code,
+  .copy-code:focus-visible { opacity: 1; }
+  @media (hover: none) { .copy-code { opacity: 1; } }
+</style>
