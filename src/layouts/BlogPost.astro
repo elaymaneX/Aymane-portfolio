@@ -40,7 +40,7 @@ const jsonLd = {
 
 <BaseLayout title={`${title} | Aymane Elamrani`} description={excerpt} activePage="Blog" lang={lang}
   ogImage={`/og/blog/${slug}.png`} article={{ published: date }} jsonLd={jsonLd}>
-  <ArticleExtras copy={ui.copy} copied={ui.copied} />
+  <ArticleExtras copy={ui.copy} copied={ui.copied} close={ui.close} />
   <article class="container post">
     {fallback && <p class="post__notice">{t(lang).onlyInEnglish}</p>}
     <header class="post__header">
