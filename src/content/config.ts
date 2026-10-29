@@ -10,6 +10,8 @@ const blog = defineCollection({
     tag: z.string().default(''),
     tagColor: z.string().default('#3B6CF4'),
     excerpt: z.string().default(''),
+    // Handwritten sign-off at the end; turn off for posts not written by Aymane
+    signed: z.boolean().default(true),
     draft: z.boolean().default(false),
   }),
 });

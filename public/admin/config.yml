@@ -33,6 +33,7 @@ collections:
       - { label: "Tag", name: "tag", widget: "string", hint: "e.g. AI, Finance, Research", i18n: true }
       - { label: "Tag Color", name: "tagColor", widget: "color", default: "#3B6CF4", i18n: duplicate }
       - { label: "Excerpt", name: "excerpt", widget: "text", i18n: true }
+      - { label: "Signed", name: "signed", widget: "boolean", default: true, hint: "Handwritten signature at the end of the post", i18n: duplicate }
       - { label: "Draft", name: "draft", widget: "boolean", default: false, i18n: duplicate }
       - { label: "Body", name: "body", widget: "markdown", i18n: true }
 
