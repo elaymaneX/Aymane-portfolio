@@ -1,0 +1,22 @@
+---
+// The icon tile on project cards; `icon` and `bg` come from the project's frontmatter
+interface Props {
+  icon: string;
+  bg: string;
+  class?: string;
+}
+
+// The rest carries the class and the parent page's style scope
+const { icon, bg, ...attrs } = Astro.props;
+// Dark strokes on the light gold tile, white on everything else
+const stroke = bg === '#F5C563' ? '#111827' : '#fff';
+---
+
+<div {...attrs} style={`background: ${bg}`}>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    {icon === 'automation' && <><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></>}
+    {icon === 'signal' && <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>}
+    {icon === 'web' && <><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></>}
+    {icon === 'code' && <><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></>}
+  </svg>
+</div>

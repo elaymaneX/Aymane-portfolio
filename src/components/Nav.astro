@@ -39,7 +39,7 @@ const basePath = unlocalizedPath(Astro.url.pathname);
     </button>
 
     <!-- Hamburger -->
-    <button class="nav__burger" id="nav-burger" aria-label={ui.menu}>
+    <button class="nav__burger" id="nav-burger" aria-label={ui.menu} aria-expanded="false" aria-controls="nav-menu">
       <span></span>
     </button>
   </div>
@@ -219,15 +219,22 @@ const basePath = unlocalizedPath(Astro.url.pathname);
 
   // Hamburger toggle
   const menu = document.getElementById('nav-menu');
-  document.getElementById('nav-burger')?.addEventListener('click', () => {
-    menu?.classList.toggle('open');
+  const burger = document.getElementById('nav-burger');
+  const setMenu = (open: boolean) => {
+    menu?.classList.toggle('open', open);
+    burger?.setAttribute('aria-expanded', String(open));
+  };
+  burger?.addEventListener('click', () => setMenu(!menu?.classList.contains('open')));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menu?.classList.contains('open')) {
+      setMenu(false);
+      burger?.focus();
+    }
   });
 
   // Close mobile menu when resizing past breakpoint
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 768 && menu?.classList.contains('open')) {
-      menu.classList.remove('open');
-    }
+    if (window.innerWidth > 768 && menu?.classList.contains('open')) setMenu(false);
   });
 
   // Dark mode toggle

@@ -2,6 +2,12 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import headshot from '../../assets/headshot.jpeg';
+import upvLogo from '../../assets/logos/upv.png';
+import owLogo from '../../assets/logos/oliver-wyman.png';
+import amazonLogo from '../../assets/logos/amazon.svg';
+import mahleLogo from '../../assets/logos/mahle-white.svg';
+import { existsSync } from 'node:fs';
+import ProjectIcon from '../../components/ProjectIcon.astro';
 import { isApp, projectHref } from '../../lib/projects';
 import { localizedEntries } from '../../lib/content';
 import { formatDate, getLang, langPaths, localePath, t } from '../../i18n';
@@ -16,6 +22,15 @@ const byDateDesc = (a, b) => b.entry.data.date.valueOf() - a.entry.data.date.val
 const featuredProjects = (await localizedEntries('projects', lang))
   .sort((a, b) => Number(b.entry.data.featured) - Number(a.entry.data.featured) || byDateDesc(a, b))
   .slice(0, 3);
+
+// The CV button appears once public/cv.pdf exists
+const hasCv = existsSync('public/cv.pdf');
+const companies = [
+  { name: 'Amazon', logo: amazonLogo, bg: '#ffffff', pad: true },
+  { name: 'Oliver Wyman', logo: owLogo },
+  { name: 'UPV', logo: upvLogo },
+  { name: 'MAHLE', logo: mahleLogo, bg: '#1e2a63', pad: true },
+];
 
 const latestPosts = (await localizedEntries('blog', lang))
   .sort(byDateDesc)
@@ -51,12 +66,35 @@ const latestPosts = (await localizedEntries('blog', lang))
       <div class="hero__actions">
         <a href={localePath(lang, '/projects')} class="btn btn--primary">{ui.viewProjects} <span>→</span></a>
         <a href={localePath(lang, '/blog')} class="btn btn--outline">{ui.readBlog}</a>
+        {hasCv && (
+          <a href="/cv.pdf" class="btn btn--ghost" download="Aymane-Elamrani-CV.pdf">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            {ui.cv}
+          </a>
+        )}
       </div>
     </div>
   </section>
 
+  <!-- CREDIBILITY -->
+  <section class="container trust" data-reveal>
+    <div class="trust__companies">
+      <span class="trust__label">{ui.trustLabel}</span>
+      <ul class="trust__logos">
+        {companies.map(c => (
+          <li class="trust__company">
+            <span class="trust__logo" style={c.bg && `background: ${c.bg}`}>
+              <Image src={c.logo} alt="" width={64} height={64} class:list={['trust__img', { 'trust__img--pad': c.pad }]} />
+            </span>
+            {c.name}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
   <!-- FEATURED PROJECTS -->
-  <section class="section container">
+  <section class="section container" data-reveal>
     <div class="section__header">
       <h2 class="section__title"><span class="highlight-blue">{ui.featuredA}</span> {ui.featuredB}</h2>
       <a href={localePath(lang, '/projects')} class="section__link">{ui.viewAll}</a>
@@ -64,26 +102,14 @@ const latestPosts = (await localizedEntries('blog', lang))
     <div class="projects-grid">
       {featuredProjects.map(({ entry }) => {
         const project = entry.data;
-        const stroke = project.iconBg === '#F5C563' ? '#111827' : '#fff';
         const href = projectHref(entry, lang);
         // An app that isn't live yet has no destination, so its card isn't a link
         const Card = href ? 'a' : 'div';
         return (
         <Card href={href} target={href && isApp(entry) ? '_blank' : undefined} rel={href && isApp(entry) ? 'noopener noreferrer' : undefined} class="project-card">
-          <div class="project-card__icon" style={`background: ${project.iconBg}`}>
-            {project.icon === 'automation' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4h-4z"/></svg>
-            )}
-            {project.icon === 'signal' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            )}
-            {project.icon === 'web' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-            )}
-            {project.icon === 'code' && (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            )}
-          </div>
+          {project.cover
+            ? <img class="project-card__cover" src={project.cover} alt="" loading="lazy" decoding="async" width="1280" height="720" />
+            : <ProjectIcon icon={project.icon} bg={project.iconBg} class="project-card__icon" />}
           <h3 class="project-card__title">{project.title}</h3>
           <p class="project-card__desc">{project.excerpt}</p>
           <div class="project-card__tags">
@@ -98,7 +124,7 @@ const latestPosts = (await localizedEntries('blog', lang))
   </section>
 
   <!-- LATEST POSTS -->
-  <section class="posts-section">
+  <section class="posts-section" data-reveal>
     <div class="container">
       <div class="section__header">
         <h2 class="section__title">{ui.latestA} <span class="highlight-gold">{ui.latestB}</span></h2>
@@ -117,7 +143,7 @@ const latestPosts = (await localizedEntries('blog', lang))
   </section>
 
   <!-- NEWSLETTER CTA -->
-  <section class="container" style="padding-top: 80px; padding-bottom: 80px;">
+  <section class="container" style="padding-top: 80px; padding-bottom: 80px;" data-reveal>
     <div class="cta-box">
       <h2 class="cta-box__title">{ui.ctaTitle}</h2>
       <p class="cta-box__desc">{ui.ctaDesc}</p>
@@ -278,9 +304,23 @@ const latestPosts = (await localizedEntries('blog', lang))
     flex-direction: column;
     gap: 16px;
     color: var(--text);
-    transition: transform 0.2s;
+    transition: transform 0.25s, box-shadow 0.25s;
   }
-  a.project-card:hover { transform: translateY(-2px); color: var(--text); }
+  a.project-card:hover {
+    transform: translateY(-4px);
+    color: var(--text);
+    box-shadow: 0 0 0 1px var(--accent-light), 0 16px 40px -16px rgba(59, 108, 244, 0.35);
+  }
+  .project-card__cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 10px;
+    background: var(--bg);
+    box-shadow: 0 0 0 1px var(--border-light);
+  }
   .project-card__icon {
     width: 48px;
     height: 48px;
@@ -375,6 +415,78 @@ const latestPosts = (await localizedEntries('blog', lang))
     flex-wrap: wrap;
   }
   .btn--light { background: var(--bg); color: var(--text); }
+  .btn--ghost { color: var(--text-muted); padding-left: 12px; padding-right: 12px; }
+  .btn--ghost:hover { color: var(--accent); }
+
+  /* In dark mode the inverted (near-white) box glared; use a lifted card with a soft glow instead */
+  :global([data-theme="dark"]) .cta-box {
+    background: radial-gradient(120% 140% at 50% 0%, rgba(107, 80, 220, 0.22) 0%, transparent 60%), var(--card-bg);
+    border: 1px solid var(--border-light);
+    color: var(--text);
+  }
+  :global([data-theme="dark"]) .btn--light {
+    background: transparent;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+
+  /* CREDIBILITY STRIP: centred logos that float gently, each on its own rhythm */
+  .trust {
+    display: flex;
+    justify-content: center;
+    padding-top: 36px;
+    padding-bottom: 36px;
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .trust__companies {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+  .trust__label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .trust__logos {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px clamp(24px, 5vw, 56px);
+  }
+  .trust__company {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .trust__logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    box-shadow: 0 0 0 1px var(--border-light), 0 8px 20px -10px rgba(59, 108, 244, 0.45);
+  }
+  .trust__img { width: 100%; height: 100%; object-fit: cover; }
+  .trust__img--pad { object-fit: contain; padding: 5px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .trust__company { animation: logoFloat 4.5s ease-in-out infinite alternate; }
+    .trust__company:nth-child(2) { animation-duration: 5.2s; animation-delay: -1.8s; }
+    .trust__company:nth-child(3) { animation-duration: 4.8s; animation-delay: -3.1s; }
+    .trust__company:nth-child(4) { animation-duration: 5.6s; animation-delay: -0.9s; }
+  }
+  @keyframes logoFloat {
+    from { translate: 0 -5px; }
+    to { translate: 0 5px; }
+  }
 
   /* Hero intro: photo drops in from the right, text follows (Greek letters: GreekBackground.astro) */
   @media (prefers-reduced-motion: no-preference) {

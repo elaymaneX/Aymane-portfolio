@@ -1,0 +1,93 @@
+---
+// One 404 page for every language (Vercel serves it for any unknown URL); a small script
+// switches the text and links to Spanish or French when the missing URL starts with /es/ or /fr/
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { localePath, locales, t } from '../i18n';
+
+const ui = t('en').notFound;
+const copy = Object.fromEntries(locales.map(l => [l, {
+  ...t(l).notFound,
+  homeHref: localePath(l, '/'),
+  blogHref: localePath(l, '/blog'),
+}]));
+---
+
+<BaseLayout title={ui.title} lang="en">
+  <section class="container not-found">
+    <p class="not-found__code">404</p>
+    <h1 class="not-found__title">
+      <span data-text="heading">{ui.heading}</span> <span class="highlight-blue" data-text="headingAccent">{ui.headingAccent}</span>
+    </h1>
+    <p class="not-found__text" data-text="text">{ui.text}</p>
+    <div class="not-found__actions">
+      <a href="/" class="not-found__btn not-found__btn--primary" data-text="home" data-href="homeHref">{ui.home}</a>
+      <a href="/blog" class="not-found__btn" data-text="blog" data-href="blogHref">{ui.blog}</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ copy }}>
+  const lang = location.pathname.match(/^\/(es|fr)(\/|$)/)?.[1];
+  if (lang) {
+    const text = copy[lang];
+    document.documentElement.lang = lang;
+    document.title = text.title;
+    document.querySelectorAll('[data-text]').forEach(el => (el.textContent = text[el.dataset.text]));
+    document.querySelectorAll('[data-href]').forEach(el => (el.href = text[el.dataset.href]));
+  }
+</script>
+
+<style>
+  .not-found {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+  .not-found__code {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(96px, 18vw, 180px);
+    line-height: 1;
+    letter-spacing: -4px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  /* Gold is too faint on the light background, so the gradient is dark-mode only */
+  :global([data-theme="dark"]) .not-found__code {
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .not-found__title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 500;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  .not-found__text {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
+  .not-found__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .not-found__btn {
+    padding: 14px 28px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 15px;
+    border: 1.5px solid var(--border);
+  }
+  .not-found__btn--primary {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .not-found__btn--primary:hover { color: var(--bg); opacity: 0.85; }
+</style>

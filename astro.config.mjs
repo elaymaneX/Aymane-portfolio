@@ -2,6 +2,8 @@ import { defineConfig } from 'astro/config';
 import { loadEnv } from 'vite';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 // In `astro dev`, serve the Vercel functions in api/ (on Vercel they run on their own)
 const vercelApiInDev = {
@@ -38,5 +40,14 @@ export default defineConfig({
     }),
     vercelApiInDev,
   ],
-  site: 'https://aymane-portofolio-eta.vercel.app',
+  // Set SITE_URL in Vercel when the custom domain is live; canonical links, sitemap, RSS and share
+  // images all follow it
+  site: process.env.SITE_URL || 'https://aymane-portofolio-eta.vercel.app',
+  markdown: {
+    // $inline$ and $$block$$ maths in posts, rendered to HTML at build time (no JS for readers)
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+    // Code blocks follow the site theme: light by default, dark under [data-theme="dark"] (global.css)
+    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' }, defaultColor: 'light' },
+  },
 });

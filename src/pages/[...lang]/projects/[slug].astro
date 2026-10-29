@@ -16,10 +16,11 @@ export async function getStaticPaths() {
   return paths;
 }
 
+const { slug } = Astro.params;
 const { entry, fallback, lang } = Astro.props;
 const { Content } = await entry.render();
 ---
 
-<ProjectPost {...entry.data} lang={lang} fallback={fallback}>
+<ProjectPost {...entry.data} slug={slug} lang={lang} fallback={fallback}>
   <Content />
 </ProjectPost>
