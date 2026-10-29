@@ -1,8 +1,10 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import Comments from '../components/Comments.astro';
 import { formatDate, localePath, t, type Lang } from '../i18n';
 
 interface Props {
+  slug: string;
   title: string;
   date: Date;
   tag: string;
@@ -12,7 +14,7 @@ interface Props {
   fallback?: boolean;
 }
 
-const { title, date, tag, tagColor, excerpt, lang, fallback = false } = Astro.props;
+const { slug, title, date, tag, tagColor, excerpt, lang, fallback = false } = Astro.props;
 const ui = t(lang).blog;
 const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', day: 'numeric' });
 ---
@@ -33,6 +35,8 @@ const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', d
     <div class="post__content" lang={fallback ? 'en' : undefined}>
       <slot />
     </div>
+
+    <Comments slug={slug} lang={lang} />
 
     <footer class="post__footer">
       <a href={localePath(lang, '/blog')} class="post__back">{ui.backAll}</a>
