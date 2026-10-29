@@ -17,7 +17,7 @@ export async function getStaticPaths() {
         title: 'Machine learning, quantitative finance & AI agents',
         label: 'Portfolio',
         labelColor: '#3B6CF4',
-        subtitle: 'Projects, write-ups and notes by an ML engineer with a quantum physics background.',
+        subtitle: 'Projects, write-ups and notes by a quantitative data scientist with a quantum physics background.',
       },
     },
   ];
@@ -78,7 +78,7 @@ export const GET: APIRoute = async ({ props }) => {
       h('div', { alignItems: 'center', gap: 18, fontSize: 24 },
         h('div', { width: 56, height: 6, borderRadius: 3, background: 'linear-gradient(90deg, #6B8FF8, #F5C563)' }),
         h('div', { fontWeight: 700 }, 'Aymane Elamrani'),
-        h('div', { color: '#9CA3AF' }, 'ML Engineer'),
+        h('div', { color: '#9CA3AF' }, 'Quantitative Data Scientist & ML'),
       ),
     ),
   );

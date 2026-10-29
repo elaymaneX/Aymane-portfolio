@@ -1,7 +1,7 @@
 const en = {
   meta: {
-    homeTitle: 'Aymane Elamrani | ML Engineer & Maker',
-    defaultDescription: 'ML engineer, quantum physics enthusiast, and maker.',
+    homeTitle: 'Aymane Elamrani | Quantitative Data Scientist & ML',
+    defaultDescription: 'Quantitative data scientist & ML, quantum physics enthusiast, and maker.',
   },
   nav: {
     Projects: 'Projects',
@@ -22,7 +22,7 @@ const en = {
     // Glued to the start of the 'internet' line (no space), e.g. French d’
     titleInternetPrefix: '',
     titleInternet: 'internet',
-    subtitle: "ML engineer with a quantum physics background. I went from studying how photons behave to building forecasting systems at Amazon, and now I'm carving my way into quantitative finance and AI agents. I like hard problems, messy data, and first-principles thinking.",
+    subtitle: "Quantitative data scientist & ML, with a quantum physics background. I went from studying how photons behave to building forecasting systems at Amazon, and now I'm carving my way into quantitative finance and AI agents. I like hard problems, messy data, and first-principles thinking.",
     help: 'How can I help you?',
     viewProjects: 'View projects',
     readBlog: 'Read the blog',
@@ -105,8 +105,8 @@ type Dict = typeof en;
 
 const es: Dict = {
   meta: {
-    homeTitle: 'Aymane Elamrani | Ingeniero de ML y maker',
-    defaultDescription: 'Ingeniero de ML, apasionado de la física cuántica y maker.',
+    homeTitle: 'Aymane Elamrani | Científico de datos cuantitativo y ML',
+    defaultDescription: 'Científico de datos cuantitativo y ML, apasionado de la física cuántica y maker.',
   },
   nav: {
     Projects: 'Proyectos',
@@ -126,7 +126,7 @@ const es: Dict = {
     titleOfThe: 'de',
     titleInternetPrefix: '',
     titleInternet: 'internet',
-    subtitle: 'Ingeniero de ML con formación en física cuántica. Pasé de estudiar cómo se comportan los fotones a construir sistemas de previsión en Amazon, y ahora me abro camino en las finanzas cuantitativas y los agentes de IA. Me gustan los problemas difíciles, los datos desordenados y pensar desde primeros principios.',
+    subtitle: 'Científico de datos cuantitativo y ML, con formación en física cuántica. Pasé de estudiar cómo se comportan los fotones a construir sistemas de previsión en Amazon, y ahora me abro camino en las finanzas cuantitativas y los agentes de IA. Me gustan los problemas difíciles, los datos desordenados y pensar desde primeros principios.',
     help: '¿Cómo puedo ayudarte?',
     viewProjects: 'Ver proyectos',
     readBlog: 'Leer el blog',
@@ -206,8 +206,8 @@ const es: Dict = {
 
 const fr: Dict = {
   meta: {
-    homeTitle: 'Aymane Elamrani | Ingénieur ML et maker',
-    defaultDescription: 'Ingénieur ML, passionné de physique quantique et maker.',
+    homeTitle: 'Aymane Elamrani | Data scientist quantitatif et ML',
+    defaultDescription: 'Data scientist quantitatif et ML, passionné de physique quantique et maker.',
   },
   nav: {
     Projects: 'Projets',
@@ -227,7 +227,7 @@ const fr: Dict = {
     titleOfThe: '',
     titleInternetPrefix: 'd’',
     titleInternet: 'internet',
-    subtitle: "Ingénieur ML avec une formation en physique quantique. Je suis passé de l'étude du comportement des photons à la création de systèmes de prévision chez Amazon, et je me lance maintenant dans la finance quantitative et les agents IA. J'aime les problèmes difficiles, les données désordonnées et le raisonnement par principes premiers.",
+    subtitle: "Data scientist quantitatif et ML, avec une formation en physique quantique. Je suis passé de l'étude du comportement des photons à la création de systèmes de prévision chez Amazon, et je me lance maintenant dans la finance quantitative et les agents IA. J'aime les problèmes difficiles, les données désordonnées et le raisonnement par principes premiers.",
     help: 'Comment puis-je vous aider ?',
     viewProjects: 'Voir les projets',
     readBlog: 'Lire le blog',
