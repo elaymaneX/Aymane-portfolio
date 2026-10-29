@@ -52,6 +52,7 @@ const en = {
     contents: 'On this page',
     copy: 'Copy',
     copied: 'Copied',
+    close: 'Close',
     writtenBy: 'Written by',
   },
   comments: {
@@ -155,6 +156,7 @@ const es: Dict = {
     contents: 'En esta página',
     copy: 'Copiar',
     copied: 'Copiado',
+    close: 'Cerrar',
     writtenBy: 'Escrito por',
   },
   comments: {
@@ -255,6 +257,7 @@ const fr: Dict = {
     contents: 'Sur cette page',
     copy: 'Copier',
     copied: 'Copié',
+    close: 'Fermer',
     writtenBy: 'Écrit par',
   },
   comments: {
