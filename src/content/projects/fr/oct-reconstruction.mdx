@@ -1,0 +1,65 @@
+---
+title: "Deep learning guidé par la physique pour la reconstruction quantitative en OCT"
+excerpt: "Mémoire de master · Information quantique et photonique · Universitat Politècnica de València · 2025–2026"
+stats:
+  - { value: '3,7×', label: "Réduction de l'erreur de reconstruction" }
+  - { value: 'R² = 0,978', label: "Récupération de l'atténuation" }
+  - { value: '5 000', label: 'B-scans rétiniens synthétiques' }
+---
+
+## Présentation
+
+La tomographie par cohérence optique (OCT) fournit des images haute résolution et non invasives des tissus biologiques. Pourtant, extraire des propriétés quantitatives des tissus à partir d'images OCT reste difficile : le signal mesuré combine la réflectivité du tissu, l'atténuation optique et le flou du système d'imagerie.
+
+Cette recherche explore comment le deep learning guidé par la physique peut résoudre ce problème inverse couplé, en allant au-delà de la reconstruction d'image classique vers la récupération quantitative des propriétés optiques des tissus.
+
+J'ai développé un cadre de reconstruction guidé par la physique qui combine un modèle direct OCT différentiable et une architecture U-Net multi-têtes. Le réseau estime des cartes spatiales d'atténuation et de réflectivité du tissu, tandis qu'une fonction de perte de reconstruction fondée sur la physique garantit que les propriétés prédites restent cohérentes avec le signal OCT observé.
+
+## Méthodologie
+
+<figure>
+  <img src="/images/oct/pipeline.png" alt="Schéma du pipeline : vérité terrain, modèle direct, B-scan OCT synthétique, U-Net multi-têtes et reconstruction PINN" loading="lazy" width="1031" height="403" />
+  <figcaption>Figure 1 : Pipeline global du modèle inverse OCT guidé par la physique.</figcaption>
+</figure>
+
+### 1. Modélisation physique de l'OCT
+
+J'ai développé un modèle direct différentiable fondé sur l'atténuation de Beer–Lambert, la sensibilité confocale et un flou par fonction d'étalement du point (PSF) gaussienne dépendant de la profondeur. Ce modèle a permis de générer des B-scans rétiniens synthétiques aux propriétés optiques connues.
+
+### 2. Reconstruction inverse par deep learning
+
+J'ai implémenté un U-Net multi-têtes en JAX/Flax pour estimer les cartes d'atténuation et de réflectivité du tissu à partir d'images OCT synthétiques. L'architecture utilise des décodeurs spécialisés pour capturer les caractéristiques spatiales propres à chaque paramètre optique.
+
+### 3. Optimisation guidée par la physique
+
+J'ai introduit une fonction de perte de reconstruction qui propage les prédictions du réseau à travers le modèle direct OCT différentiable. Cela ajoute une contrainte physique au-delà de l'apprentissage supervisé classique et pousse les propriétés prédites à reproduire l'observation OCT d'origine.
+
+### 4. Simulation électromagnétique et validation
+
+J'ai amélioré un simulateur électromagnétique par différences finies dans le domaine temporel (FDTD) grâce à un lissage sous-pixel qui réduit les erreurs numériques d'escalier. J'ai validé sa réponse en diffusion par rapport à la théorie analytique de Mie, ouvrant une voie complémentaire vers des simulations physiques plus fidèles.
+
+## Résultats
+
+Des expériences sur 5 000 B-scans rétiniens synthétiques ont montré qu'intégrer la cohérence physique à l'apprentissage améliore nettement la reconstruction quantitative.
+
+- **Erreur de reconstruction divisée par 3,7 :** l'affinage guidé par la physique a réduit le log-MSE de reconstruction de 0,893 à 0,241.
+- **Récupération des paramètres très précise :** l'atténuation a atteint un R² = 0,978 et la réflectivité un R² = 0,959 sur le jeu de test synthétique réservé.
+- **Meilleure cohérence physique :** le signal OCT reconstruit s'est nettement rapproché de l'observation d'origine, tout en conservant une grande précision sur les paramètres du tissu.
+
+<figure>
+  <img src="/images/oct/pinn-metrics.png" alt="Diagrammes en barres comparant les erreurs et les valeurs de R² avant et après le PINN" loading="lazy" width="1041" height="368" />
+  <figcaption>Figure 2 : Métriques de test avant et après le PINN. À gauche : erreurs (plus bas, c'est mieux). À droite : R² (plus haut, c'est mieux).</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/oct/cross-stage-panel.png" alt="Grille de reconstructions OCT, cartes d'atténuation et résidus avant et après l'affinage PINN" loading="lazy" width="1063" height="767" />
+  <figcaption>Figure 3 : Panneau qualitatif entre étapes pour un échantillon de test : observation et reconstructions (en haut), cartes de μ (au milieu) et comparaison des résidus (en bas).</figcaption>
+</figure>
+
+## Stack technique
+
+Python · JAX · Flax · Deep Learning · U-Net · Réseaux de neurones guidés par la physique (PINNs) · Tomographie par cohérence optique · FDTD · Diffusion de Mie · Électromagnétisme numérique · Calcul sur GPU
+
+## Contexte de recherche
+
+Réalisé dans le cadre du projet de recherche européen SEQUOIA, en contribuant au développement de nouvelles approches d'imagerie optique plus précises sur le plan quantitatif.

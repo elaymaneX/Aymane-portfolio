@@ -27,7 +27,7 @@ export async function localizedEntries<C extends 'blog' | 'projects'>(collection
       const data = { ...base.data };
       for (const key of translatable) if (isFilled(tr.data[key])) data[key] = tr.data[key];
       // Use the translated body (render) unless it's still empty
-      const body = tr.body.trim() ? tr : base;
+      const body = tr.body?.trim() ? tr : base;
       return { entry: { ...body, data } as CollectionEntry<C>, slug, fallback: false };
     });
 }
