@@ -121,7 +121,7 @@ const es: Dict = {
   home: {
     greeting: 'Hola,',
     titleIntro: 'Soy',
-    titleWelcome: 'Bienvenido a mi',
+    titleWelcome: 'Bienvenidos a mi',
     titleCorner: 'rincón',
     titleOfThe: 'de',
     titleInternetPrefix: '',
@@ -222,7 +222,7 @@ const fr: Dict = {
   home: {
     greeting: 'Salut,',
     titleIntro: 'Je suis',
-    titleWelcome: 'Bienvenue sur mon',
+    titleWelcome: 'Bienvenus sur mon',
     titleCorner: 'coin',
     titleOfThe: '',
     titleInternetPrefix: 'd’',
