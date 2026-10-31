@@ -1,40 +1,75 @@
 ---
-title: 'OCT Reconstruction ML'
+title: 'Physics-Informed Deep Learning for Quantitative OCT Reconstruction'
 type: 'analysis'
-date: 2025-06-15
+date: 2026-06-15
 tags:
   - { label: 'JAX', accent: true }
   - { label: 'Physics-ML' }
   - { label: 'PINN' }
   - { label: 'Research' }
-excerpt: 'Master thesis: physics-informed deep learning for quantitative OCT reconstruction. Multi-head U-Net in JAX achieving R²≈0.97 for tissue parameters, with PINN fine-tuning cutting reconstruction error 3.7×.'
+excerpt: "Master's Thesis · Quantum Information & Photonics · Universitat Politècnica de València · 2025–2026"
 icon: 'signal'
 iconBg: '#3B6CF4'
 featured: true
 stats:
-  - { value: 'R²≈0.97', label: 'Supervised recovery' }
-  - { value: '3.7×', label: 'Reconstruction error reduction' }
-  - { value: '5 000', label: 'Synthetic retinal B-scans' }
-gallery:
-  - image: '/images/oct/scatter-supervised.png'
-    title: 'Supervised R²'
-    caption: 'True vs predicted scatter plots for attenuation (μ) and reflectivity (r) after supervised oracle-deconvolution training. R²≈0.97 for both parameters.'
-  - image: '/images/oct/pinn-comparison.png'
-    title: 'PINN improvement'
-    caption: 'Pre-PINN vs post-PINN test metrics. Reconstruction log-MSE drops 3.7× (0.89→0.24) while attenuation R² improves slightly (0.974→0.978).'
-  - image: '/images/oct/cross-stage.png'
-    title: 'Spatial comparison'
-    caption: 'Cross-stage qualitative panel: observation, pre/post reconstructions, μ maps, and residual comparison showing reduced error after PINN fine-tuning.'
+  - { value: '3.7×', label: 'Reduction in reconstruction error' }
+  - { value: 'R² = 0.978', label: 'Attenuation recovery' }
+  - { value: '5,000', label: 'Synthetic retinal B-scans' }
 ---
 
 ## Overview
 
-Built a complete physics-informed neural network pipeline for quantitative OCT image reconstruction. The system jointly recovers tissue attenuation (μ) and reflectivity (r) maps from synthetic confocal B-scans, constrained by a differentiable Beer-Lambert forward model.
+Optical Coherence Tomography (OCT) provides high-resolution, non-invasive imaging of biological tissue. However, extracting quantitative tissue properties from OCT images remains challenging: the measured signal combines tissue reflectivity, optical attenuation and imaging-system blur.
 
-## Pipeline
+This research explores how physics-informed deep learning can address this coupled inverse problem, moving beyond conventional image reconstruction towards the quantitative recovery of tissue optical properties.
 
-- **Architecture:** Multi-head U-Net in JAX/Flax with separate decoder heads for μ and r, plus an optional PSF branch
-- **Stage 1 – Supervised:** Oracle-deconvolution training on synthetic data. Achieved R²≈0.97 for both tissue parameters (RMSE: 0.184 for μ, 0.061 for r)
-- **Stage 2 – PINN fine-tuning:** Added a physics-informed reconstruction loss that propagates predicted maps through the forward model. Cut reconstruction log-MSE from 0.89 to 0.24 while maintaining label accuracy
-- **Forward model:** Differentiable Tier-1 Beer-Lambert operator with depth-dependent PSF blur, used inside the training loop
-- **FDTD simulator:** Built and validated a finite-difference time-domain electromagnetic simulator against analytical Mie scattering theory for future Sim2Sim transfer
+I developed a physics-informed reconstruction framework combining a differentiable OCT forward model with a multi-head U-Net architecture. The network estimates spatial maps of tissue attenuation and reflectivity, while a physics-based reconstruction loss ensures that the predicted properties remain consistent with the observed OCT signal.
+
+## Methodology
+
+<figure>
+  <img src="/images/oct/pipeline.png" alt="Pipeline diagram: ground truth, forward model, synthetic OCT B-scan, multi-head U-Net and PINN reconstruction" loading="lazy" width="1031" height="403" />
+  <figcaption>Figure 1: Global pipeline of the physics-informed OCT inverse model.</figcaption>
+</figure>
+
+### 1. Physics-based OCT modelling
+
+Developed a differentiable forward model based on Beer–Lambert attenuation, confocal sensitivity and depth-dependent Gaussian Point Spread Function (PSF) blur. This model enabled the generation of synthetic retinal B-scans with known underlying optical properties.
+
+### 2. Deep learning inverse reconstruction
+
+Implemented a multi-head U-Net in JAX/Flax to estimate tissue attenuation and reflectivity maps from synthetic OCT images. The architecture uses specialised decoders to capture the different spatial characteristics of each optical parameter.
+
+### 3. Physics-informed optimisation
+
+Introduced a reconstruction loss that propagates the network's predictions through the differentiable OCT forward model. This provides an additional physical constraint beyond conventional supervised learning, encouraging the predicted tissue properties to reproduce the original OCT observation.
+
+### 4. Electromagnetic simulation and validation
+
+Refined a Finite-Difference Time-Domain (FDTD) electromagnetic simulator using sub-pixel smoothing to reduce numerical staircasing errors. Validated its scattering response against analytical Mie theory, establishing a complementary pathway towards higher-fidelity physical simulations.
+
+## Results
+
+Experiments on 5,000 synthetic retinal B-scans demonstrated that incorporating physical consistency into the learning process substantially improves quantitative reconstruction.
+
+- **3.7× reduction in reconstruction error:** Physics-informed fine-tuning reduced reconstruction log-MSE from 0.893 to 0.241.
+- **High parameter recovery accuracy:** Attenuation reached R² = 0.978 and reflectivity R² = 0.959 on the held-out synthetic test set.
+- **Improved physical consistency:** The reconstructed OCT signal became substantially closer to the original observation while maintaining high tissue-parameter accuracy.
+
+<figure>
+  <img src="/images/oct/pinn-metrics.png" alt="Bar charts comparing pre-PINN and post-PINN errors and R² values" loading="lazy" width="1041" height="368" />
+  <figcaption>Figure 2: Pre-PINN versus post-PINN test metrics. Left: error quantities (lower is better). Right: R² (higher is better).</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/oct/cross-stage-panel.png" alt="Grid of OCT reconstructions, attenuation maps and residuals before and after PINN fine-tuning" loading="lazy" width="1063" height="767" />
+  <figcaption>Figure 3: Cross-stage qualitative panel for one test sample: observation and reconstructions (top), μ maps (middle), and residual comparison (bottom).</figcaption>
+</figure>
+
+## Technical Stack
+
+Python · JAX · Flax · Deep Learning · U-Net · Physics-Informed Neural Networks (PINNs) · Optical Coherence Tomography · FDTD · Mie Scattering · Computational Electromagnetics · GPU Computing
+
+## Research Context
+
+Developed within the European SEQUOIA research project, contributing to the development of next-generation optical imaging approaches with improved quantitative precision.

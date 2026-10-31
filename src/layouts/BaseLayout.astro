@@ -5,6 +5,7 @@ import GreekBackground from '../components/GreekBackground.astro';
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
 import headshot from '../assets/headshot.jpeg';
+import Analytics from '@vercel/analytics/astro';
 import { locales, localePath, t, unlocalizedPath, type Lang } from '../i18n';
 
 interface Props {
@@ -32,7 +33,7 @@ const person = {
   name: 'Aymane Elamrani',
   url: new URL('/', Astro.site).href,
   image: photo.href,
-  jobTitle: 'Quantitative Data Scientist',
+  jobTitle: 'Quantitative Data Scientist and ML Engineer',
   email: 'mailto:aelamra25@gmail.com',
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universitat Politècnica de València' },
   sameAs: ['https://github.com/elaymaneX', 'https://www.linkedin.com/in/elam-aymane/'],
@@ -65,7 +66,7 @@ const structuredData = { '@context': 'https://schema.org', '@graph': [person, ..
   <link rel="preload" href="/fonts/dm-sans-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin />
   <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
-  {import.meta.env.PROD && <script defer src="/_vercel/insights/script.js"></script>}
+  <Analytics />
   <title>{title}</title>
   <script is:inline>
     // Prevent flash of wrong theme
