@@ -121,10 +121,11 @@ const es: Dict = {
   home: {
     greeting: 'Hola,',
     titleIntro: 'Soy',
-    titleWelcome: 'Bienvenido a mi',
+    titleWelcome: 'Bienvenidos a mi',
     titleCorner: 'rincón',
-    titleOfThe: 'de',
-    titleInternetPrefix: '',
+    // Empty "of the" keeps "rincón de internet" on one line, like the French title
+    titleOfThe: '',
+    titleInternetPrefix: 'de ',
     titleInternet: 'internet',
     subtitle: "Data scientist cuantitativo e ingeniero ML. Empecé construyendo sistemas de forecasting y pipelines de datos en Amazon, y luego profundicé en lo cuantitativo con un máster en fotónica cuántica, modelado de interacción luz-tejido, ML informado por física, recuperación de señal a partir de datos ruidosos. Ahora llevo todo eso al mundo de las finanzas cuantitativas y los agentes de IA. Me gustan los problemas difíciles, los datos desordenados y pensar desde primeros principios.",
     help: '¿Cómo puedo ayudarte?',
@@ -222,7 +223,7 @@ const fr: Dict = {
   home: {
     greeting: 'Salut,',
     titleIntro: 'Je suis',
-    titleWelcome: 'Bienvenue sur mon',
+    titleWelcome: 'Bienvenus sur mon',
     titleCorner: 'coin',
     titleOfThe: '',
     titleInternetPrefix: 'd’',
