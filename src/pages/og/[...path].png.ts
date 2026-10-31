@@ -78,7 +78,7 @@ export const GET: APIRoute = async ({ props }) => {
       h('div', { alignItems: 'center', gap: 18, fontSize: 24 },
         h('div', { width: 56, height: 6, borderRadius: 3, background: 'linear-gradient(90deg, #6B8FF8, #F5C563)' }),
         h('div', { fontWeight: 700 }, 'Aymane Elamrani'),
-        h('div', { color: '#9CA3AF' }, 'Quantitative Data Scientist & ML'),
+        h('div', { color: '#9CA3AF' }, 'Quantitative Data Scientist & ML Engineer'),
       ),
     ),
   );

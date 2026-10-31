@@ -5,7 +5,7 @@ const en = {
   label: 'About me',
   heading: "Hey, I'm",
   bio: [
-    "Software Engineer with a double degree in Computer Science and Business, plus a master's in Quantum Information & Photonics from UPV Valencia. I've built ETL pipelines and dashboards at Amazon, won a pan-European data science challenge with Oliver Wyman, and done physics-informed ML research in optical imaging.",
+    "Quantitative Data Scientist and ML Engineer with a double degree in Computer Science and Business, plus a master's in Quantum Information & Photonics from UPV Valencia. I've built ETL pipelines and dashboards at Amazon, won a pan-European data science challenge with Oliver Wyman, and done physics-informed ML research in optical imaging.",
     "Now I'm carving my way into quantitative finance and agentic AI, applying the same mathematical rigor to markets and autonomous systems. I like hard problems, messy data, and first-principles thinking.",
   ],
   help: 'How can I help you?',
@@ -68,9 +68,9 @@ const en = {
   languagesHeading: 'Languages',
   languages: [
     { name: 'Arabic', level: 'Native' },
-    { name: 'French', level: 'Bilingual' },
+    { name: 'French', level: 'C1' },
     { name: 'Spanish', level: 'Bilingual' },
-    { name: 'English', level: 'C1' },
+    { name: 'English', level: 'C1/C2' },
   ],
   interestsHeading: 'Interests',
   interests: [
@@ -92,7 +92,7 @@ const es: AboutCopy = {
   label: 'Sobre mí',
   heading: 'Hola, soy',
   bio: [
-    'Ingeniero de software con doble grado en Ingeniería Informática y ADE, y un máster en Información Cuántica y Fotónica por la UPV de Valencia. He construido pipelines ETL y dashboards en Amazon, ganado un reto paneuropeo de ciencia de datos con Oliver Wyman e investigado en ML informado por la física aplicado a imagen óptica.',
+    'Científico de datos cuantitativo e ingeniero de ML con doble grado en Ingeniería Informática y ADE, y un máster en Información Cuántica y Fotónica por la UPV de Valencia. He construido pipelines ETL y dashboards en Amazon, ganado un reto paneuropeo de ciencia de datos con Oliver Wyman e investigado en ML informado por la física aplicado a imagen óptica.',
     'Ahora me abro camino en las finanzas cuantitativas y la IA agéntica, aplicando el mismo rigor matemático a los mercados y a los sistemas autónomos. Me gustan los problemas difíciles, los datos desordenados y pensar desde primeros principios.',
   ],
   help: '¿Cómo puedo ayudarte?',
@@ -155,9 +155,9 @@ const es: AboutCopy = {
   languagesHeading: 'Idiomas',
   languages: [
     { name: 'Árabe', level: 'Nativo' },
-    { name: 'Francés', level: 'Bilingüe' },
+    { name: 'Francés', level: 'C1' },
     { name: 'Español', level: 'Bilingüe' },
-    { name: 'Inglés', level: 'C1' },
+    { name: 'Inglés', level: 'C1/C2' },
   ],
   interestsHeading: 'Intereses',
   interests: [
@@ -177,7 +177,7 @@ const fr: AboutCopy = {
   label: 'À propos',
   heading: 'Salut, je suis',
   bio: [
-    "Ingénieur logiciel avec un double diplôme en informatique et en gestion d'entreprise, et un master en information quantique et photonique de l'UPV de Valence. J'ai construit des pipelines ETL et des tableaux de bord chez Amazon, remporté un challenge paneuropéen de data science avec Oliver Wyman et mené des recherches en ML informé par la physique appliqué à l'imagerie optique.",
+    "Data scientist quantitatif et ingénieur ML, avec un double diplôme en informatique et en gestion d'entreprise, et un master en information quantique et photonique de l'UPV de Valence. J'ai construit des pipelines ETL et des tableaux de bord chez Amazon, remporté un challenge paneuropéen de data science avec Oliver Wyman et mené des recherches en ML informé par la physique appliqué à l'imagerie optique.",
     "Je me lance maintenant dans la finance quantitative et l'IA agentique, en appliquant la même rigueur mathématique aux marchés et aux systèmes autonomes. J'aime les problèmes difficiles, les données désordonnées et le raisonnement par principes premiers.",
   ],
   help: 'Comment puis-je vous aider ?',
@@ -240,9 +240,9 @@ const fr: AboutCopy = {
   languagesHeading: 'Langues',
   languages: [
     { name: 'Arabe', level: 'Langue maternelle' },
-    { name: 'Français', level: 'Bilingue' },
+    { name: 'Français', level: 'C1' },
     { name: 'Espagnol', level: 'Bilingue' },
-    { name: 'Anglais', level: 'C1' },
+    { name: 'Anglais', level: 'C1/C2' },
   ],
   interestsHeading: "Centres d'intérêt",
   interests: [

@@ -55,9 +55,10 @@ const latestPosts = (await localizedEntries('blog', lang))
     <div class="hero__text">
       <p class="hero__greeting">{ui.greeting}</p>
       <h1 class="hero__title">
-        {ui.titleIntro} <span class="highlight-blue">Aymane</span>.<br/>
+        {ui.titleIntro} <span class="highlight-blue">Aymane.</span><br/>
         {ui.titleWelcome}<br/>
-        <span class="highlight-blue">{ui.titleCorner}</span> {ui.titleOfThe}<br/>
+        {/* French has no "of the" word, so "coin d’internet" stays on one line */}
+        <span class="highlight-blue">{ui.titleCorner}</span>{ui.titleOfThe ? <>{' '}{ui.titleOfThe}<br/></> : ' '}
         {ui.titleInternetPrefix}<span class="highlight-gold">{ui.titleInternet}</span>.
       </h1>
       <p class="hero__subtitle">
