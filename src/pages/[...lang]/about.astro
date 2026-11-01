@@ -24,12 +24,12 @@ const experience = [
 
 const education = copy.education.map(ed => ({ ...ed, institution: 'Universitat Politècnica de València (UPV)' }));
 
-// Bar lengths follow the levels: native, French C1, Spanish bilingual, English C1/C2
+// Bar lengths follow the levels: native, French C1, Spanish bilingual, English C1
 const languages = [
   { percent: 100 },
   { percent: 85 },
   { percent: 95 },
-  { percent: 90 },
+  { percent: 85 },
 ].map((l, i) => ({ ...l, ...copy.languages[i] }));
 
 const skillGroups = [

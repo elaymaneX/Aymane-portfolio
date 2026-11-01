@@ -65,6 +65,7 @@ const latestPosts = (await localizedEntries('blog', lang))
           <span class="hero__line"><em>{ui.titleCorner}</em> {ui.titleInternetPrefix}<em>{ui.titleInternet}</em>.</span>
         )}
       </h1>
+      <p class="hero__direction">{ui.direction}</p>
       <div class="hero__actions">
         <a href={localePath(lang, '/projects')} class="btn btn--primary">{ui.viewProjects} <span>→</span></a>
         <a href={localePath(lang, '/blog')} class="btn btn--outline">{ui.readBlog}</a>
@@ -153,6 +154,15 @@ const latestPosts = (await localizedEntries('blog', lang))
         ))}
       </div>
     </div>
+  </section>
+
+  <!-- FREELANCE -->
+  <section class="container work" data-reveal>
+    <div>
+      <h2 class="work__title">{ui.workTitle}</h2>
+      <p class="work__text">{ui.workText}</p>
+    </div>
+    <a href="mailto:aelamra25@gmail.com" class="btn btn--primary">{ui.workCta} <span>→</span></a>
   </section>
 
   <!-- NEWSLETTER -->
@@ -491,6 +501,18 @@ const latestPosts = (await localizedEntries('blog', lang))
     border-radius: var(--radius-sm);
     color: var(--text-muted);
   }
+
+  .hero__direction { font-size: 17px; line-height: 1.5; color: var(--text-muted); margin: -16px 0 28px; }
+  .work {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px 48px;
+    padding-top: clamp(40px, 6vw, 72px);
+  }
+  .work__title { font-family: 'Fraunces', serif; font-size: clamp(26px, 3vw, 36px); font-weight: 400; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .work__text { color: var(--text-muted); line-height: 1.6; max-width: 620px; }
 
   /* Newsletter box: inverted panel, title on the left, email form on the right */
   .cta-box {

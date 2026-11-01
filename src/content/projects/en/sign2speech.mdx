@@ -8,7 +8,7 @@ tags:
   - { label: 'Edge AI' }
   - { label: 'Accessibility' }
 description: "Bachelor's thesis: a prototype that turns sign language into speech in real time, using MediaPipe, deep learning and a Google Coral Edge TPU."
-excerpt: "Bachelor's Thesis · Computer Engineering · Universitat Politècnica de València · 2024–2025"
+excerpt: "Computer Engineering Bachelor's Thesis · UPV · 2024–2025. A working sign-to-speech pipeline: 250 ASL signs · ~15 FPS capture · Coral Edge TPU · 8/9 functional requirements."
 icon: 'code'
 iconBg: '#3B6CF4'
 cover: '/images/sign2speech/interface.png'
@@ -16,7 +16,7 @@ repoUrl: 'https://github.com/elaymaneX/TFG_Sign2Speach'
 stats:
   - { value: '250', label: 'ASL words in the vocabulary' }
   - { value: '15 FPS', label: 'Real-time capture' }
-  - { value: 'Edge AI', label: 'Computer vision + deep learning' }
+  - { value: '8 / 9', label: 'Functional requirements met' }
 ---
 
 <figure class="natural">
@@ -26,13 +26,17 @@ stats:
 
 ## Overview
 
-Communication barriers can become particularly significant in public services such as hospitals, town halls and other points of public assistance. This project explores how computer vision and edge computing can be combined to create an accessible interface between sign language and spoken communication.
-
 I developed **Sign2Speech**, a functional prototype capable of capturing sign-language gestures through a camera, recognising individual signs, reconstructing short natural-language sentences and converting them into speech.
 
 The system combines **MediaPipe Holistic**, deep-learning sequence classification, a cloud-based language model and local text-to-speech synthesis, with the recognition pipeline designed for deployment on a **Google Coral Dev Board**.
 
 The project was developed as my Bachelor's Thesis in Computer Engineering at the Universitat Politècnica de València.
+
+## The Problem
+
+Communication barriers can become particularly significant in public services such as hospitals, town halls and other points of public assistance. This project explores how computer vision and edge computing can be combined to create an accessible interface between sign language and spoken communication.
+
+The task is technically hard because a sign unfolds over time and combines hands, body and face, visually similar signs are easy to confuse, and the system has to run on constrained edge hardware.
 
 ## System Architecture
 
@@ -51,9 +55,9 @@ The recognised words are passed to a language-generation component hosted throug
 
 This modular design makes the individual components independently replaceable and allows the system to adapt to different execution environments.
 
-## Methodology
+## Model & Methodology
 
-### 1. Visual gesture representation
+### Visual gesture representation
 
 The first stage converts camera input into structured representations of the user's movements.
 
@@ -61,15 +65,7 @@ I used **MediaPipe Holistic** to extract landmarks from the body, hands and face
 
 The resulting sequences contain three-dimensional landmark coordinates `(x, y, z)` over time, forming the input representation for the classification models.
 
-### 2. Dataset preparation
-
-The project initially explored the **WLASL** dataset, but its video quality, limited samples per class and preprocessing requirements made it impractical for the target pipeline.
-
-I therefore worked with Google's landmark-based dataset containing **250 sign classes**, providing pre-extracted gesture sequences and allowing the project to focus on temporal representation and model development.
-
-The data was normalised, temporally aligned and converted into a structured dataset suitable for deep-learning training.
-
-### 3. Transformer-based gesture recognition
+### Transformer-based gesture recognition
 
 The initial recognition architecture was based on **Transformers with multi-head attention**.
 
@@ -77,7 +73,28 @@ Landmark sequences were projected into an embedding space and processed using po
 
 The initial Transformer achieved **over 90% training accuracy**, demonstrating the viability of the representation and modelling approach. However, achieving good classification performance was only part of the problem: the model also had to be deployable on constrained edge hardware.
 
-### 4. Designing for Edge AI
+### Language generation and speech
+
+Once individual signs have been classified, the recognised words are sent to a language model to construct a coherent short sentence.
+
+The resulting text is then passed to a local **Text-to-Speech** component using `pyttsx3`, allowing the final spoken output to be generated without requiring an additional cloud service for speech synthesis.
+
+## Training
+
+The project initially explored the **WLASL** dataset, but its video quality, limited samples per class and preprocessing requirements made it impractical for the target pipeline.
+
+I therefore worked with Google's landmark-based dataset containing **250 sign classes**, providing pre-extracted gesture sequences and allowing the project to focus on temporal representation and model development.
+
+The data was normalised, temporally aligned and converted into a structured dataset suitable for deep-learning training.
+
+<figure class="natural">
+  <img src="/images/sign2speech/training-loss.png" alt="Training and validation loss curves over about 65 epochs" loading="lazy" width="611" height="429" />
+  <figcaption>Figure 4: Training and validation loss during training.</figcaption>
+</figure>
+
+## Edge Deployment
+
+### Designing for Edge AI
 
 The Transformer could not be deployed directly on the Coral Edge TPU.
 
@@ -99,13 +116,7 @@ The resulting model was successfully converted and compiled for Coral Edge TPU e
   <figcaption>Figure 3: Architecture summary and parameter count of the edge-optimised model.</figcaption>
 </figure>
 
-### 5. Language generation and speech
-
-Once individual signs have been classified, the recognised words are sent to a language model to construct a coherent short sentence.
-
-The resulting text is then passed to a local **Text-to-Speech** component using `pyttsx3`, allowing the final spoken output to be generated without requiring an additional cloud service for speech synthesis.
-
-### 6. Resilient inference
+### Resilient inference
 
 The application was designed with two inference paths.
 
@@ -131,11 +142,6 @@ The implemented system successfully demonstrated:
 - Automatic fallback between inference backends
 
 The functional evaluation confirmed **8 of the 9 defined functional requirements**. The remaining requirement—fully local inference on the Coral Dev Board—was not considered completely satisfied in the final evaluation.
-
-<figure class="natural">
-  <img src="/images/sign2speech/training-loss.png" alt="Training and validation loss curves over about 65 epochs" loading="lazy" width="611" height="429" />
-  <figcaption>Figure 4: Training and validation loss during training.</figcaption>
-</figure>
 
 ### Performance
 
@@ -168,7 +174,7 @@ The prototype was also trained using **American Sign Language rather than Spanis
 
 Finally, the system was not formally evaluated with deaf users or sign-language experts, so its real-world usability and accessibility impact remain to be validated.
 
-## Technical Stack
+## Technology
 
 Python · TensorFlow · TensorFlow Lite · MediaPipe Holistic · Deep Learning · Computer Vision · Conv1D · Transformers · Google Coral Edge TPU · Hugging Face · FastAPI · PyQt · pyttsx3 · NumPy · Pandas · Scikit-learn · Google Cloud Platform
 

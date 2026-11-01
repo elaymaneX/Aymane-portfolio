@@ -38,6 +38,8 @@ const linkAttrs = (p) => {
 
   <!-- Featured Projects: inside the container so they line up with the grid, as wide as two cards -->
   <section class="container">
+  <h2 class="projects-section__title">{ui.analysisTitle}</h2>
+  <p class="projects-section__desc">{ui.analysisDesc}</p>
   {featured.map(project => {
     const Card = cardTag(project);
     return (
@@ -63,8 +65,8 @@ const linkAttrs = (p) => {
 
   {sections.map(section => (
     <section class="container projects-section">
-      <h2 class="projects-section__title">{section.title}</h2>
-      <p class="projects-section__desc">{section.desc}</p>
+      {section.title !== ui.analysisTitle && <h2 class="projects-section__title">{section.title}</h2>}
+      {section.title !== ui.analysisTitle && <p class="projects-section__desc">{section.desc}</p>}
       <div class="projects-grid">
         {section.items.map(project => {
           const Card = cardTag(project);
