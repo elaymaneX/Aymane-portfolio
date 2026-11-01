@@ -301,6 +301,13 @@ const jsonLd = {
     border: 1px solid var(--border-light);
     padding: 8px;
   }
+  /* Small screenshots stay at their own size instead of being stretched (and blurred) */
+  .post__content :global(figure.natural img) {
+    width: auto;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .post__content :global(figure.natural figcaption) { text-align: center; }
   .post__content :global(figcaption) {
     margin-top: 10px;
     font-size: 14px;
