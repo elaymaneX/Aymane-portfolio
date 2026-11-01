@@ -1,0 +1,235 @@
+---
+title: "Signatures spectrales des bulles sectorielles : l’ère de l’IA face aux dot-com"
+tag: "Finance"
+excerpt: "J’ai appliqué une analyse spectrale afin de déterminer si les actions liées à l’IA présentent les mêmes signatures de corrélation que celles observées lors de la bulle Internet. Ce n’est pas le cas."
+---
+
+## 1. Résumé
+
+J’examine si le secteur actuel de l’intelligence artificielle présente les mêmes signatures dans sa structure de corrélation que celles observées pendant la bulle Internet (1997–2002). À l’aide d’une analyse spectrale de matrices de corrélation glissantes appliquée aux 49 portefeuilles industriels de Fama-French, suivant l’approche de Buccheri, Marmi et Mantegna (2013), je compare trois indicateurs diagnostiques sur les deux périodes : l’évolution de la valeur propre dominante (λ₁), l’écart entre la corrélation intra-sectorielle et la corrélation intersectorielle (*herding gap*), et les charges du vecteur propre associé au second mode (λ₂).
+
+Le principal résultat est que, bien que les industries liées à l’IA présentent une corrélation interne élevée, la signature spectrale caractéristique de la bulle Internet — un découplage net entre la technologie et le reste du marché dans λ₂ — n’apparaît pas dans la période actuelle. Les résultats suggèrent que l’enthousiasme pour l’IA, jusqu’à la fin de 2026, ne reproduit pas le régime de corrélation qui précédait l’effondrement des valeurs Internet.
+
+## 2. Introduction et motivation
+
+La progression rapide des actions liées à l’intelligence artificielle depuis 2023 a suscité de nombreuses comparaisons avec la bulle Internet de la fin des années 1990. La capitalisation de NVIDIA a dépassé 5 000 milliards de dollars, certaines entreprises liées à l’IA ont enregistré des performances à trois chiffres et quelques grandes valeurs technologiques ont commencé à dominer la performance des indices. Le parallèle est intuitif et largement repris dans les médias financiers.
+
+Mais est-il réellement pertinent ?
+
+Les comparaisons classiques reposent généralement sur les graphiques de prix et les multiples de valorisation. Ces indicateurs peuvent être bruités, fortement dépendants du contexte et faciles à sélectionner rétrospectivement (*cherry-picking*). Une question plus structurelle consiste à déterminer si le régime de corrélation du marché actuel ressemble à celui qui précédait le krach des valeurs Internet.
+
+Lors d’une bulle sectorielle, un schéma particulier peut apparaître dans la structure de corrélation des rendements. Le secteur au cœur de la bulle commence à évoluer comme un bloc fortement corrélé — un phénomène de comportement grégaire, ou *herding* — tout en se découplant simultanément du reste du marché. Cela crée une signature spectrale mesurable : la deuxième valeur propre (λ₂) de la matrice de corrélation glissante augmente et le vecteur propre associé sépare nettement le secteur de la bulle du reste du marché.
+
+Buccheri, Marmi et Mantegna (2013) ont documenté ce phénomène pendant l’ère Internet en utilisant la décomposition spectrale de matrices de corrélation.
+
+Dans cette étude, j’applique la même méthodologie aux deux périodes. À partir des portefeuilles industriels de Fama-French, je calcule des matrices de corrélation glissantes et suis trois indicateurs pendant l’ère Internet (1997–2002) et l’ère de l’IA (2023–2026) : la part de la valeur propre dominante (λ₁), l’écart entre la corrélation intra-sectorielle et intersectorielle, et les charges du vecteur propre du second mode.
+
+Si l’essor de l’IA est structurellement similaire à la bulle Internet, ces indicateurs devraient présenter des signatures comparables.
+
+## 3. Données
+
+J’utilise les 49 portefeuilles industriels de Fama-French, obtenus à partir de la bibliothèque de données de Kenneth French. Ces portefeuilles regroupent les actions cotées dans CRSP en 49 groupes industriels selon leurs codes SIC et fournissent des rendements quotidiens pondérés par la capitalisation boursière.
+
+Cette base est largement utilisée en finance empirique pour deux raisons particulièrement importantes ici : elle conserve les entreprises qui ont été radiées, ce qui réduit le biais de survie, et sa classification industrielle reste cohérente sur plusieurs décennies, permettant une comparaison directe entre périodes.
+
+J’analyse deux périodes :
+
+- **Ère Internet :** janvier 1997 – décembre 2002, couvrant la formation de la bulle, son sommet et son éclatement.
+- **Ère de l’IA :** janvier 2023 – octobre 2026, couvrant le régime de marché actuel porté par l’IA.
+
+Les deux périodes utilisent exactement la même structure de 49 industries, ce qui permet une comparaison directe.
+
+Une version précédente de cette analyse utilisait des actions individuelles liées à l’IA (NVDA, MSFT, META, etc.) pour la période récente. Cependant, la différence de granularité entre les données introduisait des différences systématiques de bruit qui compliquaient l’interprétation. Je conserve l’analyse au niveau des actions individuelles comme exercice complémentaire, mais toutes les conclusions comparatives entre les deux périodes reposent sur les données Fama-French.
+
+Tous les rendements sont convertis des pourcentages en valeurs décimales. Aucun filtrage ou nettoyage supplémentaire n’est appliqué.
+
+## 4. Méthodologie
+
+### Matrices de corrélation glissantes
+
+Pour chaque période, je calcule des matrices de corrélation de Pearson glissantes sur une fenêtre de 60 séances boursières, soit environ trois mois calendaires.
+
+À chaque instant *t*, la matrice de corrélation est construite à partir des rendements des 49 industries observés sur la fenêtre \[*t*−60, *t*\]. Cela produit une série temporelle de matrices symétriques de 49 × 49. Dans des conditions régulières, les matrices obtenues sont définies positives ; plus généralement, une matrice de corrélation est au minimum semi-définie positive.
+
+### Décomposition spectrale
+
+Chaque matrice de corrélation est décomposée en valeurs propres et vecteurs propres avec `scipy.linalg.eigh`, une méthode optimisée pour les matrices symétriques. Les valeurs propres sont classées par ordre décroissant.
+
+Les principales quantités sont :
+
+- **λ₁ (première valeur propre) :** mesure l’importance du facteur commun dominant de co-mouvement. Intuitivement, elle indique dans quelle mesure l’ensemble du marché évolue de concert. Elle est exprimée sous la forme λ₁/N × 100, avec N = 49.
+- **λ₂ (deuxième valeur propre) :** capture la structure résiduelle la plus importante après retrait du mode de marché. Une hausse de λ₂ signale l’apparition d’une structure secondaire, par exemple lorsqu’un groupe d’industries évolue différemment d’un autre.
+- **Charges du vecteur propre de λ₂ :** les 49 composantes du deuxième vecteur propre indiquent quelles industries contribuent au mode de découplage. Les charges positives et négatives permettent d’identifier les deux groupes qui s’opposent.
+
+### Indicateurs diagnostiques
+
+Je suis trois indicateurs sur les deux périodes :
+
+1. **Évolution des valeurs propres :** λ₁/N et λ₂/N, exprimées en pourcentage au cours du temps, afin de mesurer le co-mouvement du marché dans son ensemble et l’intensité du découplage sectoriel.
+2. **Écart de *herding* :** différence entre la corrélation moyenne à l’intérieur du groupe technologique et la corrélation moyenne entre les technologies et les secteurs non technologiques, calculée pour chaque fenêtre glissante. Les industries technologiques sont définies comme : Softw, Hardw, Chips, Telcm, BusSv et LabEq. Une hausse de cet écart indique que le secteur technologique évolue de manière plus coordonnée tout en s’éloignant du comportement du marché global.
+3. **Charges du vecteur propre de λ₂ :** examinées à la date où λ₂ atteint son maximum dans chaque période afin d’identifier les industries qui déterminent le mode de découplage.
+
+### Validation de la fenêtre
+
+Afin de vérifier que les résultats ne sont pas un artefact du choix d’une fenêtre de 60 séances, je répète l’analyse de l’écart de *herding* avec des fenêtres de 30, 45, 60, 90 et 120 séances. Les résultats restent qualitativement stables pour toutes les tailles de fenêtre.
+
+### Comparaison entre les périodes
+
+Comme les deux périodes ont des durées différentes, les comparaisons temporelles sont représentées en fonction du nombre de séances écoulées depuis le début de chaque période plutôt qu’en fonction des dates calendaires. Lorsqu’une superposition directe est nécessaire, les indicateurs sont normalisés par *z-score* afin de tenir compte des différences d’échelle.
+
+## 5. Résultats
+
+### Évolution des valeurs propres
+
+<figure>
+  <img src="/images/ai-bubble/eigenvalues-dot-com.png" alt="λ₁ et λ₂ en pourcentage de la variance totale pendant la période Internet. λ₂ atteint des pics vers le milieu de 1999 et la fin de 2001, indiquant des périodes de fort découplage sectoriel." loading="lazy" width="1387" height="557" />
+  <figcaption>Figure 1 : λ₁ et λ₂ en pourcentage de la variance totale pendant la période Internet. λ₂ atteint des pics vers le milieu de 1999 et la fin de 2001, indiquant des périodes de fort découplage sectoriel.</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/ai-bubble/eigenvalues-ai-era.png" alt="mêmes indicateurs pour l’ère de l’IA. λ₂ reste plus faible et relativement plat, sans pic de découplage comparable." loading="lazy" width="1386" height="557" />
+  <figcaption>Figure 2 : mêmes indicateurs pour l’ère de l’IA. λ₂ reste plus faible et relativement plat, sans pic de découplage comparable.</figcaption>
+</figure>
+
+Pendant la période Internet, λ₁ explique entre 25 % et 40 % de la variance totale et augmente fortement pendant le krach de 2001–2002, lorsque les corrélations s’élèvent sur l’ensemble du marché. λ₂ présente des pics distincts vers le milieu de 1999 et la fin de 2001, indiquant une forte structure secondaire.
+
+Pendant l’ère de l’IA, λ₁ se situe dans une plage similaire, mais sans la hausse spectaculaire observée pendant le krach Internet. λ₂ reste plus faible et plus plat.
+
+### Écart de *herding*
+
+<figure>
+  <img src="/images/ai-bubble/herding-gap-dot-com.png" alt="écart de herding technologique — corrélation intra-technologie moins corrélation intersectorielle — pendant l’ère Internet. La hausse persistante d’environ 0,15 à 0,45 quantifie la signature combinant comportement grégaire et découplage." loading="lazy" width="1386" height="557" />
+  <figcaption>Figure 3 : écart de herding technologique — corrélation intra-technologie moins corrélation intersectorielle — pendant l’ère Internet. La hausse persistante d’environ 0,15 à 0,45 quantifie la signature combinant comportement grégaire et découplage.</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/ai-bubble/herding-gap-ai-era.png" alt="même indicateur pendant l’ère de l’IA, à partir des portefeuilles Fama-French. L’écart fluctue entre environ 0,05 et 0,20 sans tendance haussière persistante." loading="lazy" width="1387" height="557" />
+  <figcaption>Figure 4 : même indicateur pendant l’ère de l’IA, à partir des portefeuilles Fama-French. L’écart fluctue entre environ 0,05 et 0,20 sans tendance haussière persistante.</figcaption>
+</figure>
+
+L’écart de la période Internet augmente progressivement, passant d’environ 0,15 au début de 1997 à environ 0,45 en 2000 : les actions technologiques évoluent de plus en plus comme un bloc corrélé tout en se détachant du marché global.
+
+L’ère de l’IA ne présente pas une trajectoire comparable.
+
+### Charges du vecteur propre λ₂
+
+<figure>
+  <img src="/images/ai-bubble/lambda2-loadings.png" alt="les dix plus fortes et les dix plus faibles charges industrielles du deuxième vecteur propre au maximum de λ₂ pour chaque période. À gauche, l’ère Internet présente une séparation nette entre la technologie et les industries traditionnelles ; à droite, l’ère de l’IA montre une rotation entre secteurs défensifs et cycliques, sans domination technologique d’un côté ou de l’autre." loading="lazy" width="1587" height="752" />
+  <figcaption>Figure 5 : les dix plus fortes et les dix plus faibles charges industrielles du deuxième vecteur propre au maximum de λ₂ pour chaque période. À gauche, l’ère Internet présente une séparation nette entre la technologie et les industries traditionnelles ; à droite, l’ère de l’IA montre une rotation entre secteurs défensifs et cycliques, sans domination technologique d’un côté ou de l’autre.</figcaption>
+</figure>
+
+Il s’agit de l’indicateur le plus discriminant.
+
+Au sommet de la période Internet, au milieu de 1999, le vecteur propre sépare nettement la technologie (Softw, Hardw, Chips, Telcm) des industries de l’ancienne économie (Paper, Chems, Steel, Aero).
+
+Au sommet de l’ère de l’IA, une telle séparation n’apparaît pas. Le second mode sépare les secteurs défensifs et liés aux matières premières (Oil, Smoke, Soda) des secteurs cycliques (Construction, Machinery, Electrical Equipment). Les industries liées à l’IA ne dominent aucun des deux groupes.
+
+### Superposition entre les périodes
+
+<figure>
+  <img src="/images/ai-bubble/cross-era-comparison.png" alt="superposition directe des trois indicateurs — mode de marché, corrélation moyenne et écart de herding — alignés selon le nombre de séances écoulées depuis le début de chaque période." loading="lazy" width="1387" height="1451" />
+  <figcaption>Figure 6 : superposition directe des trois indicateurs — mode de marché, corrélation moyenne et écart de herding — alignés selon le nombre de séances écoulées depuis le début de chaque période.</figcaption>
+</figure>
+
+L’ère Internet présente systématiquement davantage de *herding* et une trajectoire ascendante absente de l’ère de l’IA.
+
+### Validation de la fenêtre
+
+<figure>
+  <img src="/images/ai-bubble/window-sensitivity.png" alt="écart de herding calculé sur les données de la période Internet avec des fenêtres de 30, 45, 60, 90 et 120 séances." loading="lazy" width="1387" height="557" />
+  <figcaption>Figure 7 : écart de herding calculé sur les données de la période Internet avec des fenêtres de 30, 45, 60, 90 et 120 séances.</figcaption>
+</figure>
+
+Toutes les fenêtres produisent des tendances qualitativement similaires, ce qui valide le choix d’une fenêtre de 60 séances.
+
+## 6. Discussion
+
+Le résultat central de cette étude est négatif : **l’ère de l’IA ne reproduit pas le régime de corrélation qui caractérisait la bulle Internet.**
+
+Alors que le récit dominant présente l’IA comme une sorte de « dot-com 2.0 », la structure spectrale du marché raconte une histoire différente selon les trois indicateurs étudiés.
+
+Pendant la période Internet, le marché présentait une signature de bulle très nette : les industries technologiques se regroupaient en un bloc fortement corrélé — l’écart de *herding* passant de 0,15 à 0,45 — tandis que la deuxième valeur propre augmentait et que son vecteur propre se séparait clairement selon une opposition entre technologie et ancienne économie.
+
+Ce schéma s’est maintenu pendant près de trois ans avant le krach, en progressant de façon régulière plutôt qu’en apparaissant comme une simple fluctuation ponctuelle.
+
+L’ère de l’IA ne présente aucun de ces schémas. L’écart de *herding* reste faible et relativement plat (environ 0,05–0,15), sans tendance haussière. Même à son maximum, le vecteur propre de λ₂ sépare les secteurs défensifs des secteurs cycliques, et non la technologie du reste du marché.
+
+Au cours des derniers mois, l’écart de *herding* devient en outre négatif, ce qui suggère que les industries technologiques perdent leur cohérence en tant que bloc corrélé.
+
+### Pourquoi cette divergence ?
+
+Plusieurs différences structurelles entre les deux périodes pourraient expliquer cette divergence.
+
+**Premièrement, l’adoption de l’IA est transversale.** Le boom Internet était concentré dans un ensemble relativement restreint d’entreprises technologiques et de télécommunications. L’IA, à l’inverse, est adoptée dans la santé, la finance, l’énergie, l’industrie manufacturière et d’autres secteurs. Le signal technologique se diffuse ainsi dans l’ensemble du marché plutôt que de se concentrer dans un seul bloc. Cela est cohérent avec l’absence d’une séparation nette entre technologie et reste du marché dans le vecteur propre.
+
+**Deuxièmement, la structure du marché a évolué.** La prolifération des ETF, le trading algorithmique et l’investissement passif ont modifié la dynamique des corrélations. Le mode de marché (λ₁) est structurellement plus élevé aujourd’hui qu’à la fin des années 1990, ce qui pourrait réduire l’espace disponible pour les signaux de découplage sectoriel dans λ₂.
+
+**Enfin, la hausse de λ₂ à la fin de 2026 mérite d’être surveillée.** Bien que son amplitude se rapproche des niveaux observés pendant la période Internet, la structure du vecteur propre révèle une rotation entre secteurs défensifs et cycliques, probablement liée à l’incertitude macroéconomique — anticipations de taux, craintes de récession, etc. — plutôt qu’à une spéculation spécifique sur la technologie.
+
+Cela met en évidence un point méthodologique important : **l’amplitude d’une valeur propre, à elle seule, ne suffit pas à diagnostiquer une bulle.**
+
+C’est la structure du vecteur propre qui permet de distinguer une bulle sectorielle d’un changement de régime provoqué par des facteurs macroéconomiques.
+
+Une question importante à laquelle cette analyse ne peut pas répondre est la suivante : **les valorisations de l’IA sont-elles fondamentalement justifiées ?**
+
+Ma méthode détecte un comportement grégaire dans les corrélations, et non une mauvaise valorisation (*mispricing*). L’absence d’un régime de corrélation de type Internet ne signifie pas que les actions liées à l’IA sont correctement valorisées. Elle signifie que le marché ne les traite pas comme un bloc spéculatif de la même manière qu’il traitait les valeurs Internet entre 1998 et 2000.
+
+La question de savoir si le cycle actuel d’investissement dans l’IA générera des rendements suffisants reste une question empirique ouverte pour de futurs travaux.
+
+## 7. Limites
+
+Cette étude comporte plusieurs limites qui doivent être prises en compte dans l’interprétation des résultats.
+
+### Granularité au niveau des industries
+
+Les portefeuilles industriels Fama-French 49 agrègent les entreprises individuelles dans des catégories relativement larges. Une bulle concentrée sur une poignée de méga-capitalisations — par exemple NVIDIA, Microsoft ou Meta — pourrait être masquée si les autres entreprises de leurs industries respectives se comportent normalement.
+
+Une analyse spectrale au niveau des actions individuelles offrirait une résolution plus fine, au prix d’une matrice de corrélation beaucoup plus grande et potentiellement plus bruitée.
+
+### Une seule méthodologie
+
+Je m’appuie exclusivement sur la décomposition en valeurs propres des matrices de corrélation glissantes. D’autres approches — comme les modèles de loi de puissance log-périodique, les mesures de synchronisation des volumes échangés ou les indicateurs fondés sur le sentiment — pourraient détecter des dynamiques de bulle que la structure des corrélations ne capture pas.
+
+### Sensibilité à la fenêtre
+
+Bien que les résultats soient validés avec des fenêtres de 30, 45, 60, 90 et 120 séances, l’approche par fenêtre glissante lisse nécessairement les transitions rapides.
+
+Un changement de régime se produisant sur quelques séances seulement pourrait être dilué dans une fenêtre de 60 séances.
+
+### Biais de survie dans l’ère de l’IA
+
+Bien que les portefeuilles Fama-French réduisent le biais de survie pour la période Internet, l’ère de l’IA est toujours en cours. Si une correction intervient à l’avenir, l’ensemble de données actuel ne capture encore que la phase de montée.
+
+### Corrélation et valorisation sont deux choses différentes
+
+Cette méthode détecte des schémas de co-mouvement, et non des erreurs de valorisation.
+
+La bulle Internet combinait un comportement grégaire extrême et des valorisations extrêmement élevées. L’absence de *herding* n’exclut donc pas une surévaluation résultant d’autres mécanismes.
+
+À l’inverse, la différence entre la rentabilité des entreprises d’infrastructure de l’IA et les pertes importantes enregistrées par certaines entreprises développant des modèles d’IA rend le paysage de valorisation plus complexe que celui de l’ère Internet.
+
+### Hypothèse de stationnarité
+
+La corrélation glissante suppose implicitement une stationnarité locale à l’intérieur de chaque fenêtre. En période de stress de marché, les corrélations peuvent changer brutalement, ce qui viole cette hypothèse et peut potentiellement déformer la décomposition spectrale.
+
+## 8. Conclusion
+
+J’ai appliqué une analyse spectrale de matrices de corrélation glissantes afin de comparer la structure de corrélation du marché pendant la bulle Internet (1997–2002) à celle de l’ère actuelle de l’IA (2023–2026), en utilisant les 49 portefeuilles industriels de Fama-French pour garantir une comparaison cohérente et réduire le biais de survie entre les deux périodes.
+
+La bulle Internet a produit une signature spectrale claire et persistante : la deuxième valeur propre a augmenté progressivement, son vecteur propre s’est séparé selon une opposition technologie/non-technologie, et l’écart de *herding* est passé d’environ 0,15 à 0,45 sur près de trois ans avant le krach.
+
+**L’ère de l’IA ne reproduit aucun de ces schémas.**
+
+L’écart de *herding* reste relativement plat, le vecteur propre de λ₂ reflète des rotations sectorielles liées à des facteurs macroéconomiques plutôt qu’un découplage technologique, et les données les plus récentes montrent un écart négatif, indiquant une perte de cohérence des industries technologiques en tant que groupe.
+
+Ces résultats ne permettent pas de conclure que les actions liées à l’IA sont surévaluées. Ils établissent toutefois que, du point de vue de la structure des corrélations, le marché ne traite pas l’IA comme un bloc spéculatif de la même manière qu’il traitait les valeurs Internet entre 1998 et 2000.
+
+Si une correction des valorisations de l’IA survient, **il est peu probable qu’elle suive exactement le même chemin de corrélation que le krach Internet.**
+
+Les recherches futures pourraient prolonger cette analyse de plusieurs façons : appliquer le même cadre au niveau des actions individuelles afin de détecter la concentration au sein des industries, intégrer des méthodes alternatives de détection des bulles en complément de l’analyse spectrale et réexaminer ces données à mesure que le cycle d’investissement dans l’IA mûrit, notamment pour déterminer si l’écart de *herding* négatif persiste ou s’inverse.
+
+## 9. Références
+
+1. Buccheri, G., Marmi, S., & Mantegna, R. N. (2013). *Evolution of correlation structure of industrial indices of US equity markets*. Physical Review E, 88, 012806. DOI: 10.1103/PhysRevE.88.012806
+2. Fama, E. F., & French, K. R. (1997). *Industry costs of equity*. Journal of Financial Economics, 43(2), 153–193.
+3. Laloux, L., Cizeau, P., Bouchaud, J.-P., & Potters, M. (1999). *Noise dressing of financial correlation matrices*. Physical Review Letters, 83, 1467–1470.

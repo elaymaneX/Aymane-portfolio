@@ -64,7 +64,7 @@ const en = {
     },
   ],
   skillsHeading: 'Technical Skills',
-  skillLabels: ['Languages', 'ML / AI', 'Backend', 'Frontend', 'Data & BI', 'DevOps'],
+  skillLabels: ['Languages', 'ML / AI', 'Back-end', 'Frontend', 'Data & BI', 'DevOps'],
   languagesHeading: 'Languages',
   languages: [
     { name: 'Arabic', level: 'Native' },
@@ -117,7 +117,7 @@ const es: AboutCopy = {
       ],
     },
     {
-      role: 'Business Intelligence Engineer, prácticas',
+      role: 'Business Intelligence Engineer (prácticas)',
       period: 'ago 2023 - feb 2024',
       bullets: [
         'Construí pipelines ETL de extremo a extremo (Python, SQL, Amazon Redshift) para integrar y procesar datos logísticos a escala europea.',
@@ -151,7 +151,7 @@ const es: AboutCopy = {
     },
   ],
   skillsHeading: 'Habilidades técnicas',
-  skillLabels: ['Lenguajes', 'ML / IA', 'Backend', 'Frontend', 'Datos y BI', 'DevOps'],
+  skillLabels: ['Lenguajes', 'ML / IA', 'Back-end', 'Frontend', 'Datos y BI', 'DevOps'],
   languagesHeading: 'Idiomas',
   languages: [
     { name: 'Árabe', level: 'Nativo' },
@@ -177,7 +177,7 @@ const fr: AboutCopy = {
   label: 'À propos',
   heading: 'Salut, je suis',
   bio: [
-    "Data scientist quantitatif et ingénieur ML, avec un double diplôme en informatique et en gestion d'entreprise, et un master en information quantique et photonique de l'UPV de Valence. J'ai construit des pipelines ETL et des tableaux de bord chez Amazon, remporté un challenge paneuropéen de data science avec Oliver Wyman et mené des recherches en ML informé par la physique appliqué à l'imagerie optique.",
+    "Data scientist spécialisé en méthodes quantitatives et ingénieur ML, avec un double diplôme en informatique et en gestion d'entreprise, et un master en information quantique et photonique de l'UPV de Valence. J'ai construit des pipelines ETL et des tableaux de bord chez Amazon, remporté un challenge paneuropéen de data science avec Oliver Wyman et mené des recherches en ML informé par la physique appliqué à l'imagerie optique.",
     "Je me lance maintenant dans la finance quantitative et l'IA agentique, en appliquant la même rigueur mathématique aux marchés et aux systèmes autonomes. J'aime les problèmes difficiles, les données désordonnées et le raisonnement par principes premiers.",
   ],
   help: 'Comment puis-je vous aider ?',
@@ -202,7 +202,7 @@ const fr: AboutCopy = {
       ],
     },
     {
-      role: 'Business Intelligence Engineer, stage',
+      role: 'Stagiaire Business Intelligence Engineer',
       period: 'août 2023 - févr. 2024',
       bullets: [
         'Construction de pipelines ETL de bout en bout (Python, SQL, Amazon Redshift) pour intégrer et traiter des données logistiques à l\'échelle européenne.',
@@ -229,14 +229,14 @@ const fr: AboutCopy = {
       detail: 'Mémoire : deep learning informé par la physique pour la reconstruction quantitative en OCT',
     },
     {
-      degree: "Double licence en informatique et gestion d'entreprise",
+      degree: "Double diplôme en informatique et gestion d'entreprise",
       period: 'sept. 2019 - juil. 2025',
-      grade: '9,9/10, mention très honorable',
-      detail: 'Mémoires : traduction en temps réel de la langue des signes vers la parole ; stratégie marketing fondée sur les données pour Amazon Elderly (8,5/10)',
+      grade: '9,9/10, Matrícula de Honor (distinction académique espagnole)',
+      detail: "Projets de fin d'études : traduction en temps réel de la langue des signes vers la parole ; stratégie marketing fondée sur les données pour Amazon Elderly (8,5/10)",
     },
   ],
   skillsHeading: 'Compétences techniques',
-  skillLabels: ['Langages', 'ML / IA', 'Backend', 'Frontend', 'Données et BI', 'DevOps'],
+  skillLabels: ['Langages', 'ML / IA', 'Back-end', 'Frontend', 'Données et BI', 'DevOps'],
   languagesHeading: 'Langues',
   languages: [
     { name: 'Arabe', level: 'Langue maternelle' },

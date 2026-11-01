@@ -12,7 +12,7 @@ const en = {
     menu: 'Menu',
     language: 'Language',
   },
-  footer: { rights: 'All rights reserved.' },
+  footer: { rights: 'All rights reserved.', email: 'Email' },
   home: {
     greeting: 'Hey there,',
     titleIntro: "I'm",
@@ -131,7 +131,7 @@ const es: Dict = {
     menu: 'Menú',
     language: 'Idioma',
   },
-  footer: { rights: 'Todos los derechos reservados.' },
+  footer: { rights: 'Todos los derechos reservados.', email: 'Correo electrónico' },
   home: {
     greeting: 'Hola,',
     titleIntro: 'Soy',
@@ -234,8 +234,8 @@ const es: Dict = {
 
 const fr: Dict = {
   meta: {
-    homeTitle: 'Aymane Elamrani | Data scientist quantitatif et ingénieur ML',
-    defaultDescription: 'Data scientist quantitatif et ingénieur ML, passionné de physique quantique et maker.',
+    homeTitle: 'Aymane Elamrani | Data scientist spécialisé en méthodes quantitatives et ingénieur ML',
+    defaultDescription: 'Data scientist spécialisé en méthodes quantitatives et ingénieur ML, passionné de physique quantique et maker.',
   },
   nav: {
     Projects: 'Projets',
@@ -246,17 +246,17 @@ const fr: Dict = {
     menu: 'Menu',
     language: 'Langue',
   },
-  footer: { rights: 'Tous droits réservés.' },
+  footer: { rights: 'Tous droits réservés.', email: 'E-mail' },
   home: {
     greeting: 'Salut,',
     titleIntro: 'Je suis',
-    titleWelcome: 'Bienvenus sur mon',
+    titleWelcome: 'Bienvenue dans mon',
     titleCorner: 'coin',
     titleOfThe: '',
     titleInternetPrefix: 'd’',
-    titleInternet: 'internet',
-    subtitle: "Data scientist quantitatif et ingénieur ML. J’ai commencé par construire des systèmes de prévision et des pipelines de données chez Amazon, puis j’ai approfondi le côté quantitatif avec un master en photonique quantique, modélisation de l’interaction lumière-tissu, ML guidé par la physique, reconstruction de signaux à partir de données bruitées. Aujourd’hui, j’apporte tout ça à la finance quantitative et aux agents IA. J’aime les problèmes difficiles, les données désordonnées et la réflexion par premiers principes.",
-    role: 'Data scientist quantitatif et ingénieur ML',
+    titleInternet: 'Internet',
+    subtitle: "Data scientist spécialisé en méthodes quantitatives et ingénieur ML. J’ai commencé par construire des systèmes de prévision et des pipelines de données chez Amazon, puis j’ai approfondi le côté quantitatif avec un master en photonique quantique, modélisation de l’interaction lumière-tissu, ML guidé par la physique, reconstruction de signaux à partir de données bruitées. Aujourd’hui, j’apporte tout ça à la finance quantitative et aux agents IA. J’aime les problèmes difficiles, les données désordonnées et la réflexion par premiers principes.",
+    role: 'Data scientist spécialisé en méthodes quantitatives et ingénieur ML',
     cards: [
       { title: 'Data science quantitative', text: 'Prévision, reconstruction de signaux et modélisation financière.' },
       { title: 'Ingénierie ML', text: 'Modèles guidés par la physique et pipelines de données en production.' },
@@ -329,7 +329,7 @@ const fr: Dict = {
     visitSite: 'Voir le site ↗',
     readMore: 'Lire la suite →',
     back: '← Retour aux projets',
-    backAll: '← Retour à tous les projets',
+    backAll: "← Retour à l'ensemble des projets",
     openColab: 'Ouvrir dans Colab ↗',
     viewCode: 'Voir le code ↗',
     results: 'Résultats',

@@ -1,6 +1,6 @@
-// Shared by api/comments.js (public) and api/comments-admin.js (moderation).
+// Shared by api/comments.js (public), api/subscribe.js and the admin panel's functions in api/admin/.
 // Files under api/_lib are not deployed as functions.
-import { createHash, timingSafeEqual } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -47,12 +47,26 @@ const redisStore = {
     await redis('LTRIM', `comments:${slug}`, 0, MAX_PER_POST - 1);
   },
   removeApproved: (slug, value) => redis('LREM', `comments:${slug}`, 1, value),
+  // Generic key/value and hash access for the admin panel (account, sessions, passkeys)
+  get: key => redis('GET', key),
+  set: (key, value, seconds) => (seconds ? redis('SET', key, value, 'EX', seconds) : redis('SET', key, value)),
+  del: key => redis('DEL', key),
+  hgetall: async key => {
+    const flat = (await redis('HGETALL', key)) ?? [];
+    const out = {};
+    for (let i = 0; i < flat.length; i += 2) out[flat[i]] = flat[i + 1];
+    return out;
+  },
+  hset: (key, field, value) => redis('HSET', key, field, value),
+  hdel: (key, field) => redis('HDEL', key, field),
 };
 
 // Local development without a database: everything lives in memory until the dev server restarts
 const counters = new Map();
 const pending = new Map();
 const lists = new Map();
+const values = new Map(); // key -> { value, expires }
+const hashes = new Map(); // key -> Map(field -> value)
 const memoryStore = {
   hit: async (key, seconds) => {
     const now = Date.now();
@@ -73,6 +87,17 @@ const memoryStore = {
   approved: async slug => lists.get(slug) ?? [],
   approve: async (slug, value) => lists.set(slug, [value, ...(lists.get(slug) ?? [])].slice(0, MAX_PER_POST)),
   removeApproved: async (slug, value) => lists.set(slug, (lists.get(slug) ?? []).filter(v => v !== value)),
+  get: async key => {
+    const entry = values.get(key);
+    if (entry && (!entry.expires || entry.expires > Date.now())) return entry.value;
+    values.delete(key);
+    return null;
+  },
+  set: async (key, value, seconds) => values.set(key, { value, expires: seconds ? Date.now() + seconds * 1000 : 0 }),
+  del: async key => values.delete(key),
+  hgetall: async key => Object.fromEntries(hashes.get(key) ?? []),
+  hset: async (key, field, value) => hashes.set(key, (hashes.get(key) ?? new Map()).set(field, value)),
+  hdel: async (key, field) => hashes.get(key)?.delete(field),
 };
 
 export const store = REDIS_URL && REDIS_TOKEN ? redisStore : process.env.VERCEL ? null : memoryStore;
@@ -122,14 +147,6 @@ export function isAllowedOrigin(req) {
   }
   if (allowed.some(url => new URL(url).origin === origin)) return true;
   return !process.env.VERCEL && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-}
-
-// Moderation is disabled until a long random COMMENTS_ADMIN_TOKEN is set
-export function isAdmin(req) {
-  if (ADMIN_TOKEN.length < 32) return false;
-  const given = String(req.headers.authorization ?? '').replace(/^Bearer /, '');
-  const digest = value => createHash('sha256').update(value).digest();
-  return timingSafeEqual(digest(given), digest(ADMIN_TOKEN));
 }
 
 export function readBody(req) {
