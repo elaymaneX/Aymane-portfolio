@@ -8,6 +8,10 @@ colabUrl: 'https://colab.research.google.com/github/elaymaneX/Blog01-spectral-si
 repoUrl: 'https://github.com/elaymaneX/Blog01-spectral-signatures-ai-vs-dotcom'
 ---
 
+> **Quantitative exploratory analysis.** Data covers January 1997 – December 2002 and January 2023 – October 2026.
+>
+> **Disclaimer:** This analysis is for research and educational purposes only and does not constitute investment advice.
+
 ## 1. Abstract
 
 I test whether the current AI sector exhibits the correlation structure signatures observed during the dot-com bubble (1997-2002). Using spectral analysis of rolling correlation matrices on Fama-French 49 industry portfolios (following Buccheri, Marmi & Mantegna (2013)) I compare three diagnostics metrics across both eras: dominant eigenvalue evolution (λ₁), intra-sector vs cross-sector correlation gap ( herding), and second-mode eigenvector loadings (λ₂ decoupling). I found that while AI-adjacent industries show elevated within-group correlation, the defining spectral signature of the dot-com bubble (a clear tech vs rest decoupling in λ₂) is absent in this actual era. The results suggest the current AI enthusiasm, as of late 2026 does not replicate the correlation regime that preceded the dot-com crash.
@@ -160,7 +164,7 @@ I applied spectral analysis of rolling correlation matrices to compare the marke
 
 The dot-com bubble produced a clear and sustained spectral signature: the second eigenvalue rose steadily, its eigenvector split along tech-vs-non-tech lines, and the herding gap climbed from 0.15 to 0.45 over nearly three years before the crash. The AI era reproduces none of these patterns. The herding gap remains flat, the λ₂ eigenvector reflects macro-driven sector rotations rather than tech decoupling, and the most recent data shows the herding gap turning negative, implicating tech industries losing coherence as a group.
 
-These results do not settle whether AI stocks are overvalued. They do establish that the market is not treating AI as a speculative bloc in the way it treated internet stocks in 1998–2000. If a correction in AI valuations does occur, it is unlikely to follow the same correlation pathway as the dot-com crash.
+These results do not settle whether AI stocks are overvalued. They do establish that the market is not treating AI as a speculative bloc in the way it treated internet stocks in 1998–2000. A future correction in AI valuations need not reproduce the correlation pathway of the dot-com crash.
 
 Future work could extend this analysis in several directions: applying the same framework at the individual-stock level to detect concentration within industries, incorporating alternative bubble detection methods alongside spectral analysis, and revisiting this dataset as the AI investment cycle matures, particularly to test whether the negative herding gap persists or reverses.
 

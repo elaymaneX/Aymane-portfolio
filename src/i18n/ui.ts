@@ -1,7 +1,7 @@
 const en = {
   meta: {
     homeTitle: 'Aymane Elamrani | Quantitative Data Scientist & ML Engineer',
-    defaultDescription: 'Quantitative data scientist and ML engineer available for freelance work: forecasting, machine learning, quantitative finance and AI agents.',
+    defaultDescription: 'Quantitative data scientist and ML engineer available for selected freelance projects in data science, machine learning, quantitative analysis and automation.',
   },
   nav: {
     Projects: 'Projects',
@@ -39,6 +39,10 @@ const en = {
     latestB: 'Blog',
     allArticles: 'All articles →',
     // Newsletter box: the title's second part is set in italic
+    direction: 'Now pushing toward quantitative finance and agentic AI.',
+    workTitle: "Have a data or ML problem? Let's build it.",
+    workText: 'Available for selected freelance projects in data science, machine learning, quantitative analysis, and automation.',
+    workCta: 'Start a project',
     newsTitleA: 'Stay',
     newsTitleB: 'in the loop.',
     newsDesc: 'New articles and projects, straight to your inbox. No spam, unsubscribe anytime.',
@@ -90,9 +94,9 @@ const en = {
     headingA: "Things I've",
     headingB: 'built',
     desc: 'A mix of AI tools, automations, and research projects. Some are open-source, some are experiments, all taught me something.',
-    analysisTitle: 'Analysis & tools',
-    analysisDesc: 'Research, quant analysis and agentic tools, with write-ups, results and code.',
-    appsTitle: 'Apps & websites',
+    analysisTitle: 'Research & Machine Learning',
+    analysisDesc: 'Thesis research, with methods, results and limitations.',
+    appsTitle: 'Software & Automation',
     appsDesc: 'Live products and sites built for clients and for myself.',
     visitSite: 'Visit site ↗',
     readMore: 'Read more →',
@@ -120,7 +124,7 @@ type Dict = typeof en;
 const es: Dict = {
   meta: {
     homeTitle: 'Aymane Elamrani | Científico de datos cuantitativo e ingeniero de ML',
-    defaultDescription: 'Científico de datos cuantitativo e ingeniero de ML disponible para proyectos freelance: forecasting, machine learning, finanzas cuantitativas y agentes de IA.',
+    defaultDescription: 'Científico de datos cuantitativo e ingeniero de ML disponible para proyectos freelance seleccionados en ciencia de datos, machine learning, análisis cuantitativo y automatización.',
   },
   nav: {
     Projects: 'Proyectos',
@@ -157,6 +161,10 @@ const es: Dict = {
     latestA: 'Lo último del',
     latestB: 'blog',
     allArticles: 'Todos los artículos →',
+    direction: 'Ahora avanzando hacia las finanzas cuantitativas y la IA agéntica.',
+    workTitle: '¿Tienes un problema de datos o ML? Construyámoslo.',
+    workText: 'Disponible para proyectos freelance seleccionados en ciencia de datos, machine learning, análisis cuantitativo y automatización.',
+    workCta: 'Empezar un proyecto',
     newsTitleA: 'Estate',
     newsTitleB: 'al día.',
     newsDesc: 'Nuevos artículos y proyectos, directo a tu correo. Sin spam, te das de baja cuando quieras.',
@@ -208,9 +216,9 @@ const es: Dict = {
     headingA: 'Cosas que he',
     headingB: 'construido',
     desc: 'Una mezcla de herramientas de IA, automatizaciones y proyectos de investigación. Algunos son open source, otros experimentos, y de todos aprendí algo.',
-    analysisTitle: 'Análisis y herramientas',
-    analysisDesc: 'Investigación, análisis cuantitativo y herramientas agénticas, con explicaciones, resultados y código.',
-    appsTitle: 'Apps y webs',
+    analysisTitle: 'Investigación y machine learning',
+    analysisDesc: 'Investigación de mis tesis, con métodos, resultados y limitaciones.',
+    appsTitle: 'Software y automatización',
     appsDesc: 'Productos y webs en producción, hechos para clientes y para mí.',
     visitSite: 'Visitar web ↗',
     readMore: 'Leer más →',
@@ -235,7 +243,7 @@ const es: Dict = {
 const fr: Dict = {
   meta: {
     homeTitle: 'Aymane Elamrani | Data scientist spécialisé en méthodes quantitatives et ingénieur ML',
-    defaultDescription: 'Data scientist spécialisé en méthodes quantitatives et ingénieur ML, disponible en freelance : prévision, machine learning, finance quantitative et agents IA.',
+    defaultDescription: 'Data scientist spécialisé en méthodes quantitatives et ingénieur ML, disponible pour des projets freelance choisis en data science, machine learning, analyse quantitative et automatisation.',
   },
   nav: {
     Projects: 'Projets',
@@ -271,6 +279,10 @@ const fr: Dict = {
     latestA: 'Les derniers articles du',
     latestB: 'blog',
     allArticles: 'Tous les articles →',
+    direction: "Aujourd'hui tourné vers la finance quantitative et l'IA agentique.",
+    workTitle: 'Un problème de données ou de ML ? Construisons la solution.',
+    workText: 'Disponible pour des projets freelance choisis en data science, machine learning, analyse quantitative et automatisation.',
+    workCta: 'Démarrer un projet',
     newsTitleA: 'Restez',
     newsTitleB: 'informé.',
     newsDesc: 'Nouveaux articles et projets, directement dans votre boîte mail. Pas de spam, désinscription à tout moment.',
@@ -322,9 +334,9 @@ const fr: Dict = {
     headingA: "Ce que j'ai",
     headingB: 'construit',
     desc: "Un mélange d'outils d'IA, d'automatisations et de projets de recherche. Certains sont open source, d'autres des expériences, et tous m'ont appris quelque chose.",
-    analysisTitle: 'Analyses et outils',
-    analysisDesc: 'Recherche, analyse quantitative et outils agentiques, avec explications, résultats et code.',
-    appsTitle: 'Applications et sites web',
+    analysisTitle: 'Recherche et machine learning',
+    analysisDesc: 'Recherche de mes mémoires, avec méthodes, résultats et limites.',
+    appsTitle: 'Logiciels et automatisation',
     appsDesc: 'Produits et sites en ligne, réalisés pour des clients et pour moi.',
     visitSite: 'Voir le site ↗',
     readMore: 'Lire la suite →',

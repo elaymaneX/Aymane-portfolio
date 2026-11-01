@@ -6,11 +6,11 @@ tags:
   - { label: 'Edge AI' }
   - { label: 'Accesibilidad' }
 description: "Trabajo Fin de Grado: un prototipo que traduce lengua de signos a voz en tiempo real con MediaPipe, deep learning y una Google Coral Edge TPU."
-excerpt: 'Trabajo Fin de Grado · Ingeniería Informática · Universitat Politècnica de València · 2024–2025'
+excerpt: 'Trabajo Fin de Grado en Ingeniería Informática · UPV · 2024–2025. Un pipeline funcional de signos a voz: 250 signos ASL · ~15 FPS de captura · Coral Edge TPU · 8/9 requisitos funcionales.'
 stats:
   - { value: '250', label: 'Palabras de ASL en el vocabulario' }
   - { value: '15 FPS', label: 'Captura en tiempo real' }
-  - { value: 'Edge AI', label: 'Visión por computador + deep learning' }
+  - { value: '8 / 9', label: 'Requisitos funcionales cumplidos' }
 ---
 
 <figure class="natural">
@@ -20,13 +20,17 @@ stats:
 
 ## Resumen
 
-Las barreras de comunicación pueden ser especialmente importantes en servicios públicos como hospitales, ayuntamientos y otros puntos de atención al ciudadano. Este proyecto explora cómo combinar la visión por computador y el edge computing para crear una interfaz accesible entre la lengua de signos y la comunicación oral.
-
 Desarrollé **Sign2Speech**, un prototipo funcional capaz de capturar gestos de lengua de signos con una cámara, reconocer signos individuales, reconstruir frases cortas en lenguaje natural y convertirlas en voz.
 
 El sistema combina **MediaPipe Holistic**, clasificación de secuencias con deep learning, un modelo de lenguaje en la nube y síntesis de voz local, con el pipeline de reconocimiento diseñado para desplegarse en una **Google Coral Dev Board**.
 
 El proyecto se desarrolló como mi Trabajo Fin de Grado en Ingeniería Informática en la Universitat Politècnica de València.
+
+## El problema
+
+Las barreras de comunicación pueden ser especialmente importantes en servicios públicos como hospitales, ayuntamientos y otros puntos de atención al ciudadano. Este proyecto explora cómo combinar la visión por computador y el edge computing para crear una interfaz accesible entre la lengua de signos y la comunicación oral.
+
+El reto técnico es que un signo se desarrolla en el tiempo y combina manos, cuerpo y cara, los signos visualmente parecidos se confunden con facilidad y el sistema debe ejecutarse en hardware edge con recursos limitados.
 
 ## Arquitectura del sistema
 
@@ -45,9 +49,9 @@ Las palabras reconocidas se envían a un componente de generación de lenguaje a
 
 Este diseño modular hace que cada componente pueda sustituirse de forma independiente y permite al sistema adaptarse a distintos entornos de ejecución.
 
-## Metodología
+## Modelo y metodología
 
-### 1. Representación visual del gesto
+### Representación visual del gesto
 
 La primera etapa convierte la imagen de la cámara en representaciones estructuradas de los movimientos del usuario.
 
@@ -55,15 +59,7 @@ Utilicé **MediaPipe Holistic** para extraer landmarks del cuerpo, las manos y l
 
 Las secuencias resultantes contienen coordenadas tridimensionales de los landmarks `(x, y, z)` a lo largo del tiempo, que forman la entrada de los modelos de clasificación.
 
-### 2. Preparación del dataset
-
-El proyecto exploró inicialmente el dataset **WLASL**, pero la calidad de sus vídeos, el número limitado de muestras por clase y sus requisitos de preprocesamiento lo hacían poco práctico para el pipeline objetivo.
-
-Por ello trabajé con el dataset de Google basado en landmarks, con **250 clases de signos**, que proporciona secuencias de gestos ya extraídas y permitió centrar el proyecto en la representación temporal y el desarrollo del modelo.
-
-Los datos se normalizaron, se alinearon temporalmente y se convirtieron en un dataset estructurado apto para entrenar modelos de deep learning.
-
-### 3. Reconocimiento de gestos con Transformers
+### Reconocimiento de gestos con Transformers
 
 La arquitectura de reconocimiento inicial se basó en **Transformers con atención multi-cabeza**.
 
@@ -71,7 +67,28 @@ Las secuencias de landmarks se proyectaron a un espacio de embeddings y se proce
 
 El Transformer inicial alcanzó **más de un 90 % de precisión en entrenamiento**, lo que demostró la viabilidad de la representación y del enfoque de modelado. Sin embargo, lograr un buen rendimiento de clasificación era solo una parte del problema: el modelo también tenía que poder desplegarse en hardware edge con recursos limitados.
 
-### 4. Diseño para Edge AI
+### Generación de lenguaje y voz
+
+Una vez clasificados los signos individuales, las palabras reconocidas se envían a un modelo de lenguaje que construye una frase corta y coherente.
+
+El texto resultante pasa después a un componente local de **síntesis de voz** basado en `pyttsx3`, de modo que la salida hablada se genera sin necesidad de otro servicio en la nube para la síntesis de voz.
+
+## Entrenamiento
+
+El proyecto exploró inicialmente el dataset **WLASL**, pero la calidad de sus vídeos, el número limitado de muestras por clase y sus requisitos de preprocesamiento lo hacían poco práctico para el pipeline objetivo.
+
+Por ello trabajé con el dataset de Google basado en landmarks, con **250 clases de signos**, que proporciona secuencias de gestos ya extraídas y permitió centrar el proyecto en la representación temporal y el desarrollo del modelo.
+
+Los datos se normalizaron, se alinearon temporalmente y se convirtieron en un dataset estructurado apto para entrenar modelos de deep learning.
+
+<figure class="natural">
+  <img src="/images/sign2speech/training-loss.png" alt="Curvas de pérdida de entrenamiento y validación a lo largo de unas 65 épocas" loading="lazy" width="611" height="429" />
+  <figcaption>Figura 4: Pérdida de entrenamiento y validación durante el entrenamiento.</figcaption>
+</figure>
+
+## Despliegue en el edge
+
+### Diseño para Edge AI
 
 El Transformer no podía desplegarse directamente en la Coral Edge TPU.
 
@@ -93,13 +110,7 @@ El modelo resultante se convirtió y compiló correctamente para ejecutarse en l
   <figcaption>Figura 3: Resumen de la arquitectura y número de parámetros del modelo optimizado para el edge.</figcaption>
 </figure>
 
-### 5. Generación de lenguaje y voz
-
-Una vez clasificados los signos individuales, las palabras reconocidas se envían a un modelo de lenguaje que construye una frase corta y coherente.
-
-El texto resultante pasa después a un componente local de **síntesis de voz** basado en `pyttsx3`, de modo que la salida hablada se genera sin necesidad de otro servicio en la nube para la síntesis de voz.
-
-### 6. Inferencia resiliente
+### Inferencia resiliente
 
 La aplicación se diseñó con dos rutas de inferencia.
 
@@ -125,11 +136,6 @@ El sistema implementado demostró con éxito:
 - Cambio automático entre backends de inferencia
 
 La evaluación funcional confirmó **8 de los 9 requisitos funcionales definidos**. El requisito restante, la inferencia totalmente local en la Coral Dev Board, no se consideró completamente satisfecho en la evaluación final.
-
-<figure class="natural">
-  <img src="/images/sign2speech/training-loss.png" alt="Curvas de pérdida de entrenamiento y validación a lo largo de unas 65 épocas" loading="lazy" width="611" height="429" />
-  <figcaption>Figura 4: Pérdida de entrenamiento y validación durante el entrenamiento.</figcaption>
-</figure>
 
 ### Rendimiento
 
