@@ -36,14 +36,14 @@ J'ai introduit une fonction de perte de reconstruction qui propage les prédicti
 
 ### 4. Simulation électromagnétique et validation
 
-J'ai amélioré un simulateur électromagnétique par différences finies dans le domaine temporel (FDTD) grâce à un lissage sous-pixel qui réduit les erreurs numériques d'escalier. J'ai validé sa réponse en diffusion par rapport à la théorie analytique de Mie, ouvrant une voie complémentaire vers des simulations physiques plus fidèles.
+J'ai amélioré un simulateur électromagnétique par différences finies dans le domaine temporel (FDTD) grâce à un lissage sous-pixel qui réduit les artefacts numériques de discrétisation. J'ai validé sa réponse en diffusion par rapport à la théorie analytique de Mie, ouvrant une voie complémentaire vers des simulations physiques plus fidèles.
 
 ## Résultats
 
 Des expériences sur 5 000 B-scans rétiniens synthétiques ont montré qu'intégrer la cohérence physique à l'apprentissage améliore nettement la reconstruction quantitative.
 
 - **Erreur de reconstruction divisée par 3,7 :** l'affinage guidé par la physique a réduit le log-MSE de reconstruction de 0,893 à 0,241.
-- **Récupération des paramètres très précise :** l'atténuation a atteint un R² = 0,978 et la réflectivité un R² = 0,959 sur le jeu de test synthétique réservé.
+- **Récupération des paramètres très précise :** l'atténuation a atteint un R² = 0,978 et la réflectivité un R² = 0,959 sur le jeu de test synthétique indépendant.
 - **Meilleure cohérence physique :** le signal OCT reconstruit s'est nettement rapproché de l'observation d'origine, tout en conservant une grande précision sur les paramètres du tissu.
 
 <figure>
@@ -53,10 +53,10 @@ Des expériences sur 5 000 B-scans rétiniens synthétiques ont montré qu'inté
 
 <figure>
   <img src="/images/oct/cross-stage-panel.png" alt="Grille de reconstructions OCT, cartes d'atténuation et résidus avant et après l'affinage PINN" loading="lazy" width="1063" height="767" />
-  <figcaption>Figure 3 : Panneau qualitatif entre étapes pour un échantillon de test : observation et reconstructions (en haut), cartes de μ (au milieu) et comparaison des résidus (en bas).</figcaption>
+  <figcaption>Figure 3 : Comparaison qualitative entre les étapes pour un échantillon de test : observation et reconstructions (en haut), cartes de μ (au milieu) et comparaison des résidus (en bas).</figcaption>
 </figure>
 
-## Stack technique
+## Technologies utilisées
 
 Python · JAX · Flax · Deep Learning · U-Net · Réseaux de neurones guidés par la physique (PINNs) · Tomographie par cohérence optique · FDTD · Diffusion de Mie · Électromagnétisme numérique · Calcul sur GPU
 
