@@ -10,6 +10,7 @@ interface Props {
   date: Date;
   tags: { label: string; accent?: boolean }[];
   excerpt: string;
+  description?: string;
   colabUrl?: string;
   repoUrl?: string;
   stats?: { value: string; label: string }[];
@@ -18,13 +19,13 @@ interface Props {
   fallback?: boolean;
 }
 
-const { slug, title, date, tags, excerpt, colabUrl, repoUrl, stats = [], gallery = [], lang, fallback = false } = Astro.props;
+const { slug, title, date, tags, excerpt, description, colabUrl, repoUrl, stats = [], gallery = [], lang, fallback = false } = Astro.props;
 const ui = t(lang).projects;
 const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', day: 'numeric' });
 const jsonLd = {
   '@type': 'CreativeWork',
   name: title,
-  description: excerpt,
+  description: description ?? excerpt,
   dateCreated: date.toISOString(),
   author: { '@id': new URL('/#person', Astro.site).href },
   image: new URL(`/og/projects/${slug}.png`, Astro.site).href,
@@ -33,7 +34,7 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title={`${title} | Aymane Elamrani`} description={excerpt} activePage="Projects" lang={lang}
+<BaseLayout title={`${title} | Aymane Elamrani`} description={description ?? excerpt} activePage="Projects" lang={lang}
   ogImage={`/og/projects/${slug}.png`} article={{ published: date }} jsonLd={jsonLd}>
   <ArticleExtras copy={t(lang).blog.copy} copied={t(lang).blog.copied} close={t(lang).blog.close} />
   <article class="container post">

@@ -1,7 +1,7 @@
 const en = {
   meta: {
     homeTitle: 'Aymane Elamrani | Quantitative Data Scientist & ML Engineer',
-    defaultDescription: 'Quantitative data scientist and ML engineer, quantum physics enthusiast, and maker.',
+    defaultDescription: 'Quantitative data scientist and ML engineer available for freelance work: forecasting, machine learning, quantitative finance and AI agents.',
   },
   nav: {
     Projects: 'Projects',
@@ -120,7 +120,7 @@ type Dict = typeof en;
 const es: Dict = {
   meta: {
     homeTitle: 'Aymane Elamrani | Científico de datos cuantitativo e ingeniero de ML',
-    defaultDescription: 'Científico de datos cuantitativo e ingeniero de ML, apasionado de la física cuántica y maker.',
+    defaultDescription: 'Científico de datos cuantitativo e ingeniero de ML disponible para proyectos freelance: forecasting, machine learning, finanzas cuantitativas y agentes de IA.',
   },
   nav: {
     Projects: 'Proyectos',
@@ -235,7 +235,7 @@ const es: Dict = {
 const fr: Dict = {
   meta: {
     homeTitle: 'Aymane Elamrani | Data scientist spécialisé en méthodes quantitatives et ingénieur ML',
-    defaultDescription: 'Data scientist spécialisé en méthodes quantitatives et ingénieur ML, passionné de physique quantique et maker.',
+    defaultDescription: 'Data scientist spécialisé en méthodes quantitatives et ingénieur ML, disponible en freelance : prévision, machine learning, finance quantitative et agents IA.',
   },
   nav: {
     Projects: 'Projets',

@@ -24,6 +24,8 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string().default(''),
     date: z.date().optional(),
+    // Search-result text when the excerpt isn't descriptive enough
+    description: z.string().optional(),
     // app: card links straight to the live site; analysis: card opens its own page
     type: z.enum(['app', 'analysis']).default('analysis'),
     tags: z.array(z.object({
