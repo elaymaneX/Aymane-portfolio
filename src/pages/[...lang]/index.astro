@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
-import headshot from '../../assets/headshot.jpeg';
+import portrait from '../../assets/hero-portrait.png';
 import upvLogo from '../../assets/logos/upv.png';
 import owLogo from '../../assets/logos/oliver-wyman.png';
 import amazonLogo from '../../assets/logos/amazon.svg';
@@ -49,21 +49,22 @@ const latestPosts = (await localizedEntries('blog', lang))
 
   <!-- HERO -->
   <section class="hero container">
-    <div class="hero__photo">
-      <Image src={headshot} alt="Aymane Elamrani" class="hero__img" widths={[360, 760]} sizes="(max-width: 768px) 180px, 380px" loading="eager" />
-    </div>
     <div class="hero__text">
-      <p class="hero__greeting">{ui.greeting}</p>
+      <p class="hero__role">{ui.role}</p>
+      {/* One colour; the contrast comes from upright vs italic Fraunces. French and Spanish
+          have no "of the" word, so their last two words share a line */}
       <h1 class="hero__title">
-        {ui.titleIntro} <span class="highlight-blue">Aymane.</span><br/>
-        {ui.titleWelcome}<br/>
-        {/* French has no "of the" word, so "coin d’internet" stays on one line */}
-        <span class="highlight-blue">{ui.titleCorner}</span>{ui.titleOfThe ? <>{' '}{ui.titleOfThe}<br/></> : ' '}
-        {ui.titleInternetPrefix}<span class="highlight-gold">{ui.titleInternet}</span>.
+        <span class="hero__line hero__name">{ui.titleIntro} Aymane<span class="hero__dot">.</span></span>
+        <span class="hero__line">{ui.titleWelcome}</span>
+        {ui.titleOfThe ? (
+          <>
+            <span class="hero__line"><em>{ui.titleCorner}</em> {ui.titleOfThe}</span>
+            <span class="hero__line">{ui.titleInternetPrefix}<em>{ui.titleInternet}</em>.</span>
+          </>
+        ) : (
+          <span class="hero__line"><em>{ui.titleCorner}</em> {ui.titleInternetPrefix}<em>{ui.titleInternet}</em>.</span>
+        )}
       </h1>
-      <p class="hero__subtitle">
-        {ui.subtitle} <a href="mailto:aelamra25@gmail.com" class="hero__help">{ui.help}</a>
-      </p>
       <div class="hero__actions">
         <a href={localePath(lang, '/projects')} class="btn btn--primary">{ui.viewProjects} <span>→</span></a>
         <a href={localePath(lang, '/blog')} class="btn btn--outline">{ui.readBlog}</a>
@@ -74,6 +75,17 @@ const latestPosts = (await localizedEntries('blog', lang))
           </a>
         )}
       </div>
+      <ul class="hero__cards">
+        {ui.cards.map(card => (
+          <li class="hero__card">
+            <strong>{card.title}</strong>
+            <span>{card.text}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="hero__photo">
+      <Image src={portrait} alt="Aymane Elamrani" class="hero__img" widths={[480, 760, 1071]} sizes="(max-width: 768px) 300px, 520px" loading="eager" fetchpriority="high" />
     </div>
   </section>
 
@@ -84,7 +96,7 @@ const latestPosts = (await localizedEntries('blog', lang))
       <ul class="trust__logos">
         {companies.map(c => (
           <li class="trust__company">
-            <span class="trust__logo" style={c.bg && `background: ${c.bg}`}>
+            <span class="trust__logo duotone" style={c.bg && `background: ${c.bg}`}>
               <Image src={c.logo} alt="" width={64} height={64} class:list={['trust__img', { 'trust__img--pad': c.pad }]} />
             </span>
             {c.name}
@@ -136,138 +148,208 @@ const latestPosts = (await localizedEntries('blog', lang))
           <a href={localePath(lang, `/blog/${slug}`)} class="post-row">
             <span class="post-row__date">{formatDate(lang, post.date, { month: 'short', year: 'numeric' })}</span>
             <span class="post-row__title">{post.title}</span>
-            <span class="post-row__tag" style={`background: ${post.tagColor}`}>{post.tag}</span>
+            <span class="post-row__tag">{post.tag}</span>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- NEWSLETTER CTA -->
+  <!-- NEWSLETTER -->
   <section class="container" style="padding-top: 80px; padding-bottom: 80px;" data-reveal>
     <div class="cta-box">
-      <h2 class="cta-box__title">{ui.ctaTitle}</h2>
-      <p class="cta-box__desc">{ui.ctaDesc}</p>
-      <div class="cta-box__form">
-        <a href="/rss.xml" class="btn btn--accent">{ui.ctaRss}</a>
-        <a href="mailto:aelamra25@gmail.com" class="btn btn--light">{ui.ctaEmail}</a>
+      <div class="cta-box__text">
+        <h2 class="cta-box__title">{ui.newsTitleA} <em>{ui.newsTitleB}</em></h2>
+        <p class="cta-box__desc">{ui.newsDesc}</p>
       </div>
+      <form class="news" novalidate
+        data-ok={ui.newsOk} data-invalid={ui.newsInvalid} data-limited={ui.newsLimited} data-error={ui.newsError}>
+        <div class="news__row">
+          <label class="sr-only" for="news-email">{ui.newsLabel}</label>
+          <input id="news-email" class="news__input" type="email" name="email" required autocomplete="email" maxlength="254" placeholder={ui.newsPlaceholder} />
+          <button type="submit" class="btn btn--light news__button">{ui.newsButton} <span aria-hidden="true">→</span></button>
+        </div>
+        {/* Hidden from people; bots that fill it in are ignored */}
+        <input class="news__trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <p class="news__status" role="status" aria-live="polite"></p>
+        <a href="/rss.xml" class="news__rss">{ui.newsRss}</a>
+      </form>
     </div>
   </section>
 </BaseLayout>
 
+<script>
+  // Newsletter sign-up: posts to /api/subscribe (Resend audience) and answers in place
+  const form = document.querySelector<HTMLFormElement>('.news');
+  form?.addEventListener('submit', async event => {
+    event.preventDefault();
+    const status = form.querySelector<HTMLElement>('.news__status')!;
+    const button = form.querySelector<HTMLButtonElement>('button')!;
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+    const website = (form.elements.namedItem('website') as HTMLInputElement).value;
+    const say = (key: string, ok = false) => {
+      status.textContent = form.dataset[key] ?? '';
+      status.classList.toggle('news__status--ok', ok);
+    };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return say('invalid');
+
+    button.disabled = true;
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, website }),
+      });
+      if (response.ok) {
+        form.reset();
+        say('ok', true);
+      } else {
+        say(response.status === 429 ? 'limited' : response.status === 400 ? 'invalid' : 'error');
+      }
+    } catch {
+      say('error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+
 <style>
   /* HERO */
   .hero {
-    padding-top: clamp(40px, 6vw, 80px);
-    padding-bottom: clamp(40px, 5vw, 60px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: end;
+    gap: clamp(24px, 4vw, 64px);
+    min-height: min(820px, calc(100svh - 80px));
+    padding-top: clamp(32px, 5vw, 64px);
+    position: relative;
+    /* The glow behind the portrait is wider than the column; keep it from widening the page */
+    overflow-x: clip;
+  }
+  .hero__text {
+    align-self: center;
+    padding-bottom: clamp(32px, 5vw, 64px);
+    position: relative;
+    z-index: 1;
+  }
+  .hero__role {
     display: flex;
     align-items: center;
-    gap: clamp(24px, 5vw, 80px);
-    flex-wrap: wrap;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero__text { flex: 1 1 320px; min-width: 0; position: relative; z-index: 1; }
-  .hero__greeting {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--accent);
-    margin-bottom: 16px;
-    letter-spacing: 1px;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
     text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .hero__role::before {
+    content: '';
+    flex: 0 0 32px;
+    height: 1.5px;
+    background: currentColor;
   }
   .hero__title {
     font-family: 'Fraunces', serif;
-    font-size: clamp(36px, 5vw, 64px);
-    font-weight: 500;
-    line-height: 1.1;
-    letter-spacing: -1.5px;
-    margin-bottom: 24px;
+    font-size: clamp(44px, 6.4vw, 92px);
+    font-weight: 300;
+    font-variation-settings: 'opsz' 144;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 36px;
   }
-  .hero__subtitle {
-    font-size: clamp(16px, 1.5vw, 18px);
-    line-height: 1.7;
-    color: var(--text-muted);
-    max-width: 480px;
-    margin-bottom: 32px;
+  .hero__line { display: block; }
+  .hero__name { font-weight: 640; }
+  .hero__dot { color: var(--accent); }
+  .hero__title em {
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: -0.02em;
   }
-  .hero__help {
-    font-weight: 700;
-    color: #D94040;
-    text-decoration: none;
-    background: rgba(217, 64, 64, 0.1);
-    padding: 2px 6px;
-    border-radius: 4px;
-  }
-  .hero__help:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .hero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero__actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
 
-  .hero__photo {
-    flex: 0 0 clamp(200px, 30vw, 480px);
-    height: auto;
-    background: none;
-    border-radius: 0;
+  /* Three short columns under a hairline, numbered in italic Fraunces like the title */
+  .hero__cards {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    counter-reset: card;
+  }
+  .hero__card {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 16px;
+    border-top: 1px solid var(--text);
+    counter-increment: card;
+    transition: border-color 0.2s;
+  }
+  .hero__card::before {
+    content: counter(card, decimal-leading-zero);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .hero__card:hover::before { color: var(--text); }
+  .hero__card strong { font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .hero__card span { font-size: 13.5px; line-height: 1.55; color: var(--text-muted); }
+
+  /* Cut-out portrait, toned grey-purple in the file itself; it sits on the section's bottom edge and fades out */
+  .hero__photo {
+    align-self: end;
     position: relative;
-    z-index: 1;
+    display: flex;
+    justify-content: center;
   }
   .hero__photo::before {
     content: '';
     position: absolute;
-    width: 110%;
-    height: 110%;
-    top: -5%;
-    left: -5%;
+    inset: 12% -10% 0;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(107, 80, 220, 0.25) 0%, rgba(59, 108, 244, 0.15) 40%, transparent 70%);
-    filter: blur(40px);
-    z-index: 0;
-    animation: smokeFloat 6s ease-in-out infinite alternate;
-  }
-  @keyframes smokeFloat {
-    0% { transform: scale(1) translate(0, 0); opacity: 0.7; }
-    50% { transform: scale(1.08) translate(5px, -5px); opacity: 1; }
-    100% { transform: scale(1.02) translate(-3px, 3px); opacity: 0.8; }
+    background: radial-gradient(closest-side, rgba(107, 80, 220, 0.22), rgba(59, 108, 244, 0.1) 55%, transparent);
+    filter: blur(20px);
   }
   :root[data-theme="dark"] .hero__photo::before {
-    background: radial-gradient(circle, rgba(140, 100, 255, 0.4) 0%, rgba(107, 143, 248, 0.25) 40%, transparent 70%);
-    filter: blur(50px);
+    background: radial-gradient(closest-side, rgba(140, 100, 255, 0.35), rgba(107, 143, 248, 0.15) 55%, transparent);
   }
   .hero__img {
-    width: clamp(180px, 25vw, 380px);
-    height: clamp(180px, 25vw, 380px);
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center;
-    border: 5px solid var(--bg);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     position: relative;
-    z-index: 1;
+    width: auto;
+    height: clamp(420px, 72svh, 720px);
+    max-width: 100%;
+    object-fit: contain;
+    object-position: bottom;
+    -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
+    mask-image: linear-gradient(to bottom, #000 78%, transparent);
   }
 
   /* Buttons */
+  /* Buttons: square-cut to match the title; the arrow nudges forward on hover */
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 14px 28px;
-    border-radius: 9999px;
-    font-weight: 600;
-    font-size: 15px;
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.2s;
+    gap: 10px;
+    padding: 15px 26px;
+    border-radius: 2px;
     font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
-  .btn:hover { opacity: 0.85; }
-  .btn--primary { background: var(--text); color: var(--bg); }
-  .btn--outline { border: 1.5px solid var(--border); color: var(--text); }
-  .btn--accent { background: var(--accent); color: #fff; }
+  .btn span { transition: translate 0.2s; }
+  .btn:hover span { translate: 4px 0; }
+  .btn--primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .btn--primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn--outline { border-color: var(--text); color: var(--text); }
+  .btn--outline:hover { background: var(--text); color: var(--bg); }
 
   /* Section headers */
   .section { padding-top: clamp(40px, 6vw, 80px); padding-bottom: clamp(40px, 6vw, 80px); position: relative; }
@@ -281,15 +363,33 @@ const latestPosts = (await localizedEntries('blog', lang))
   }
   .section__title {
     font-family: 'Fraunces', serif;
-    font-size: clamp(28px, 4vw, 44px);
-    font-weight: 500;
-    letter-spacing: -1px;
+    font-size: clamp(32px, 4.4vw, 52px);
+    font-weight: 400;
+    letter-spacing: -0.03em;
   }
+  /* Quiet text link with a hairline that draws in on hover, like the menu */
   .section__link {
-    font-size: 15px;
+    position: relative;
+    padding-bottom: 3px;
+    font-size: 14px;
     font-weight: 600;
-    color: var(--accent);
+    letter-spacing: 0.02em;
+    color: var(--text);
   }
+  .section__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0.3);
+    transform-origin: left;
+    transition: transform 0.25s;
+  }
+  .section__link:hover { color: var(--text); }
+  .section__link:hover::after { transform: scaleX(1); }
 
   /* Project cards */
   .projects-grid {
@@ -298,19 +398,20 @@ const latestPosts = (await localizedEntries('blog', lang))
     gap: 24px;
   }
   .project-card {
-    background: var(--card-bg);
-    border-radius: 16px;
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: clamp(24px, 3vw, 32px);
     display: flex;
     flex-direction: column;
     gap: 16px;
     color: var(--text);
-    transition: transform 0.25s, box-shadow 0.25s;
+    transition: border-color 0.2s, translate 0.2s;
   }
   a.project-card:hover {
-    transform: translateY(-4px);
+    translate: 0 -2px;
     color: var(--text);
-    box-shadow: 0 0 0 1px var(--accent-light), 0 16px 40px -16px rgba(59, 108, 244, 0.35);
+    border-color: var(--text);
   }
   .project-card__cover {
     display: block;
@@ -318,14 +419,14 @@ const latestPosts = (await localizedEntries('blog', lang))
     height: auto;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: var(--radius);
     background: var(--bg);
     box-shadow: 0 0 0 1px var(--border-light);
   }
   .project-card__icon {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -333,7 +434,7 @@ const latestPosts = (await localizedEntries('blog', lang))
   .project-card__title {
     font-family: 'Fraunces', serif;
     font-size: 22px;
-    font-weight: 500;
+    font-weight: 400;
   }
   .project-card__desc {
     font-size: 14px;
@@ -342,18 +443,21 @@ const latestPosts = (await localizedEntries('blog', lang))
     flex: 1;
   }
   .project-card__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  /* Tags: small outlined labels; the lead tag is filled */
   .tag {
-    font-size: 12px;
-    padding: 4px 12px;
-    background: var(--bg);
-    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     color: var(--text-muted);
   }
-  .tag--accent { background: var(--accent); color: #fff; font-weight: 600; }
+  .tag--accent { background: var(--text); border-color: var(--text); color: var(--bg); }
 
   /* Posts */
   .posts-section {
-    background: var(--card-bg);
     padding: clamp(40px, 6vw, 80px) 0;
   }
   .posts-list { display: flex; flex-direction: column; }
@@ -372,64 +476,88 @@ const latestPosts = (await localizedEntries('blog', lang))
   .post-row__title {
     font-family: 'Fraunces', serif;
     font-size: clamp(18px, 2vw, 22px);
-    font-weight: 500;
+    font-weight: 400;
     flex: 1;
     min-width: 200px;
     transition: color 0.2s;
   }
   .post-row__tag {
-    font-size: 13px;
-    padding: 4px 14px;
-    color: #fff;
-    border-radius: 9999px;
+    font-size: 11px;
     font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
   }
 
-  /* CTA box */
+  /* Newsletter box: inverted panel, title on the left, email form on the right */
   .cta-box {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(28px, 5vw, 72px);
     background: var(--text);
-    border-radius: 24px;
+    border-radius: var(--radius);
     padding: clamp(32px, 5vw, 64px);
-    text-align: center;
     color: var(--bg);
   }
   .cta-box__title {
     font-family: 'Fraunces', serif;
-    font-size: clamp(28px, 3.5vw, 40px);
-    font-weight: 500;
-    letter-spacing: -0.5px;
+    font-size: clamp(36px, 4.6vw, 60px);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
     margin-bottom: 16px;
   }
+  .cta-box__title em { font-style: italic; font-weight: 300; }
   .cta-box__desc {
     font-size: 16px;
     line-height: 1.6;
     color: var(--text-muted);
-    max-width: 480px;
-    margin: 0 auto 32px;
+    max-width: 420px;
   }
-  .cta-box__form {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    max-width: 440px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-  }
-  .btn--light { background: var(--bg); color: var(--text); }
-  .btn--ghost { color: var(--text-muted); padding-left: 12px; padding-right: 12px; }
-  .btn--ghost:hover { color: var(--accent); }
-
-  /* In dark mode the inverted (near-white) box glared; use a lifted card with a soft glow instead */
-  :global([data-theme="dark"]) .cta-box {
-    background: radial-gradient(120% 140% at 50% 0%, rgba(107, 80, 220, 0.22) 0%, transparent 60%), var(--card-bg);
-    border: 1px solid var(--border-light);
-    color: var(--text);
-  }
-  :global([data-theme="dark"]) .btn--light {
+  .news__row { display: flex; }
+  .news__input {
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    font-size: 15px;
+    color: inherit;
     background: transparent;
-    color: var(--text);
-    border: 1.5px solid var(--border);
+    border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+    border-right: none;
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    padding: 0 16px;
   }
+  .news__input::placeholder { color: var(--text-muted); }
+  .news__input:focus { outline: none; border-color: currentColor; }
+  .news__button { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; white-space: nowrap; }
+  .news__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .news__status { min-height: 22px; margin-top: 12px; font-size: 14px; color: #F87171; }
+  .news__status--ok { color: inherit; }
+  .news__rss {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .news__rss:hover { color: inherit; }
+  .btn--ghost { color: var(--text-muted); padding-left: 12px; padding-right: 12px; }
+  .btn--ghost:hover { color: var(--text); }
+
+  /* In dark mode the inverted (near-white) box glared; use a bordered panel instead */
+  :global([data-theme="dark"]) .cta-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  /* Inside the box the button takes the box's opposite colour */
+  .btn--light { background: var(--bg); border-color: var(--bg); color: var(--text); }
+  .btn--light:hover { opacity: 0.85; }
+  .btn--light:disabled { opacity: 0.6; cursor: default; }
+  :global([data-theme="dark"]) .btn--light { background: var(--text); border-color: var(--text); color: var(--bg); }
 
   /* CREDIBILITY STRIP: centred logos that float gently, each on its own rhythm */
   .trust {
@@ -470,11 +598,11 @@ const latestPosts = (await localizedEntries('blog', lang))
   .trust__logo {
     width: 40px;
     height: 40px;
-    border-radius: 11px;
+    border-radius: var(--radius);
     overflow: hidden;
     flex-shrink: 0;
     display: flex;
-    box-shadow: 0 0 0 1px var(--border-light), 0 8px 20px -10px rgba(59, 108, 244, 0.45);
+    box-shadow: 0 0 0 1px var(--border-light);
   }
   .trust__img { width: 100%; height: 100%; object-fit: cover; }
   .trust__img--pad { object-fit: contain; padding: 5px; }
@@ -489,16 +617,19 @@ const latestPosts = (await localizedEntries('blog', lang))
     to { translate: 0 5px; }
   }
 
-  /* Hero intro: photo drops in from the right, text follows (Greek letters: GreekBackground.astro) */
+  /* Hero intro: portrait rises into place, text and cards follow (Greek letters: GreekBackground.astro) */
   @media (prefers-reduced-motion: no-preference) {
-    :global(html.intro) .hero__photo { animation: photoIn 0.9s cubic-bezier(0.22, 1.25, 0.36, 1) 0.1s both; }
-    :global(html.intro) .hero__greeting { animation: slideIn 0.6s ease-out 0.45s both; }
-    :global(html.intro) .hero__title { animation: slideIn 0.7s ease-out 0.6s both; }
-    :global(html.intro) .hero__subtitle { animation: fadeUp 0.6s ease-out 0.95s both; }
-    :global(html.intro) .hero__actions { animation: fadeUp 0.6s ease-out 1.1s both; }
+    :global(html.intro) .hero__photo { animation: photoIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+    :global(html.intro) .hero__role { animation: slideIn 0.6s ease-out 0.35s both; }
+    :global(html.intro) .hero__title { animation: slideIn 0.7s ease-out 0.5s both; }
+    :global(html.intro) .hero__actions { animation: fadeUp 0.6s ease-out 0.85s both; }
+    :global(html.intro) .hero__card { animation: fadeUp 0.6s ease-out both; }
+    :global(html.intro) .hero__card:nth-child(1) { animation-delay: 1s; }
+    :global(html.intro) .hero__card:nth-child(2) { animation-delay: 1.1s; }
+    :global(html.intro) .hero__card:nth-child(3) { animation-delay: 1.2s; }
   }
   @keyframes photoIn {
-    from { opacity: 0; translate: 45vw -40px; rotate: 10deg; }
+    from { opacity: 0; translate: 0 48px; }
   }
   @keyframes slideIn {
     from { opacity: 0; translate: 48px 0; }
@@ -510,14 +641,18 @@ const latestPosts = (await localizedEntries('blog', lang))
   /* Mobile */
   @media (max-width: 768px) {
     .hero {
-      flex-direction: column;
+      grid-template-columns: 1fr;
+      min-height: 0;
+      padding-top: 16px;
+      gap: 0;
     }
-    .hero__photo {
-      order: -1;
-      flex: 0 0 auto;
-    }
-    .hero__text { text-align: center; }
-    .hero__actions { justify-content: center; }
+    .hero__photo { order: -1; }
+    .hero__img { height: 340px; }
+    .hero__text { padding-bottom: 32px; }
+    .hero__title { margin-bottom: 28px; }
+    .hero__cards { grid-template-columns: 1fr; gap: 20px; }
+    .cta-box { grid-template-columns: 1fr; }
+    .hero__actions .btn { padding: 14px 18px; }
     .post-row__title { min-width: 0; }
   }
 </style>

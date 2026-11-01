@@ -124,7 +124,7 @@ const ui = t(lang).comments;
   .comments__heading {
     font-family: 'Fraunces', serif;
     font-size: 28px;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: -0.5px;
     margin-bottom: 24px;
   }
@@ -137,8 +137,8 @@ const ui = t(lang).comments;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    background: var(--card-bg);
-    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: 24px;
     margin-bottom: 32px;
   }
@@ -157,7 +157,7 @@ const ui = t(lang).comments;
     color: var(--text);
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     padding: 10px 14px;
     resize: vertical;
   }
@@ -181,15 +181,18 @@ const ui = t(lang).comments;
   }
   .comments__submit {
     font: inherit;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    color: #fff;
-    background: var(--accent);
-    border: none;
-    border-radius: 9999px;
-    padding: 10px 22px;
+    letter-spacing: 0.02em;
+    color: var(--bg);
+    background: var(--text);
+    border: 1px solid var(--text);
+    border-radius: var(--radius-sm);
+    padding: 13px 24px;
     cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
   }
+  .comments__submit:not(:disabled):hover { background: var(--accent); border-color: var(--accent); color: #fff; }
   .comments__submit:disabled {
     opacity: 0.6;
     cursor: default;

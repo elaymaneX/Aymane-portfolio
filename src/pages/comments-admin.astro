@@ -173,13 +173,13 @@ import '../styles/global.css';
     }
     h1 {
       font-family: 'Fraunces', serif;
-      font-weight: 500;
+      font-weight: 400;
       font-size: 36px;
       margin-bottom: 24px;
     }
     h2 {
       font-family: 'Fraunces', serif;
-      font-weight: 500;
+      font-weight: 400;
       font-size: 24px;
       margin: 32px 0 12px;
     }
@@ -195,7 +195,7 @@ import '../styles/global.css';
       color: var(--text);
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 9999px;
+      border-radius: var(--radius-sm);
       padding: 6px 16px;
       cursor: pointer;
     }
@@ -220,7 +220,7 @@ import '../styles/global.css';
       color: var(--text);
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: var(--radius);
       padding: 8px 12px;
     }
     .mod__bar { display: flex; gap: 8px; }
@@ -228,7 +228,7 @@ import '../styles/global.css';
     .mod__list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
     .mod__list .mod__item {
       background: var(--card-bg);
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 16px;
     }
     .mod__list .mod__meta {

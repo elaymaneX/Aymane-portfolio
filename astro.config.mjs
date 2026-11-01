@@ -13,7 +13,7 @@ const vercelApiInDev = {
       Object.assign(process.env, loadEnv('development', process.cwd(), ''));
       server.middlewares.use('/api', async (req, res, next) => {
         const url = new URL(req.url, 'http://localhost');
-        if (!/^\/comments(-admin)?$/.test(url.pathname)) return next();
+        if (!/^\/(comments(-admin)?|subscribe)$/.test(url.pathname)) return next();
         const { default: handler } = await server.ssrLoadModule(`/api${url.pathname}.js`);
         let body = '';
         for await (const chunk of req) body += chunk;

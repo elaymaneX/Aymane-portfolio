@@ -24,11 +24,12 @@ const experience = [
 
 const education = copy.education.map(ed => ({ ...ed, institution: 'Universitat Politècnica de València (UPV)' }));
 
+// Bar lengths follow the levels: native, French C1, Spanish bilingual, English C1/C2
 const languages = [
-  { percent: 100, flag: '🇲🇦' },
-  { percent: 95, flag: '🇫🇷' },
-  { percent: 95, flag: '🇪🇸' },
-  { percent: 85, flag: '🇬🇧' },
+  { percent: 100 },
+  { percent: 85 },
+  { percent: 95 },
+  { percent: 90 },
 ].map((l, i) => ({ ...l, ...copy.languages[i] }));
 
 const skillGroups = [
@@ -40,7 +41,6 @@ const skillGroups = [
   ['Docker', 'Kubernetes', 'GCP', 'AWS', 'CI/CD', 'Git'],
 ].map((items, i) => ({ label: copy.skillLabels[i], items }));
 
-const interestIcons = ['🤖', '📊', '🔬', '⚡'];
 ---
 
 <BaseLayout title={copy.title} activePage="About" lang={lang}>
@@ -48,11 +48,11 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   <section class="container about-hero">
     <div class="about-photo-col">
       <div class="about-photo-frame">
-        <Image src={aboutPhoto} alt={copy.photoAlt} class="about-photo" widths={[400, 800]} sizes="(max-width: 768px) 100vw, 400px" loading="eager" />
+        <Image src={aboutPhoto} alt={copy.photoAlt} class="about-photo duotone" widths={[400, 800]} sizes="(max-width: 768px) 100vw, 400px" loading="eager" />
       </div>
     </div>
     <div class="about-text-col">
-      <p class="about-label">{copy.label}</p>
+      <p class="about-label eyebrow">{copy.label}</p>
       <h1 class="about-title">{copy.heading} <span class="highlight-blue">Aymane</span></h1>
       <div class="about-bio">
         {copy.bio.map(par => <p>{par}</p>)}
@@ -67,7 +67,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     <div class="timeline">
       {experience.map((exp) => (
         <div class="timeline-item">
-          <div class="timeline-logo" style={exp.logo.bg && `background: ${exp.logo.bg}`}>
+          <div class="timeline-logo duotone" style={exp.logo.bg && `background: ${exp.logo.bg}`}>
             <Image src={exp.logo.src} alt={exp.logo.alt} width={112} height={112} class:list={['timeline-logo__img', { 'timeline-logo__img--pad': exp.logo.pad }]} />
           </div>
           <div class="timeline-content">
@@ -129,11 +129,8 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
       {languages.map(spoken => (
         <div class="lang-card">
           <div class="lang-card__head">
-            <span class="lang-flag">{spoken.flag}</span>
-            <div>
-              <span class="lang-name">{spoken.name}</span>
-              <span class="lang-level">{spoken.level}</span>
-            </div>
+            <span class="lang-name">{spoken.name}</span>
+            <span class="lang-level">{spoken.level}</span>
           </div>
           <div class="lang-bar">
             <div class="lang-bar__fill" style={`width: ${spoken.percent}%`}></div>
@@ -149,7 +146,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     <div class="interests-grid">
       {copy.interests.map((item, i) => (
         <div class="interest">
-          <span class="interest-icon">{interestIcons[i]}</span>
+          <span class="interest-num">{String(i + 1).padStart(2, '0')}</span>
           <div>
             <strong>{item.title}</strong>
             <p>{item.text}</p>
@@ -164,7 +161,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     <div class="cta-box">
       <h2 class="cta-box__title">{copy.ctaTitle}</h2>
       <p class="cta-box__desc">{copy.ctaDesc}</p>
-      <a href="mailto:aelamra25@gmail.com" class="btn btn--accent">{copy.ctaButton}</a>
+      <a href="mailto:aelamra25@gmail.com" class="btn btn--light">{copy.ctaButton}</a>
     </div>
   </section>
 </BaseLayout>
@@ -182,7 +179,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   }
   .about-photo-col { flex: 0 0 clamp(220px, 28vw, 360px); }
   .about-photo-frame {
-    border-radius: 20px;
+    border-radius: var(--radius);
     overflow: hidden;
     aspect-ratio: 3 / 4;
   }
@@ -193,18 +190,19 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   }
   .about-text-col { flex: 1 1 320px; min-width: 0; }
   .about-label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--accent);
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     margin-bottom: 16px;
   }
   .about-title {
     font-family: 'Fraunces', serif;
-    font-size: clamp(32px, 4vw, 48px);
-    font-weight: 500;
-    letter-spacing: -1px;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
     margin-bottom: 24px;
   }
   .about-bio p {
@@ -214,9 +212,9 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     margin-bottom: 16px;
   }
   .help-link {
-    color: var(--accent);
+    color: var(--text);
     font-weight: 600;
-    font-size: 17px;
+    font-size: 16px;
     text-decoration: underline;
     text-underline-offset: 4px;
   }
@@ -228,10 +226,10 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   }
   .section-heading {
     font-family: 'Fraunces', serif;
-    font-size: clamp(24px, 3vw, 36px);
-    font-weight: 500;
+    font-size: clamp(30px, 3.6vw, 44px);
+    font-weight: 400;
     margin-bottom: clamp(24px, 3vw, 40px);
-    letter-spacing: -0.5px;
+    letter-spacing: -0.03em;
   }
 
   /* TIMELINE */
@@ -262,7 +260,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     top: 0;
     width: 56px;
     height: 56px;
-    border-radius: 14px;
+    border-radius: var(--radius);
     background: var(--card-bg);
     border: 1px solid var(--border-light);
     display: flex;
@@ -284,7 +282,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   .timeline-role {
     font-family: 'Fraunces', serif;
     font-size: clamp(18px, 2vw, 22px);
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: -0.3px;
   }
   .timeline-company {
@@ -295,10 +293,11 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   }
   .timeline-period {
     font-size: 13px;
+    letter-spacing: 0.04em;
     color: var(--text-muted);
-    background: var(--card-bg);
-    padding: 4px 14px;
-    border-radius: 9999px;
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: var(--radius-sm);
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -320,11 +319,10 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     content: '';
     position: absolute;
     left: 0;
-    top: 9px;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
+    top: 11px;
+    width: 8px;
+    height: 1px;
+    background: var(--text-muted);
   }
 
   /* EDUCATION */
@@ -334,8 +332,9 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     gap: 24px;
   }
   .edu-card {
-    background: var(--card-bg);
-    border-radius: 16px;
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: clamp(24px, 3vw, 32px);
   }
   .edu-card__top {
@@ -349,21 +348,22 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   .edu-degree {
     font-family: 'Fraunces', serif;
     font-size: clamp(17px, 1.8vw, 20px);
-    font-weight: 500;
+    font-weight: 400;
   }
   .edu-period {
     font-size: 13px;
+    letter-spacing: 0.04em;
     color: var(--text-muted);
-    background: var(--bg);
-    padding: 3px 12px;
-    border-radius: 9999px;
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: var(--radius-sm);
     white-space: nowrap;
     flex-shrink: 0;
   }
   .edu-institution {
     font-size: 14px;
-    color: var(--accent);
-    font-weight: 500;
+    color: var(--text);
+    font-weight: 600;
     margin-bottom: 8px;
   }
   .edu-grade {
@@ -385,22 +385,24 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     gap: 24px;
   }
   .skill-group {
-    background: var(--card-bg);
-    border-radius: 16px;
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: clamp(20px, 2.5vw, 28px);
   }
   .skill-group__label {
     font-family: 'Fraunces', serif;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     margin-bottom: 14px;
-    color: var(--accent);
+    font-style: italic;
+    color: var(--text);
   }
   .skill-tags { display: flex; gap: 8px; flex-wrap: wrap; }
   .skill-tag {
-    padding: 5px 14px;
-    background: var(--bg);
-    border-radius: 9999px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     font-size: 13px;
     font-weight: 500;
     color: var(--text);
@@ -413,62 +415,69 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     gap: 20px;
   }
   .lang-card {
-    background: var(--card-bg);
-    border-radius: 16px;
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: clamp(20px, 2.5vw, 28px);
   }
   .lang-card__head {
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    justify-content: space-between;
     gap: 12px;
     margin-bottom: 14px;
   }
-  .lang-flag {
-    font-size: 28px;
-    line-height: 1;
-  }
   .lang-name {
-    font-weight: 600;
-    font-size: 15px;
-    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 400;
   }
   .lang-level {
     font-size: 13px;
     color: var(--text-muted);
   }
   .lang-bar {
-    height: 6px;
-    background: var(--bg);
-    border-radius: 3px;
+    height: 2px;
+    background: var(--border-light);
     overflow: hidden;
   }
   .lang-bar__fill {
     height: 100%;
-    background: var(--accent);
-    border-radius: 3px;
+    background: var(--text);
     transition: width 0.6s ease;
   }
 
   /* INTERESTS */
   .interests-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 24px;
   }
   .interest {
     display: flex;
     gap: 16px;
     align-items: flex-start;
-    background: var(--card-bg);
-    border-radius: 16px;
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: clamp(20px, 2.5vw, 28px);
   }
-  .interest-icon { font-size: 28px; flex-shrink: 0; }
+  /* Numbered like the cards on the home page */
+  .interest-num {
+    flex-shrink: 0;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 15px;
+    color: var(--text-muted);
+    padding-top: 3px;
+  }
   .interest strong {
     display: block;
     margin-bottom: 6px;
     font-family: 'Fraunces', serif;
-    font-size: 18px;
+    font-size: 20px;
+    font-weight: 400;
   }
   .interest p {
     font-size: 14px;
@@ -480,7 +489,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   .cta-section { padding-bottom: clamp(40px, 6vw, 80px); }
   .cta-box {
     background: var(--text);
-    border-radius: 24px;
+    border-radius: var(--radius);
     padding: clamp(32px, 5vw, 64px);
     text-align: center;
     color: var(--bg);
@@ -488,7 +497,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   .cta-box__title {
     font-family: 'Fraunces', serif;
     font-size: clamp(28px, 3.5vw, 40px);
-    font-weight: 500;
+    font-weight: 400;
     margin-bottom: 16px;
   }
   .cta-box__desc {
@@ -501,16 +510,22 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 14px 28px;
-    border-radius: 9999px;
+    gap: 10px;
+    padding: 15px 26px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    font-size: 15px;
-    border: none;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
-  .btn--accent { background: var(--accent); color: #fff; }
+  .btn--light { background: var(--bg); border-color: var(--bg); color: var(--text); }
+  .btn--light:hover { opacity: 0.8; }
+  /* In dark mode the box is a bordered panel, so the button inverts back */
+  :global([data-theme="dark"]) .cta-box { background: var(--bg); border: 1px solid var(--border); color: var(--text); }
+  :global([data-theme="dark"]) .btn--light { background: var(--text); border-color: var(--text); color: var(--bg); }
 
   /* MOBILE */
   @media (max-width: 768px) {
@@ -519,6 +534,7 @@ const interestIcons = ['🤖', '📊', '🔬', '⚡'];
     }
     .about-photo-col { max-width: 280px; margin: 0 auto; }
     .about-text-col { text-align: center; }
+    .about-label { justify-content: center; }
 
     .timeline {
       padding-left: 0;

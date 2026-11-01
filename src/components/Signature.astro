@@ -8,16 +8,10 @@ const { label } = Astro.props;
 ---
 
 <div class="signature">
-  <p class="signature__label">{label}</p>
+  <p class="signature__label eyebrow">{label}</p>
   <p class="signature__name">Aymane Elamrani</p>
   <svg class="signature__flourish" viewBox="0 0 320 28" fill="none" aria-hidden="true">
-    <defs>
-      <linearGradient id="signature-ink" x1="0" x2="1">
-        <stop offset="0" stop-color="var(--accent)" />
-        <stop offset="1" stop-color="var(--gold)" />
-      </linearGradient>
-    </defs>
-    <path pathLength="1" d="M4 18 C 60 26, 120 8, 190 14 S 290 22, 316 6" stroke="url(#signature-ink)" stroke-width="2.2" stroke-linecap="round" />
+    <path pathLength="1" d="M4 18 C 60 26, 120 8, 190 14 S 290 22, 316 6" stroke="var(--text-muted)" stroke-width="1.4" stroke-linecap="round" />
   </svg>
 </div>
 
@@ -36,7 +30,7 @@ const { label } = Astro.props;
   .signature__label {
     font-size: 13px;
     font-weight: 600;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--text-muted);
   }

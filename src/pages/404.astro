@@ -50,21 +50,16 @@ const copy = Object.fromEntries(locales.map(l => [l, {
     font-family: 'Fraunces', serif;
     font-size: clamp(96px, 18vw, 180px);
     line-height: 1;
-    letter-spacing: -4px;
-    color: var(--accent);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    color: var(--text);
     margin-bottom: 16px;
-  }
-  /* Gold is too faint on the light background, so the gradient is dark-mode only */
-  :global([data-theme="dark"]) .not-found__code {
-    background: linear-gradient(90deg, var(--accent), var(--gold));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
   }
   .not-found__title {
     font-family: 'Fraunces', serif;
     font-size: clamp(32px, 5vw, 52px);
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: -1px;
     line-height: 1.15;
     margin-bottom: 20px;
@@ -78,16 +73,19 @@ const copy = Object.fromEntries(locales.map(l => [l, {
   }
   .not-found__actions { display: flex; gap: 12px; flex-wrap: wrap; }
   .not-found__btn {
-    padding: 14px 28px;
-    border-radius: 9999px;
+    padding: 15px 26px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    font-size: 15px;
-    border: 1.5px solid var(--border);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    border: 1px solid var(--text);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
   }
+  .not-found__btn:hover { background: var(--text); color: var(--bg); }
   .not-found__btn--primary {
     background: var(--text);
     color: var(--bg);
     border-color: var(--text);
   }
-  .not-found__btn--primary:hover { color: var(--bg); opacity: 0.85; }
+  .not-found__btn--primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 </style>
