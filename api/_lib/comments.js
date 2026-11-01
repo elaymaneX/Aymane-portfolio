@@ -141,7 +141,7 @@ export function clientKey(req) {
 export function isAllowedOrigin(req) {
   const origin = req.headers.origin;
   if (!origin) return false;
-  const allowed = [process.env.SITE_URL || 'https://aymane-portofolio-eta.vercel.app'];
+  const allowed = [process.env.SITE_URL || 'https://aymaneelam.dev'];
   for (const host of [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL]) {
     if (host) allowed.push(`https://${host}`);
   }
