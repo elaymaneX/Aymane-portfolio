@@ -42,7 +42,7 @@ export default defineConfig({
   ],
   // Set SITE_URL in Vercel when the custom domain is live; canonical links, sitemap, RSS and share
   // images all follow it
-  site: process.env.SITE_URL || 'https://aymane-portofolio-eta.vercel.app',
+  site: process.env.SITE_URL || 'https://aymaneelam.dev',
   markdown: {
     // $inline$ and $$block$$ maths in posts, rendered to HTML at build time (no JS for readers)
     remarkPlugins: [remarkMath],
