@@ -1,4 +1,4 @@
-// Public blog comments. New comments wait for approval in /comments-admin before anyone sees them.
+// Public blog comments. New comments wait for approval in the admin panel (/admin) before anyone sees them.
 // GET  /api/comments?slug=<post>  -> { comments: [{ name, message, date }] }, newest first
 // POST /api/comments  { slug, name, message, website }  -> 202 { status: 'pending' }
 import { randomUUID } from 'node:crypto';

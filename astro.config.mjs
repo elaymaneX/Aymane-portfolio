@@ -13,7 +13,7 @@ const vercelApiInDev = {
       Object.assign(process.env, loadEnv('development', process.cwd(), ''));
       server.middlewares.use('/api', async (req, res, next) => {
         const url = new URL(req.url, 'http://localhost');
-        if (!/^\/(comments(-admin)?|subscribe)$/.test(url.pathname)) return next();
+        if (!/^\/(comments|subscribe|admin\/(session|passkey|comments|subscribers|content))$/.test(url.pathname)) return next();
         const { default: handler } = await server.ssrLoadModule(`/api${url.pathname}.js`);
         let body = '';
         for await (const chunk of req) body += chunk;
@@ -36,7 +36,7 @@ export default defineConfig({
     mdx(),
     sitemap({
       i18n: { defaultLocale: 'en', locales: { en: 'en', es: 'es', fr: 'fr' } },
-      filter: page => !page.includes('/comments-admin'),
+      filter: page => !page.includes('/admin'),
     }),
     vercelApiInDev,
   ],
