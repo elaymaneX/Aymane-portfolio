@@ -1,11 +1,11 @@
 ---
 title: "Spectral Signatures of Sector Bubbles: AI Era vs Dot-Com"
 date: 2026-10-29
-tag: "Finance"
+tag: Finance
 tagColor: "#0E7C66"
-excerpt: "I applied spectral analysis to test whether AI stocks show the same correlation signatures as the dot-com bubble. They don’t."
-colabUrl: 'https://colab.research.google.com/github/elaymaneX/Blog01-spectral-signatures-ai-vs-dotcom/blob/main/spectral_signatures.ipynb'
-repoUrl: 'https://github.com/elaymaneX/Blog01-spectral-signatures-ai-vs-dotcom'
+excerpt: I applied spectral analysis to test whether AI stocks show the same correlation signatures as the dot-com bubble. They don’t.
+colabUrl: https://colab.research.google.com/github/elaymaneX/Blog01-spectral-signatures-ai-vs-dotcom/blob/main/spectral_signatures.ipynb
+repoUrl: https://github.com/elaymaneX/Blog01-spectral-signatures-ai-vs-dotcom
 ---
 
 > **Quantitative exploratory analysis.** Data covers January 1997 – December 2002 and January 2023 – October 2026.
@@ -14,7 +14,7 @@ repoUrl: 'https://github.com/elaymaneX/Blog01-spectral-signatures-ai-vs-dotcom'
 
 ## 1. Abstract
 
-I test whether the current AI sector exhibits the correlation structure signatures observed during the dot-com bubble (1997-2002). Using spectral analysis of rolling correlation matrices on Fama-French 49 industry portfolios (following Buccheri, Marmi & Mantegna (2013)) I compare three diagnostics metrics across both eras: dominant eigenvalue evolution (λ₁), intra-sector vs cross-sector correlation gap ( herding), and second-mode eigenvector loadings (λ₂ decoupling). I found that while AI-adjacent industries show elevated within-group correlation, the defining spectral signature of the dot-com bubble (a clear tech vs rest decoupling in λ₂) is absent in this actual era. The results suggest the current AI enthusiasm, as of late 2026 does not replicate the correlation regime that preceded the dot-com crash.
+I test whether the current AI sector exhibits the correlation structure signatures observed during the dot-com bubble (1997-2002). Using spectral analysis of rolling correlation matrices on Fama-French 49 industry portfolios (following Buccheri, Marmi & Mantegna (2013)) I compare three diagnostics metrics across both eras: dominant eigenvalue evolution (λ₁), intra-sector vs cross-sector correlation gap ( herding), and second-mode eigenvector loadings (λ₂ decoupling). I found that while AI-adjacent industries show elevated within-group correlation, the defining spectral signature of the dot-com bubble (a clear tech vs rest decoupling in λ₂) is absent in this actual era. The results suggest the current AI enthusiasm, as of late 2026, does not replicate the correlation regime that preceded the dot-com crash.
 
 ## 2. Introduction & Motivation
 
@@ -24,7 +24,7 @@ The rapid ascent of artificial intelligence stocks since 2023 has drawn frequent
 
 During a sector bubble, a distinctive pattern emerges in the correlation structure of asset returns. The bubble sector begins to move as a tightly correlated block, **herding, while simultaneously decoupling from the rest of the market.** This creates a measurable spectral signature: the second eigenvalue (λ₂) of the rolling correlation matrix spikes, and its associated  eigenvector splits cleanly into the bubble sector versus everything else. Buccheri, Marmi & Mantegna (2013) documented this pattern in the dot-com era using spectral decomposition of correlation matrices.
 
-In this study, I apply the same methodology to both periods. Using Fama-French 49 industry portfolio, I compute rolling correlation matrices and track the diagnostic metrics across the dot-com era (1997-2002)  and the AI era (2023-2026): dominant eigenvalues share (λ₁), intra-sector versus cross sector correlation gap, and second mode eigenvector loadings.
+In this study, I apply the same methodology to both periods. Using Fama-French 49 industry portfolios, I compute rolling correlation matrices and track the diagnostic metrics across the dot-com era (1997-2002)  and the AI era (2023-2026): dominant eigenvalues share (λ₁), intra-sector versus cross sector correlation gap, and second mode eigenvector loadings.
 
 **If the AI boom is structurally similar to the dot-com bubble, these metrics should show comparable signatures.**
 
@@ -37,7 +37,7 @@ I analyze two periods:
 - **Dot-com era:** January 1997- December 2002,  capturing the full bubble formation, peak and crash.
 - **AI era:** January 2023 \- October 2026, capturing the current AI-driven market regime.
 
-Both periods use the same 49-industry structure, ensuring an apples to apples comparison. An earlier version to this analysis used individual AI adjacent stocks (NVDA, MSFT, META, etc.) for the AI era, but the difference in data granularity introduced systematic noise differences that complicated interpretation. I retain the individual stock analysis as a supplementary exercise but base all cross-era conclusions on the Fama-French data.
+Both periods use the same 49-industry structure, ensuring an apples-to-apples comparison. An earlier version to this analysis used individual AI adjacent stocks (NVDA, MSFT, META, etc.) for the AI era, but the difference in data granularity introduced systematic noise differences that complicated interpretation. I retain the individual stock analysis as a supplementary exercise but base all cross-era conclusions on the Fama-French data.
 
 All returns are converted from percentages to decimals. No additional filtering or cleaning is applied.
 
