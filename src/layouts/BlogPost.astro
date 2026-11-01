@@ -20,7 +20,7 @@ interface Props {
   fallback?: boolean;
 }
 
-const { slug, minutes, headings, title, date, tag, tagColor, excerpt, lang, signed = true, fallback = false } = Astro.props;
+const { slug, minutes, headings, title, date, tag, excerpt, lang, signed = true, fallback = false } = Astro.props;
 const ui = t(lang).blog;
 const formattedDate = formatDate(lang, date, { year: 'numeric', month: 'long', day: 'numeric' });
 // A contents list only helps on longer posts
@@ -49,7 +49,7 @@ const jsonLd = {
         <time datetime={date.toISOString()}>{formattedDate}</time>
         <span class="post__dot" aria-hidden="true">·</span>
         <span class="post__read">{minutes} {ui.minRead}</span>
-        <span class="post__tag" style={`background: ${tagColor}`}>{tag}</span>
+        <span class="post__tag">{tag}</span>
       </div>
       <h1 class="post__title" lang={fallback ? 'en' : undefined}>{title}</h1>
       <p class="post__excerpt">{excerpt}</p>
@@ -82,8 +82,8 @@ const jsonLd = {
   .post__notice {
     font-size: 14px;
     color: var(--text-muted);
-    background: var(--card-bg);
-    border-radius: 10px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: 10px 14px;
     margin-bottom: 24px;
   }
@@ -99,7 +99,8 @@ const jsonLd = {
   .post__back {
     font-size: 14px;
     font-weight: 600;
-    color: var(--accent);
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
     display: inline-block;
     margin-bottom: 32px;
   }
@@ -123,8 +124,8 @@ const jsonLd = {
   .post__dot { margin: 0 -4px; }
 
   .toc {
-    background: var(--card-bg);
-    border-radius: 14px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: 18px 24px;
     margin-bottom: 40px;
     font-size: 15px;
@@ -141,22 +142,25 @@ const jsonLd = {
     gap: 8px;
   }
   .toc a { color: var(--text-muted); }
-  .toc a:hover { color: var(--accent); }
+  .toc a:hover { color: var(--text); }
   .toc__sub { padding-left: 18px; font-size: 14px; }
   .post__tag {
-    font-size: 12px;
-    padding: 3px 12px;
-    color: #fff;
-    border-radius: 9999px;
+    font-size: 11px;
     font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
   }
 
   .post__title {
     font-family: 'Fraunces', serif;
-    font-size: 44px;
-    font-weight: 500;
-    letter-spacing: -1.5px;
-    line-height: 1.15;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
     margin-bottom: 20px;
   }
 
@@ -186,7 +190,7 @@ const jsonLd = {
   .post__content :global(h2) {
     font-family: 'Fraunces', serif;
     font-size: 28px;
-    font-weight: 500;
+    font-weight: 400;
     margin-top: 48px;
     margin-bottom: 16px;
     letter-spacing: -0.5px;
@@ -194,7 +198,7 @@ const jsonLd = {
   .post__content :global(h3) {
     font-family: 'Fraunces', serif;
     font-size: 22px;
-    font-weight: 500;
+    font-weight: 400;
     margin-top: 36px;
     margin-bottom: 12px;
   }
@@ -205,10 +209,13 @@ const jsonLd = {
     font-weight: 600;
   }
   .post__content :global(a) {
-    color: var(--accent);
+    color: var(--text);
     text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--text-muted);
     text-underline-offset: 3px;
   }
+  .post__content :global(a:hover) { color: var(--accent); text-decoration-color: currentColor; }
   .post__content :global(ul),
   .post__content :global(ol) {
     margin-bottom: 20px;
@@ -218,7 +225,7 @@ const jsonLd = {
     margin-bottom: 8px;
   }
   .post__content :global(blockquote) {
-    border-left: 3px solid var(--accent);
+    border-left: 1px solid var(--text);
     padding-left: 20px;
     margin: 24px 0;
     color: var(--text-muted);
@@ -233,7 +240,7 @@ const jsonLd = {
   .post__content :global(pre) {
     background: var(--card-bg);
     padding: 20px 24px;
-    border-radius: 12px;
+    border-radius: var(--radius);
     overflow-x: auto;
     margin: 24px 0;
     font-size: 14px;
@@ -248,7 +255,7 @@ const jsonLd = {
     width: 100%;
     height: auto;
     background: #fff;
-    border-radius: 12px;
+    border-radius: var(--radius);
     border: 1px solid var(--border-light);
     padding: 8px;
   }

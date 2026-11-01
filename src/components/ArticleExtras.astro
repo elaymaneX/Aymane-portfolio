@@ -93,13 +93,13 @@ const { copy, copied, close } = Astro.props;
   .progress {
     position: fixed;
     inset: 0 0 auto;
-    height: 3px;
+    height: 2px;
     z-index: 200;
     pointer-events: none;
   }
   .progress__bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--gold));
+    background: var(--text);
     transform: scaleX(0);
     transform-origin: left;
   }
@@ -116,7 +116,7 @@ const { copy, copied, close } = Astro.props;
     color: var(--text-muted);
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 4px 10px;
     cursor: pointer;
     opacity: 0;
@@ -155,7 +155,7 @@ const { copy, copied, close } = Astro.props;
     height: auto;
     object-fit: contain;
     background: #fff;
-    border-radius: 12px;
+    border-radius: var(--radius);
     padding: 10px;
   }
   .lightbox__close {
@@ -164,7 +164,7 @@ const { copy, copied, close } = Astro.props;
     right: 16px;
     width: 40px;
     height: 40px;
-    border-radius: 9999px;
+    border-radius: var(--radius-sm);
     border: none;
     background: rgba(255, 255, 255, 0.15);
     color: #fff;

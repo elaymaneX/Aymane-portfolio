@@ -100,8 +100,8 @@ const jsonLd = {
   .post__notice {
     font-size: 14px;
     color: var(--text-muted);
-    background: var(--card-bg);
-    border-radius: 10px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
     padding: 10px 14px;
     margin-bottom: 24px;
   }
@@ -117,7 +117,8 @@ const jsonLd = {
   .post__back {
     font-size: 14px;
     font-weight: 600;
-    color: var(--accent);
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
     display: inline-block;
     margin-bottom: 32px;
   }
@@ -140,24 +141,23 @@ const jsonLd = {
     flex-wrap: wrap;
   }
   .post__tag {
-    font-size: 12px;
-    padding: 3px 12px;
-    background: var(--card-bg);
-    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     color: var(--text-muted);
   }
-  .post__tag--accent {
-    background: var(--accent);
-    color: #fff;
-    font-weight: 600;
-  }
+  .post__tag--accent { background: var(--text); border-color: var(--text); color: var(--bg); }
 
   .post__title {
     font-family: 'Fraunces', serif;
-    font-size: 44px;
-    font-weight: 500;
-    letter-spacing: -1.5px;
-    line-height: 1.15;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
     margin-bottom: 20px;
   }
 
@@ -179,15 +179,15 @@ const jsonLd = {
   }
   .post__link {
     padding: 10px 20px;
-    border-radius: 9999px;
+    border-radius: var(--radius-sm);
     font-size: 14px;
     font-weight: 600;
-    border: 1.5px solid var(--border);
+    border: 1px solid var(--text);
     color: var(--text);
   }
-  .post__link--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .post__link--primary { background: var(--text); border-color: var(--text); color: var(--bg); }
   .post__link:hover { opacity: 0.85; color: var(--text); }
-  .post__link--primary:hover { color: #fff; }
+  .post__link--primary:hover { color: var(--bg); }
 
   .post__content {
     font-size: 17px;
@@ -197,7 +197,7 @@ const jsonLd = {
   .post__content :global(h2) {
     font-family: 'Fraunces', serif;
     font-size: 28px;
-    font-weight: 500;
+    font-weight: 400;
     margin-top: 48px;
     margin-bottom: 16px;
     letter-spacing: -0.5px;
@@ -205,7 +205,7 @@ const jsonLd = {
   .post__content :global(h3) {
     font-family: 'Fraunces', serif;
     font-size: 22px;
-    font-weight: 500;
+    font-weight: 400;
     margin-top: 36px;
     margin-bottom: 12px;
   }
@@ -216,10 +216,13 @@ const jsonLd = {
     font-weight: 600;
   }
   .post__content :global(a) {
-    color: var(--accent);
+    color: var(--text);
     text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--text-muted);
     text-underline-offset: 3px;
   }
+  .post__content :global(a:hover) { color: var(--accent); text-decoration-color: currentColor; }
   .post__content :global(ul),
   .post__content :global(ol) {
     margin-bottom: 20px;
@@ -229,7 +232,7 @@ const jsonLd = {
     margin-bottom: 8px;
   }
   .post__content :global(blockquote) {
-    border-left: 3px solid var(--accent);
+    border-left: 1px solid var(--text);
     padding-left: 20px;
     margin: 24px 0;
     color: var(--text-muted);
@@ -244,7 +247,7 @@ const jsonLd = {
   .post__content :global(pre) {
     background: var(--card-bg);
     padding: 20px 24px;
-    border-radius: 12px;
+    border-radius: var(--radius);
     overflow-x: auto;
     margin: 24px 0;
     font-size: 14px;
@@ -262,27 +265,27 @@ const jsonLd = {
     gap: 16px;
     margin: 24px 0;
   }
+  /* Same numbered-column feel as the home cards: a hairline on top, no tinted box */
   .post__content :global(.stat-card) {
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
+    border-top: 1px solid var(--text);
+    padding: 16px 0 4px;
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
   .post__content :global(.stat-value) {
     font-family: 'Fraunces', serif;
-    font-size: clamp(22px, 2.5vw, 30px);
-    font-weight: 600;
-    color: var(--accent);
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--text);
   }
   .post__content :global(.stat-label) {
     font-size: 12px;
     color: var(--text-muted);
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.08em;
   }
 
   /* Figures in the write-up; charts are exported on white, so they sit on a white card in both themes */
@@ -294,7 +297,7 @@ const jsonLd = {
     width: 100%;
     height: auto;
     background: #fff;
-    border-radius: 12px;
+    border-radius: var(--radius);
     border: 1px solid var(--border-light);
     padding: 8px;
   }
@@ -315,7 +318,7 @@ const jsonLd = {
   }
   .post__content :global(.results-gallery figure) {
     margin: 0;
-    border-radius: 12px;
+    border-radius: var(--radius);
     overflow: hidden;
     background: var(--card-bg);
   }

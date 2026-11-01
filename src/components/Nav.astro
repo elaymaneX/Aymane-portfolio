@@ -13,35 +13,36 @@ const basePath = unlocalizedPath(Astro.url.pathname);
 ---
 
 <nav class="nav">
+  <!-- Three zones: logo | page links (centred) | language, theme, contact -->
   <div class="nav__inner container">
     <a href={localePath(lang, '/')} class="nav__logo">Aymane<span class="nav__dot">.</span></a>
 
     <div class="nav__links">
       {links.map(link => (
-        <a href={link.href} class:list={[{ active: activePage === link.key }]}>
+        <a href={link.href} class:list={[{ active: activePage === link.key }]} aria-current={activePage === link.key ? 'page' : undefined}>
           {ui[link.key]}
         </a>
       ))}
+    </div>
+
+    <div class="nav__tools">
+      <div class="lang-switch" role="group" aria-label={ui.language}>
+        {locales.map(l => (
+          <a href={localePath(l, basePath)} hreflang={l} lang={l} data-lang={l} class:list={['lang-switch__link', { active: l === lang }]} aria-current={l === lang ? 'true' : undefined}>{l.toUpperCase()}</a>
+        ))}
+      </div>
+
+      <button class="theme-toggle" id="theme-toggle" aria-label={ui.toggleTheme}>
+        <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
       <a href="mailto:aelamra25@gmail.com" class="nav__cta">{ui.cta}</a>
+
+      <button class="nav__burger" id="nav-burger" aria-label={ui.menu} aria-expanded="false" aria-controls="nav-menu">
+        <span></span>
+      </button>
     </div>
-
-    <!-- Language switcher -->
-    <div class="lang-switch" role="group" aria-label={ui.language}>
-      {locales.map(l => (
-        <a href={localePath(l, basePath)} hreflang={l} lang={l} data-lang={l} class:list={['lang-switch__link', { active: l === lang }]} aria-current={l === lang ? 'true' : undefined}>{l.toUpperCase()}</a>
-      ))}
-    </div>
-
-    <!-- Dark mode toggle -->
-    <button class="theme-toggle" id="theme-toggle" aria-label={ui.toggleTheme}>
-      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
-
-    <!-- Hamburger -->
-    <button class="nav__burger" id="nav-burger" aria-label={ui.menu} aria-expanded="false" aria-controls="nav-menu">
-      <span></span>
-    </button>
   </div>
 
   <!-- Mobile menu -->
@@ -51,7 +52,7 @@ const basePath = unlocalizedPath(Astro.url.pathname);
         {ui[link.key]}
       </a>
     ))}
-    <a href="mailto:aelamra25@gmail.com" class="nav__cta">{ui.cta}</a>
+    <a href="mailto:aelamra25@gmail.com" class="nav__cta">{ui.cta} <span aria-hidden="true">→</span></a>
   </div>
 </nav>
 
@@ -60,64 +61,106 @@ const basePath = unlocalizedPath(Astro.url.pathname);
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--nav-bg);
+    background: color-mix(in srgb, var(--nav-bg) 88%, transparent);
     backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
   }
   .nav__inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    height: 72px;
     position: relative;
   }
   .nav__logo {
+    justify-self: start;
     font-family: 'Fraunces', serif;
     font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    font-weight: 640;
+    letter-spacing: -0.03em;
     color: var(--text);
   }
   .nav__dot { color: var(--accent); }
+
+  /* Page links: quiet until hovered; the current page gets a hairline underneath */
   .nav__links {
     display: flex;
-    gap: 32px;
-    align-items: center;
-    font-size: 15px;
+    gap: 36px;
+    font-size: 14px;
     font-weight: 500;
   }
-  .nav__links a { color: var(--text-muted); transition: color 0.2s; }
-  .nav__links a:hover, .nav__links a.active { color: var(--accent); }
-  .nav__cta {
-    background: var(--text) !important;
-    color: var(--bg) !important;
-    padding: 10px 24px;
-    border-radius: 9999px;
-    font-weight: 600;
-    font-size: 14px;
-    transition: opacity 0.2s;
+  .nav__links a {
+    position: relative;
+    color: var(--text-muted);
+    padding: 6px 0;
+    transition: color 0.2s;
   }
-  .nav__cta:hover { opacity: 0.85; }
+  .nav__links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transition: transform 0.25s;
+  }
+  .nav__links a:hover, .nav__links a.active { color: var(--text); }
+  .nav__links a:hover::after, .nav__links a.active::after { transform: scaleX(1); }
 
-  /* Theme toggle */
-  .theme-toggle {
-    background: none;
-    border: 1.5px solid var(--border);
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
+  .nav__tools {
+    justify-self: end;
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--text);
-    transition: border-color 0.2s;
-    margin-left: 8px;
+    gap: 6px;
   }
-  .theme-toggle:hover { border-color: var(--accent); }
+
+  /* Language: plain letters, the active one in full colour */
+  .lang-switch { display: flex; align-items: center; }
+  .lang-switch__link {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 6px;
+    color: var(--text-muted);
+    opacity: 0.6;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .lang-switch__link + .lang-switch__link { border-left: 1px solid var(--border); padding-left: 7px; }
+  .lang-switch__link.active { color: var(--text); opacity: 1; }
+  .lang-switch__link:not(.active):hover { opacity: 1; }
+
+  .theme-toggle {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    background: none;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .theme-toggle:hover { color: var(--text); }
   .icon-moon { display: none; }
   :global([data-theme="dark"]) .icon-sun { display: none; }
   :global([data-theme="dark"]) .icon-moon { display: block; }
+
+  /* Square-cut like the hero buttons */
+  .nav__cta {
+    margin-left: 10px;
+    padding: 10px 18px;
+    border-radius: 2px;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: background 0.2s;
+  }
+  .nav__cta:hover { background: var(--accent); color: #fff; }
 
   /* Hamburger */
   .nav__burger {
@@ -125,89 +168,68 @@ const basePath = unlocalizedPath(Astro.url.pathname);
     background: none;
     border: none;
     cursor: pointer;
-    padding: 8px;
-    margin-left: 8px;
+    width: 40px;
+    height: 40px;
+    place-items: center;
   }
-  .nav__burger span {
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: var(--text);
-    position: relative;
-    transition: all 0.3s;
-  }
+  .nav__burger span,
   .nav__burger span::before,
   .nav__burger span::after {
-    content: '';
-    position: absolute;
-    width: 22px;
-    height: 2px;
+    display: block;
+    width: 20px;
+    height: 1.5px;
     background: var(--text);
-    transition: all 0.3s;
+    transition: transform 0.25s, opacity 0.2s;
   }
-  .nav__burger span::before { top: -7px; }
-  .nav__burger span::after { top: 7px; }
+  .nav__burger span { position: relative; }
+  .nav__burger span::before,
+  .nav__burger span::after { content: ''; position: absolute; left: 0; }
+  .nav__burger span::before { top: -6px; }
+  .nav__burger span::after { top: 6px; }
+  .nav__burger[aria-expanded="true"] span { background: transparent; }
+  .nav__burger[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
+  .nav__burger[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
 
-  /* Mobile menu — bubble overlay */
+  /* Mobile menu: a full-width panel under the bar with large serif links */
   .nav__menu {
     display: none;
     flex-direction: column;
-    gap: 8px;
     position: absolute;
-    top: calc(100% + 8px);
-    right: 20px;
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 20px 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    border: 1px solid var(--border-light);
-    min-width: 200px;
-    z-index: 200;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding: 8px 20px 24px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.25);
   }
   .nav__menu a {
-    font-size: 16px;
-    font-weight: 500;
-    padding: 10px 12px;
-    border-radius: 12px;
-    color: var(--text-muted);
-    transition: background 0.2s, color 0.2s;
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    padding: 14px 0;
+    color: var(--text);
+    border-bottom: 1px solid var(--border-light);
   }
-  .nav__menu a:hover, .nav__menu a.active {
-    color: var(--accent);
-    background: var(--accent-light);
-  }
+  .nav__menu a.active { font-style: italic; color: var(--text-muted); }
   .nav__menu .nav__cta {
-    margin-top: 8px;
-    text-align: center;
-    padding: 12px 24px;
+    color: var(--bg);
+    margin: 20px 0 0;
+    padding: 15px 18px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
   }
   .nav__menu.open { display: flex; }
 
-  .lang-switch {
-    display: flex;
-    gap: 2px;
-    margin-left: 12px;
-    padding: 3px;
-    border: 1.5px solid var(--border);
-    border-radius: 9999px;
-  }
-  .lang-switch__link {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 9999px;
-    color: var(--text-muted);
-    letter-spacing: 0.5px;
-  }
-  .lang-switch__link.active { background: var(--text); color: var(--bg); }
-  .lang-switch__link:not(.active):hover { color: var(--accent); }
-
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
+    .nav__inner { grid-template-columns: 1fr auto; height: 64px; }
     .nav__links { display: none; }
-    .nav__burger { display: flex; align-items: center; }
-    .lang-switch { order: 0; margin-left: auto; }
-    .theme-toggle { order: 0; margin-left: 8px; margin-right: 4px; }
-    .nav__burger { order: 1; }
+    .nav__tools > .nav__cta { display: none; }
+    .nav__burger { display: grid; }
   }
 </style>
 
@@ -234,7 +256,7 @@ const basePath = unlocalizedPath(Astro.url.pathname);
 
   // Close mobile menu when resizing past breakpoint
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 768 && menu?.classList.contains('open')) setMenu(false);
+    if (window.innerWidth > 860 && menu?.classList.contains('open')) setMenu(false);
   });
 
   // Dark mode toggle
