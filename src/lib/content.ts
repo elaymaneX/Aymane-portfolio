@@ -7,7 +7,7 @@ export const entryLang = (e: Entry) => e.slug.split('/')[0];
 export const entrySlug = (e: Entry) => e.slug.split('/').slice(1).join('/');
 
 // Text a translation may override; everything else (dates, links, flags) always comes from English
-const translatable = ['title', 'excerpt', 'tag', 'tags', 'stats', 'gallery'];
+const translatable = ['title', 'excerpt', 'description', 'tag', 'tags', 'stats', 'gallery'];
 const isFilled = (v: unknown) => (Array.isArray(v) ? v.length > 0 : Boolean(v));
 
 // Every published English entry, swapped for its translation when one exists.
