@@ -12,6 +12,9 @@ const blog = defineCollection({
     excerpt: z.string().default(''),
     // Handwritten sign-off at the end; turn off for posts not written by Aymane
     signed: z.boolean().default(true),
+    // Optional buttons under the summary: the post's code and its notebook in Colab
+    repoUrl: z.string().url().optional(),
+    colabUrl: z.string().url().optional(),
     draft: z.boolean().default(false),
   }),
 });
