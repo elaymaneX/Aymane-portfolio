@@ -1,0 +1,180 @@
+---
+title: 'Real-Time Sign Language to Speech Translation'
+type: 'analysis'
+date: 2025-07-01
+tags:
+  - { label: 'TensorFlow', accent: true }
+  - { label: 'Computer Vision' }
+  - { label: 'Edge AI' }
+  - { label: 'Accessibility' }
+excerpt: "Bachelor's Thesis · Computer Engineering · Universitat Politècnica de València · 2024–2025"
+icon: 'code'
+iconBg: '#3B6CF4'
+cover: '/images/sign2speech/interface.png'
+repoUrl: 'https://github.com/elaymaneX/TFG_Sign2Speach'
+stats:
+  - { value: '250', label: 'ASL words in the vocabulary' }
+  - { value: '15 FPS', label: 'Real-time capture' }
+  - { value: 'Edge AI', label: 'Computer vision + deep learning' }
+---
+
+<figure class="natural">
+  <img src="/images/sign2speech/interface.png" alt="The Sign2Speech app: action buttons on the left and the live camera view on the right" loading="lazy" width="573" height="351" />
+  <figcaption>Figure 1: The Sign2Speech interface running.</figcaption>
+</figure>
+
+## Overview
+
+Communication barriers can become particularly significant in public services such as hospitals, town halls and other points of public assistance. This project explores how computer vision and edge computing can be combined to create an accessible interface between sign language and spoken communication.
+
+I developed **Sign2Speech**, a functional prototype capable of capturing sign-language gestures through a camera, recognising individual signs, reconstructing short natural-language sentences and converting them into speech.
+
+The system combines **MediaPipe Holistic**, deep-learning sequence classification, a cloud-based language model and local text-to-speech synthesis, with the recognition pipeline designed for deployment on a **Google Coral Dev Board**.
+
+The project was developed as my Bachelor's Thesis in Computer Engineering at the Universitat Politècnica de València.
+
+## System Architecture
+
+The complete pipeline follows the flow:
+
+**Camera → Landmark Extraction → Gesture Classification → Language Generation → Text-to-Speech**
+
+<figure class="natural">
+  <img src="/images/sign2speech/pipeline.png" alt="Flow diagram: camera capture, MediaPipe landmarks, preprocessing, inference on Coral or CPU, word buffer, sentence generation with an LLM, display and speech" loading="lazy" width="660" height="727" />
+  <figcaption>Figure 2: Flow diagram of the Sign2Speech application, with the Coral and CPU inference paths.</figcaption>
+</figure>
+
+Rather than processing raw video directly throughout the pipeline, the system uses MediaPipe Holistic to extract structured body, hand and facial landmarks. These temporal landmark sequences are then processed by the gesture-recognition model.
+
+The recognised words are passed to a language-generation component hosted through Hugging Face, which reconstructs them into a short natural-language sentence. Finally, the sentence is converted into speech locally using a Text-to-Speech engine.
+
+This modular design makes the individual components independently replaceable and allows the system to adapt to different execution environments.
+
+## Methodology
+
+### 1. Visual gesture representation
+
+The first stage converts camera input into structured representations of the user's movements.
+
+I used **MediaPipe Holistic** to extract landmarks from the body, hands and face. This provides a compact representation of the gesture while avoiding the need for specialised wearable sensors.
+
+The resulting sequences contain three-dimensional landmark coordinates `(x, y, z)` over time, forming the input representation for the classification models.
+
+### 2. Dataset preparation
+
+The project initially explored the **WLASL** dataset, but its video quality, limited samples per class and preprocessing requirements made it impractical for the target pipeline.
+
+I therefore worked with Google's landmark-based dataset containing **250 sign classes**, providing pre-extracted gesture sequences and allowing the project to focus on temporal representation and model development.
+
+The data was normalised, temporally aligned and converted into a structured dataset suitable for deep-learning training.
+
+### 3. Transformer-based gesture recognition
+
+The initial recognition architecture was based on **Transformers with multi-head attention**.
+
+Landmark sequences were projected into an embedding space and processed using positional encoding and attention mechanisms to capture temporal and spatial relationships between different parts of the gesture.
+
+The initial Transformer achieved **over 90% training accuracy**, demonstrating the viability of the representation and modelling approach. However, achieving good classification performance was only part of the problem: the model also had to be deployable on constrained edge hardware.
+
+### 4. Designing for Edge AI
+
+The Transformer could not be deployed directly on the Coral Edge TPU.
+
+The main obstacles included unsupported operations, dynamic tensor shapes and the size and complexity of the architecture. Instead of treating this as a purely software limitation, I redesigned the model around the constraints of the target hardware.
+
+The final architecture replaced the Transformer with a lighter combination of:
+
+- TimeDistributed Dense layers
+- Conv1D layers
+- GlobalAveragePooling1D
+- Dense classification layers
+- TensorFlow Lite conversion
+- Edge TPU compilation
+
+The resulting model was successfully converted and compiled for Coral Edge TPU execution.
+
+<figure class="natural">
+  <img src="/images/sign2speech/model-summary.png" alt="Keras summary of the optimised model: TimeDistributed Dense, Conv1D, global average pooling and Dense layers, 537,914 parameters" loading="lazy" width="429" height="412" />
+  <figcaption>Figure 3: Architecture summary and parameter count of the edge-optimised model.</figcaption>
+</figure>
+
+### 5. Language generation and speech
+
+Once individual signs have been classified, the recognised words are sent to a language model to construct a coherent short sentence.
+
+The resulting text is then passed to a local **Text-to-Speech** component using `pyttsx3`, allowing the final spoken output to be generated without requiring an additional cloud service for speech synthesis.
+
+### 6. Resilient inference
+
+The application was designed with two inference paths.
+
+When a Coral device is available, the system sends the preprocessed tensor to the Coral Edge TPU for inference. If the device is unavailable, the same TensorFlow Lite model can be executed locally on the CPU.
+
+This fallback architecture makes the prototype portable across development machines and edge deployments while avoiding a complete system failure when the accelerator is unavailable.
+
+## Results
+
+The final prototype demonstrates the complete translation pipeline from gesture capture to spoken output.
+
+### Functional validation
+
+The implemented system successfully demonstrated:
+
+- Real-time camera-based gesture capture
+- MediaPipe landmark extraction
+- Word-level gesture classification
+- Natural-language sentence generation
+- Text-to-speech conversion
+- CPU-based inference
+- Coral Edge TPU inference
+- Automatic fallback between inference backends
+
+The functional evaluation confirmed **8 of the 9 defined functional requirements**. The remaining requirement—fully local inference on the Coral Dev Board—was not considered completely satisfied in the final evaluation.
+
+<figure class="natural">
+  <img src="/images/sign2speech/training-loss.png" alt="Training and validation loss curves over about 65 epochs" loading="lazy" width="611" height="429" />
+  <figcaption>Figure 4: Training and validation loss during training.</figcaption>
+</figure>
+
+### Performance
+
+The camera pipeline reached approximately **15 FPS**, providing sufficiently smooth gesture capture for the prototype.
+
+CPU inference remained below **1 second per sequence**, while the complete remote Coral workflow—including tensor transfer, inference and result retrieval—took a few seconds.
+
+<figure class="natural">
+  <img src="/images/sign2speech/coral-inference.png" alt="Terminal log of a tensor sent to the Coral board, inference run remotely and the result retrieved" loading="lazy" width="504" height="240" />
+  <figcaption>Figure 5: Inference executed remotely on the Coral Edge TPU.</figcaption>
+</figure>
+
+These results demonstrated technical feasibility, although the final system was not yet fast or accurate enough for unrestricted real-world deployment.
+
+### Engineering trade-off
+
+One of the main findings of the project was the trade-off between **model complexity, recognition performance and edge-hardware compatibility**.
+
+The more expressive Transformer architecture achieved strong training performance but could not be efficiently deployed on the target Edge TPU. The lighter 1D convolutional architecture solved the deployment problem at the cost of classification accuracy.
+
+This became one of the central engineering lessons of the project: a model that performs well in a development environment is not necessarily the best model for a constrained production target.
+
+## Limitations
+
+The project is intentionally presented as a **proof of concept rather than a production-ready accessibility system**.
+
+The final classifier still produced errors, particularly for visually similar or poorly executed gestures. The reduced architecture required for Edge TPU compatibility limited its ability to model complex temporal relationships.
+
+The prototype was also trained using **American Sign Language rather than Spanish Sign Language**, primarily because of the lack of a sufficiently complete public LSE dataset available for the project.
+
+Finally, the system was not formally evaluated with deaf users or sign-language experts, so its real-world usability and accessibility impact remain to be validated.
+
+## Technical Stack
+
+Python · TensorFlow · TensorFlow Lite · MediaPipe Holistic · Deep Learning · Computer Vision · Conv1D · Transformers · Google Coral Edge TPU · Hugging Face · FastAPI · PyQt · pyttsx3 · NumPy · Pandas · Scikit-learn · Google Cloud Platform
+
+## Research Context
+
+This project sits at the intersection of **computer vision, deep learning, edge computing and accessibility technology**.
+
+Beyond building a working prototype, the project explored an important practical problem in ML engineering: how to move a research-oriented model from a flexible training environment into a constrained edge device while maintaining a usable end-to-end system.
+
+The resulting architecture provides a foundation for future work including larger vocabularies, adaptation to Spanish Sign Language, improved temporal modelling, better environmental robustness and validation with real users.
