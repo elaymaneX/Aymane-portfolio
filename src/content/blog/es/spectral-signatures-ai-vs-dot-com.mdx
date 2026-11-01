@@ -1,0 +1,235 @@
+---
+title: "Firmas espectrales de las burbujas sectoriales: la era de la IA frente a las puntocom"
+tag: "Finanzas"
+excerpt: "Apliqué análisis espectral para comprobar si las acciones relacionadas con la IA muestran las mismas firmas de correlación que caracterizaron la burbuja puntocom. No las muestran."
+---
+
+## 1. Resumen
+
+Analizo si el sector actual de la inteligencia artificial presenta las mismas firmas en la estructura de correlaciones que se observaron durante la burbuja puntocom (1997–2002). Utilizando análisis espectral de matrices de correlación móviles sobre las 49 carteras industriales de Fama-French, siguiendo el enfoque de Buccheri, Marmi y Mantegna (2013), comparo tres métricas diagnósticas en ambos periodos: la evolución del autovalor dominante (λ₁), la brecha entre la correlación intra-sectorial y la correlación entre sectores (*herding gap*), y las cargas del autovector asociado al segundo modo (λ₂).
+
+El resultado principal es que, aunque las industrias vinculadas a la IA muestran una correlación interna elevada, la firma espectral característica de la burbuja puntocom —un desacoplamiento claro entre tecnología y el resto del mercado en λ₂— no aparece en la era actual. Los resultados sugieren que el entusiasmo por la IA, hasta finales de 2026, no reproduce el régimen de correlaciones que precedió al desplome de las puntocom.
+
+## 2. Introducción y motivación
+
+El rápido ascenso de las acciones relacionadas con la inteligencia artificial desde 2023 ha provocado comparaciones frecuentes con la burbuja puntocom de finales de los años noventa. La capitalización de NVIDIA superó los 5 billones de dólares, algunas empresas vinculadas a la IA registraron rentabilidades de tres dígitos y un pequeño grupo de compañías tecnológicas empezó a dominar el comportamiento de los índices. La comparación resulta intuitiva y aparece con frecuencia en los medios financieros.
+
+Pero ¿es realmente válida?
+
+Las comparaciones habituales suelen apoyarse en gráficos de precios y múltiplos de valoración. Estos indicadores pueden ser ruidosos, depender mucho del contexto y ser susceptibles de selección retrospectiva (*cherry-picking*). Una pregunta más estructural es si el régimen de correlaciones del mercado actual se parece al que precedió al desplome de las puntocom.
+
+Durante una burbuja sectorial puede aparecer un patrón distintivo en la estructura de correlaciones de los rendimientos. El sector protagonista de la burbuja comienza a moverse como un bloque altamente correlacionado —un fenómeno de comportamiento gregario o *herding*— mientras, al mismo tiempo, se desacopla del resto del mercado. Esto genera una firma espectral medible: el segundo autovalor (λ₂) de la matriz de correlación móvil aumenta y su autovector asociado separa de forma clara al sector de la burbuja del resto.
+
+Buccheri, Marmi y Mantegna (2013) documentaron este patrón en la era puntocom mediante la descomposición espectral de matrices de correlación.
+
+En este estudio aplico la misma metodología a ambos periodos. Utilizando las carteras industriales de Fama-French, calculo matrices de correlación móviles y sigo tres indicadores a lo largo de la era puntocom (1997–2002) y de la era de la IA (2023–2026): la participación del autovalor dominante (λ₁), la brecha entre la correlación intra-sectorial y la correlación entre sectores, y las cargas del autovector del segundo modo.
+
+Si el auge de la IA es estructuralmente similar a la burbuja puntocom, estas métricas deberían mostrar firmas comparables.
+
+## 3. Datos
+
+Utilizo las 49 carteras industriales de Fama-French, obtenidas de la biblioteca de datos de Kenneth French. Estas carteras agrupan las acciones cotizadas en CRSP en 49 grupos industriales según sus códigos SIC y proporcionan rendimientos diarios ponderados por valor de mercado.
+
+Este conjunto de datos se utiliza ampliamente en investigación financiera empírica por dos razones especialmente relevantes aquí: incorpora las empresas que fueron excluidas de cotización, lo que reduce el sesgo de supervivencia, y mantiene una clasificación industrial consistente a lo largo de las décadas, permitiendo comparaciones entre periodos históricos.
+
+Analizo dos periodos:
+
+- **Era puntocom:** enero de 1997 – diciembre de 2002, cubriendo la formación de la burbuja, su máximo y el desplome.
+- **Era de la IA:** enero de 2023 – octubre de 2026, cubriendo el régimen de mercado impulsado por la IA.
+
+Ambos periodos utilizan la misma estructura de 49 industrias, lo que permite una comparación directa.
+
+Una versión anterior de este análisis utilizaba acciones individuales vinculadas a la IA (NVDA, MSFT, META, etc.) para la era de la IA. Sin embargo, la diferencia de granularidad entre los datos introducía diferencias sistemáticas de ruido que complicaban la interpretación. Mantengo el análisis de acciones individuales como ejercicio complementario, pero baso las conclusiones comparativas entre eras en los datos de Fama-French.
+
+Todos los rendimientos se convierten de porcentajes a decimales. No se aplica ningún filtrado o proceso adicional de limpieza.
+
+## 4. Metodología
+
+### Matrices de correlación móviles
+
+Para cada periodo calculo matrices de correlación de Pearson móviles utilizando una ventana de 60 sesiones bursátiles, aproximadamente tres meses naturales.
+
+En cada instante *t*, la matriz de correlación se construye a partir de los rendimientos de las 49 industrias observados en la ventana \[*t*−60, *t*\]. Esto genera una serie temporal de matrices simétricas de 49 × 49. Bajo condiciones regulares, las matrices de correlación resultantes son definidas positivas; en general, una matriz de correlación es al menos semidefinida positiva.
+
+### Descomposición espectral
+
+Cada matriz de correlación se descompone en autovalores y autovectores mediante `scipy.linalg.eigh`, optimizado para matrices simétricas. Los autovalores se ordenan de mayor a menor.
+
+Las cantidades principales son:
+
+- **λ₁ (primer autovalor):** mide la importancia del principal factor común de co-movimiento. Intuitivamente, indica cuánto se mueve el mercado como un todo. Se expresa como λ₁/N × 100, donde N = 49.
+- **λ₂ (segundo autovalor):** captura la estructura residual más importante después de retirar el modo de mercado. Un aumento de λ₂ indica la aparición de una estructura secundaria; por ejemplo, un grupo de industrias que evoluciona de forma diferente a otro.
+- **Cargas del autovector de λ₂:** los 49 componentes del segundo autovector muestran qué industrias contribuyen a esa estructura de desacoplamiento. Cargas positivas y negativas permiten identificar los dos grupos que se contraponen.
+
+### Métricas diagnósticas
+
+Sigo tres métricas en ambas eras:
+
+1. **Evolución de los autovalores:** λ₁/N y λ₂/N como porcentajes a lo largo del tiempo, para medir el co-movimiento general del mercado y la intensidad del desacoplamiento sectorial.
+2. **Brecha de *herding*:** diferencia entre la correlación media dentro del grupo tecnológico y la correlación media entre tecnología y no tecnología, calculada en cada ventana móvil. Las industrias tecnológicas se definen como: Softw, Hardw, Chips, Telcm, BusSv y LabEq. Un aumento de la brecha indica que el sector tecnológico se mueve de forma más coordinada mientras se aleja del comportamiento del mercado general.
+3. **Cargas del autovector de λ₂:** se examinan en la fecha en la que λ₂ alcanza su máximo en cada era para identificar qué industrias impulsan el modo de desacoplamiento.
+
+### Validación de la ventana
+
+Para comprobar que los resultados no son un artefacto de elegir una ventana de 60 sesiones, repito el análisis de la brecha de *herding* utilizando ventanas de 30, 45, 60, 90 y 120 sesiones. Los resultados son cualitativamente estables para todos los tamaños de ventana.
+
+### Comparación entre eras
+
+Dado que los dos periodos tienen distinta duración, las comparaciones temporales se representan utilizando las sesiones bursátiles transcurridas desde el inicio de cada periodo, en lugar de fechas de calendario. Cuando es necesario superponer directamente las series, las métricas se normalizan mediante puntuaciones *z* para tener en cuenta las diferencias de escala.
+
+## 5. Resultados
+
+### Evolución de los autovalores
+
+<figure>
+  <img src="/images/ai-bubble/eigenvalues-dot-com.png" alt="λ₁ y λ₂ como porcentaje de la varianza total durante el periodo puntocom. λ₂ alcanza máximos alrededor de mediados de 1999 y finales de 2001, señalando periodos de fuerte desacoplamiento sectorial." loading="lazy" width="1387" height="557" />
+  <figcaption>Figura 1: λ₁ y λ₂ como porcentaje de la varianza total durante el periodo puntocom. λ₂ alcanza máximos alrededor de mediados de 1999 y finales de 2001, señalando periodos de fuerte desacoplamiento sectorial.</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/ai-bubble/eigenvalues-ai-era.png" alt="mismas métricas para la era de la IA. λ₂ permanece más bajo y relativamente plano, sin un pico de desacoplamiento comparable." loading="lazy" width="1386" height="557" />
+  <figcaption>Figura 2: mismas métricas para la era de la IA. λ₂ permanece más bajo y relativamente plano, sin un pico de desacoplamiento comparable.</figcaption>
+</figure>
+
+Durante el periodo puntocom, λ₁ explica entre el 25 % y el 40 % de la varianza total y aumenta con fuerza durante el desplome de 2001–2002, cuando las correlaciones se elevan en todo el mercado. λ₂ muestra máximos claros alrededor de mediados de 1999 y finales de 2001, lo que indica una estructura secundaria fuerte.
+
+En la era de la IA, λ₁ se mantiene en un rango similar, pero sin el aumento tan pronunciado observado durante el desplome puntocom. λ₂ permanece más bajo y más plano.
+
+### Brecha de *herding*
+
+<figure>
+  <img src="/images/ai-bubble/herding-gap-dot-com.png" alt="brecha de herding tecnológico —correlación intra-tecnología menos correlación entre sectores— durante la era puntocom. El aumento sostenido de aproximadamente 0,15 a 0,45 cuantifica la firma combinada de comportamiento gregario y desacoplamiento." loading="lazy" width="1386" height="557" />
+  <figcaption>Figura 3: brecha de herding tecnológico —correlación intra-tecnología menos correlación entre sectores— durante la era puntocom. El aumento sostenido de aproximadamente 0,15 a 0,45 cuantifica la firma combinada de comportamiento gregario y desacoplamiento.</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/ai-bubble/herding-gap-ai-era.png" alt="misma métrica durante la era de la IA utilizando las carteras de Fama-French. La brecha fluctúa entre aproximadamente 0,05 y 0,20 sin una tendencia ascendente sostenida." loading="lazy" width="1387" height="557" />
+  <figcaption>Figura 4: misma métrica durante la era de la IA utilizando las carteras de Fama-French. La brecha fluctúa entre aproximadamente 0,05 y 0,20 sin una tendencia ascendente sostenida.</figcaption>
+</figure>
+
+La brecha de la era puntocom aumenta de forma progresiva desde aproximadamente 0,15 a comienzos de 1997 hasta aproximadamente 0,45 en 2000: las acciones tecnológicas se mueven cada vez más como un bloque correlacionado mientras se separan del comportamiento del mercado general.
+
+La era de la IA no presenta una trayectoria comparable.
+
+### Cargas del autovector de λ₂
+
+<figure>
+  <img src="/images/ai-bubble/lambda2-loadings.png" alt="diez mayores y diez menores cargas industriales del segundo autovector en el máximo de λ₂ de cada era. A la izquierda, la era puntocom muestra una separación clara entre tecnología e industrias tradicionales; a la derecha, la era de la IA muestra una rotación entre sectores defensivos y cíclicos, sin predominio tecnológico en ninguno de los dos lados." loading="lazy" width="1587" height="752" />
+  <figcaption>Figura 5: diez mayores y diez menores cargas industriales del segundo autovector en el máximo de λ₂ de cada era. A la izquierda, la era puntocom muestra una separación clara entre tecnología e industrias tradicionales; a la derecha, la era de la IA muestra una rotación entre sectores defensivos y cíclicos, sin predominio tecnológico en ninguno de los dos lados.</figcaption>
+</figure>
+
+Este es el indicador más discriminante.
+
+En el máximo de la era puntocom, a mediados de 1999, el autovector separa claramente tecnología (Softw, Hardw, Chips, Telcm) de industrias de la economía tradicional (Paper, Chems, Steel, Aero).
+
+En el máximo de la era de la IA no aparece una separación equivalente. El segundo modo separa sectores defensivos y de materias primas (Oil, Smoke, Soda) de sectores cíclicos (Construction, Machinery, Electrical Equipment). Las industrias vinculadas a la IA no dominan ninguno de los dos lados.
+
+### Superposición entre eras
+
+<figure>
+  <img src="/images/ai-bubble/cross-era-comparison.png" alt="superposición directa de las tres métricas —modo de mercado, correlación media y brecha de herding— alineadas según las sesiones bursátiles transcurridas desde el inicio de cada periodo." loading="lazy" width="1387" height="1451" />
+  <figcaption>Figura 6: superposición directa de las tres métricas —modo de mercado, correlación media y brecha de herding— alineadas según las sesiones bursátiles transcurridas desde el inicio de cada periodo.</figcaption>
+</figure>
+
+La era puntocom muestra sistemáticamente un mayor *herding* y una trayectoria ascendente que no aparece en la era de la IA.
+
+### Validación de la ventana
+
+<figure>
+  <img src="/images/ai-bubble/window-sensitivity.png" alt="brecha de herding calculada sobre los datos puntocom con ventanas de 30, 45, 60, 90 y 120 sesiones." loading="lazy" width="1387" height="557" />
+  <figcaption>Figura 7: brecha de herding calculada sobre los datos puntocom con ventanas de 30, 45, 60, 90 y 120 sesiones.</figcaption>
+</figure>
+
+Todas las ventanas producen tendencias cualitativamente similares, lo que respalda la elección de una ventana de 60 sesiones.
+
+## 6. Discusión
+
+El hallazgo central de este estudio es negativo: **la era de la IA no reproduce el régimen de correlaciones que caracterizó a la burbuja puntocom**.
+
+Aunque la narrativa popular presenta la IA como una especie de “puntocom 2.0”, la estructura espectral del mercado cuenta una historia diferente en las tres métricas analizadas.
+
+Durante el periodo puntocom, el mercado mostró una firma de burbuja muy clara: las industrias tecnológicas se agruparon en un bloque fuertemente correlacionado —la brecha de *herding* aumentó de 0,15 a 0,45— mientras el segundo autovalor se elevaba y su autovector se dividía claramente entre tecnología y economía tradicional.
+
+Este patrón se mantuvo durante casi tres años antes del desplome, aumentando de manera progresiva en lugar de aparecer como una fluctuación puntual.
+
+La era de la IA no muestra ninguno de estos patrones. La brecha de *herding* permanece baja y relativamente plana (aproximadamente 0,05–0,15), sin una tendencia ascendente. Incluso en su máximo, el autovector de λ₂ separa sectores defensivos de sectores cíclicos, no tecnología del resto del mercado.
+
+Además, en los meses más recientes la brecha de *herding* se vuelve negativa, lo que sugiere que las industrias tecnológicas están perdiendo coherencia como bloque correlacionado.
+
+### ¿Por qué podría ocurrir esto?
+
+Existen varias diferencias estructurales entre ambas eras que podrían explicar la divergencia.
+
+**Primero, la adopción de la IA es transversal a múltiples sectores.** El auge puntocom estuvo concentrado en un conjunto relativamente estrecho de empresas tecnológicas y de telecomunicaciones. La IA, en cambio, está siendo adoptada en sanidad, finanzas, energía, manufactura y otros sectores. Esto distribuye la señal asociada a la tecnología por todo el mercado, en lugar de concentrarla en un único bloque. El resultado es coherente con la ausencia de una separación limpia entre tecnología y el resto del mercado en el autovector.
+
+**Segundo, la estructura del mercado ha evolucionado.** La proliferación de ETF, la negociación algorítmica y la inversión pasiva han cambiado la dinámica de las correlaciones. El modo de mercado (λ₁) es estructuralmente más elevado hoy que a finales de los años noventa, lo que podría reducir el espacio disponible para que las señales de desacoplamiento sectorial aparezcan en λ₂.
+
+**Por último, el aumento de λ₂ a finales de 2026 merece atención.** Aunque su magnitud se aproxima a niveles observados durante la era puntocom, la estructura del autovector revela una rotación entre sectores defensivos y cíclicos, probablemente relacionada con incertidumbre macroeconómica —expectativas sobre los tipos de interés, riesgos de recesión, etc.— más que con especulación específica en tecnología.
+
+Esto pone de relieve una cuestión metodológica importante: **la magnitud del autovalor por sí sola no basta para diagnosticar una burbuja.**
+
+La estructura del autovector es la que permite distinguir entre una burbuja sectorial y un cambio de régimen impulsado por factores macroeconómicos.
+
+Hay, además, una pregunta importante que este análisis no puede responder: **¿están justificadas fundamentalmente las valoraciones de la IA?**
+
+Mi método detecta comportamiento gregario en las correlaciones, no desajustes de valoración (*mispricing*). La ausencia de un régimen de correlaciones similar al de las puntocom no significa que las acciones de IA estén justamente valoradas. Significa que el mercado no las está tratando como un bloque especulativo de la misma manera que trató a las acciones de Internet entre 1998 y 2000.
+
+Determinar si el ciclo actual de inversión en IA generará rentabilidades adecuadas sigue siendo una cuestión empírica abierta para futuras investigaciones.
+
+## 7. Limitaciones
+
+Este estudio presenta varias limitaciones que deben tenerse en cuenta al interpretar sus resultados.
+
+### Granularidad a nivel industrial
+
+Las carteras industriales de Fama-French 49 agregan empresas individuales en categorías relativamente amplias. Una burbuja concentrada en un pequeño grupo de compañías de mega-capitalización —por ejemplo, NVIDIA, Microsoft o Meta— podría quedar oculta si el resto de las empresas de sus respectivas industrias se comporta con normalidad.
+
+Un análisis espectral a nivel de acciones individuales ofrecería una resolución mayor, aunque a costa de una matriz de correlaciones mucho más grande y potencialmente más ruidosa.
+
+### Una única metodología
+
+El análisis se basa exclusivamente en la descomposición de autovalores y autovectores de matrices de correlación móviles. Otros enfoques —como los modelos de ley de potencia log-periódica, las medidas de sincronización del volumen negociado o los indicadores basados en sentimiento— podrían detectar dinámicas de burbuja que la estructura de correlaciones no capture.
+
+### Sensibilidad a la ventana
+
+Aunque valido los resultados utilizando ventanas de 30, 45, 60, 90 y 120 sesiones, el enfoque de ventana móvil suaviza inevitablemente las transiciones rápidas.
+
+Un cambio de régimen que ocurriera en solo unas pocas sesiones podría diluirse dentro de una ventana de 60 sesiones.
+
+### Sesgo de supervivencia en la era de la IA
+
+Aunque las carteras de Fama-French reducen el sesgo de supervivencia en el periodo puntocom, la era de la IA todavía está en desarrollo. Si se produce una corrección en el futuro, el conjunto de datos actual solo habrá capturado la fase de acumulación previa.
+
+### Correlación no es valoración
+
+Este método detecta patrones de co-movimiento, no desajustes de valoración.
+
+La burbuja puntocom combinó un comportamiento gregario extremo con valoraciones extremadamente elevadas. La ausencia de *herding* no descarta una sobrevaloración generada por otros mecanismos.
+
+Además, la diferencia entre la rentabilidad de las empresas de infraestructura de IA y las pérdidas profundas de algunas empresas dedicadas al desarrollo de modelos de IA plantea un panorama de valoración más complejo que el de la era puntocom.
+
+### Supuesto de estacionariedad
+
+La correlación móvil presupone implícitamente una estacionariedad local dentro de cada ventana. Durante episodios de estrés financiero, las correlaciones pueden cambiar bruscamente, violando este supuesto y distorsionando potencialmente la descomposición espectral.
+
+## 8. Conclusión
+
+Apliqué análisis espectral de matrices de correlación móviles para comparar la estructura de correlaciones del mercado durante la burbuja puntocom (1997–2002) con la era actual de la IA (2023–2026), utilizando las 49 carteras industriales de Fama-French para mantener una comparación consistente y reducir el sesgo de supervivencia entre ambos periodos.
+
+La burbuja puntocom produjo una firma espectral clara y sostenida: el segundo autovalor aumentó de forma progresiva, su autovector se separó siguiendo una división entre tecnología y no tecnología, y la brecha de *herding* pasó de aproximadamente 0,15 a 0,45 durante casi tres años antes del desplome.
+
+**La era de la IA no reproduce ninguno de estos patrones.**
+
+La brecha de *herding* permanece relativamente plana, el autovector de λ₂ refleja rotaciones sectoriales impulsadas por factores macroeconómicos en lugar de un desacoplamiento tecnológico, y los datos más recientes muestran una brecha negativa, lo que apunta a una pérdida de coherencia de las industrias tecnológicas como grupo.
+
+Estos resultados no permiten determinar si las acciones de IA están sobrevaloradas. Sí permiten establecer que, desde el punto de vista de la estructura de correlaciones, el mercado no está tratando a la IA como un bloque especulativo de la misma manera que trató a las acciones de Internet entre 1998 y 2000.
+
+Si se produce una corrección en las valoraciones de la IA, **es poco probable que siga exactamente la misma vía de correlaciones que el desplome puntocom**.
+
+El trabajo futuro podría ampliar este análisis en varias direcciones: aplicar el mismo marco a nivel de acciones individuales para detectar concentración dentro de las industrias, incorporar métodos alternativos de detección de burbujas junto con el análisis espectral y volver a analizar este conjunto de datos a medida que madure el ciclo de inversión en IA, especialmente para comprobar si la brecha de *herding* negativa persiste o se revierte.
+
+## 9. Referencias
+
+1. Buccheri, G., Marmi, S., & Mantegna, R. N. (2013). *Evolution of correlation structure of industrial indices of US equity markets*. Physical Review E, 88, 012806. DOI: 10.1103/PhysRevE.88.012806
+2. Fama, E. F., & French, K. R. (1997). *Industry costs of equity*. Journal of Financial Economics, 43(2), 153–193.
+3. Laloux, L., Cizeau, P., Bouchaud, J.-P., & Potters, M. (1999). *Noise dressing of financial correlation matrices*. Physical Review Letters, 83, 1467–1470.
