@@ -1,0 +1,78 @@
+---
+title: Job Search & CV Tailoring Automation
+date: 2026-11-06
+type: app
+tags:
+  - label: n8n
+    accent: true
+  - label: AI Automation
+  - label: Claude API
+  - label: Python
+  - label: JSON
+excerpt: An n8n workflow that screens up to 150 job postings per day with Claude, selects up to 10 relevant opportunities, and generates tailored CV recommendations. Reports are saved to Google Drive, tracked in Google Sheets, and delivered through an email summary.
+icon: code
+featured: false
+draft: true
+stats:
+  - value: "150"
+    label: Daily posting limit
+  - value: "10"
+    label: Maximum shortlisted opportunities
+  - value: "4"
+    label: Base CVs compared
+repoUrl: https://github.com/elaymaneX/Job-Search-Automation
+cover: /images/uploads/2026-11/mw4vwejc-jobautoworkflow.png
+---
+
+## From job listings to actionable applications
+
+Searching for a job involves more than finding relevant titles. Each opportunity needs to be checked against skills, experience, seniority, and eligibility—and each application benefits from a focused CV.
+
+I built this n8n workflow to automate that preparation while keeping the final application decision in my hands.
+
+## How it works
+
+1. **Collect opportunities.** Apify retrieves up to 150 recent LinkedIn postings across configurable roles and locations.
+2. **Filter and deduplicate.** The workflow removes senior titles and opportunities already recorded in the tracker.
+3. **Evaluate fit.** Claude compares each posting with a master candidate profile, scoring technical skills, relevant experience, education, career alignment, and realistic seniority. Unresolved eligibility requirements are flagged for review.
+4. **Select the shortlist.** Up to 10 qualifying opportunities are ranked by score.
+5. **Prepare CV recommendations.** For each shortlisted job, Claude compares four base CVs and recommends a starting document, profile edits, relevant achievements, supported keywords, and claims to avoid.
+6. **Save and notify.** A Markdown report is uploaded to Google Drive, the opportunity is recorded in Google Sheets, and Gmail sends a final summary.
+
+## Design choices
+
+**Separate evaluation from CV adaptation.** All new opportunities receive an initial assessment, while only the shortlist receives detailed CV recommendations.
+
+**Keep the original job description.** The complete posting stays attached to its evaluation so the recommendation stage can work from the employer’s requirements.
+
+**Ground suggestions in documented experience.** The master profile and base CVs provide the evidence for recommendations. The workflow explicitly asks the model to avoid inventing qualifications.
+
+**Keep outputs practical.** Google Sheets serves as the application tracker, while individual reports in Drive hold the detailed editing guidance.
+
+## Outputs
+
+Each shortlisted opportunity includes:
+
+- A suitability score and recommendation.
+- A selected base CV.
+- Suggested profile text and prioritized edits.
+- Relevant keywords supported by the candidate’s experience.
+- Gaps and application considerations requiring manual review.
+
+The workflow supports application preparation; it does not submit applications or modify the original CV files.
+
+## Technology
+
+n8n, Apify, Anthropic Claude API, Google Drive, Google Sheets, Gmail, and Docker for local hosting.
+
+## What I learned
+
+The most important work was preserving context between nodes, matching model responses to the correct job, validating structured output, and coordinating file uploads with tracker updates.
+
+The project also highlighted the importance of consistent candidate data: missing skills in the scoring profile can produce misleading gaps, even when those skills appear in the CVs.
+
+## Current limitations
+
+AI assessments still need human review, particularly for work authorization and experience requirements. API usage creates operating costs, and local scheduled runs depend on the host computer being awake with n8n running.
+
+The public repository includes a sanitized workflow export and setup instructions, allowing others to configure it with their own profile and accounts.
